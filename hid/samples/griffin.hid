@@ -1,0 +1,38 @@
+<!DOCTYPE HID>
+<HID>
+ <Device matchVID="1917" matchManufacturer="Griffin Technology, Inc." matchPID="1040" />
+ <Items>
+  <Item enabled="true" type="0" index="0" usage="1" pin="Button" usagePage="9" />
+  <Item logicalMinOverride="-127" valueType="0" reverse="false" enabled="true" outputType="0" type="1" useResponseCurve="false" index="2" usage="51" outputMin="-1" outputMax="1" pin="Dial" usagePage="1" logicalMaxOverride="127" >
+   <controlPoints>
+    <point lP="0" dwLog="0" />
+    <point lP="10000" dwLog="10000" />
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="false" outputType="0" type="1" useResponseCurve="false" index="3" usage="1" outputMin="-1" outputMax="1" pin="Consumer:Consumer-Control" usagePage="12" logicalMaxOverride="255" >
+   <controlPoints>
+    <point lP="0" dwLog="0" />
+    <point lP="10000" dwLog="10000" />
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="false" outputType="0" type="1" useResponseCurve="false" index="4" usage="1" outputMin="-1" outputMax="1" pin="Consumer:Consumer-Control" usagePage="12" logicalMaxOverride="255" >
+   <controlPoints>
+    <point lP="0" dwLog="0" />
+    <point lP="10000" dwLog="10000" />
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="false" outputType="0" type="1" useResponseCurve="false" index="5" usage="1" outputMin="-1" outputMax="1" pin="Consumer:Consumer-Control" usagePage="12" logicalMaxOverride="255" >
+   <controlPoints>
+    <point lP="0" dwLog="0" />
+    <point lP="10000" dwLog="10000" />
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="false" outputType="0" type="1" useResponseCurve="false" index="6" usage="1" outputMin="-1" outputMax="1" pin="Consumer:Consumer-Control" usagePage="12" logicalMaxOverride="255" >
+   <controlPoints>
+    <point lP="0" dwLog="0" />
+    <point lP="10000" dwLog="10000" />
+   </controlPoints>
+  </Item>
+  <Item enabled="true" type="5" index="7" usage="1" pin="LED" usagePage="12" />
+ </Items>
+</HID>

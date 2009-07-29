@@ -1,0 +1,107 @@
+<!DOCTYPE HID>
+<HID>
+ <Device matchVID="7232" matchManufacturer="FranksWorkshop" matchPID="1241" matchProduct="Generic HID Device" />
+ <Items>
+  <Item enabled="false" type="5" index="0" usage="65280" pin="Select-DFU-Mode" usagePage="65280" />
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="false" outputType="0" type="1" useResponseCurve="false" index="1" usage="65280" outputMin="-1" outputMax="1" pin="x" usagePage="65280" logicalMaxOverride="65535" >
+   <controlPoints>
+    <point lP="0" dwLog="0" />
+    <point lP="10000" dwLog="10000" />
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="true" outputType="0" type="1" useResponseCurve="false" index="2" usage="50" outputMin="-1" outputMax="1" pin="Z" usagePage="1" logicalMaxOverride="1023" >
+   <controlPoints>
+    <point lP="0" dwLog="0" />
+    <point lP="10000" dwLog="10000" />
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="true" outputType="0" type="1" useResponseCurve="false" index="3" usage="51" outputMin="-1" outputMax="1" pin="A" usagePage="1" logicalMaxOverride="1023" >
+   <controlPoints>
+    <point lP="0" dwLog="0" />
+    <point lP="10000" dwLog="10000" />
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="true" outputType="0" type="1" useResponseCurve="false" index="4" usage="49" outputMin="-1" outputMax="1" pin="Y" usagePage="1" logicalMaxOverride="1023" >
+   <controlPoints>
+    <point lP="0" dwLog="0" />
+    <point lP="10000" dwLog="10000" />
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="true" outputType="0" type="1" useResponseCurve="false" index="5" usage="48" outputMin="-1" outputMax="1" pin="X" usagePage="1" logicalMaxOverride="1023" >
+   <controlPoints>
+    <point lP="0" dwLog="0" />
+    <point lP="10000" dwLog="10000" />
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="true" outputType="0" type="1" useResponseCurve="false" index="6" usage="1" outputMin="-1" outputMax="1" pin="MultiplierSelect" usagePage="9" logicalMaxOverride="3" >
+   <controlPoints>
+    <point lP="0" dwLog="0" />
+    <point lP="10000" dwLog="10000" />
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="true" outputType="0" type="1" useResponseCurve="false" index="7" usage="1" outputMin="-1" outputMax="1" pin="AxisSelect" usagePage="9" logicalMaxOverride="7" >
+   <controlPoints>
+    <point lP="0" dwLog="0" />
+    <point lP="10000" dwLog="10000" />
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="true" outputType="0" type="1" useResponseCurve="false" index="8" usage="55" outputMin="-1" outputMax="1" pin="JogWheel" usagePage="1" logicalMaxOverride="255" >
+   <controlPoints>
+    <point lP="0" dwLog="0" />
+    <point lP="10000" dwLog="10000" />
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="true" outputType="0" type="1" useResponseCurve="false" index="9" usage="65200" outputMin="-1" outputMax="1" pin="FeedOverride" usagePage="1" logicalMaxOverride="255" >
+   <controlPoints>
+    <point lP="0" dwLog="0" />
+    <point lP="10000" dwLog="10000" />
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="true" outputType="0" type="1" useResponseCurve="false" index="10" usage="65200" outputMin="-1" outputMax="1" pin="SpindleOverride" usagePage="1" logicalMaxOverride="255" >
+   <controlPoints>
+    <point lP="0" dwLog="0" />
+    <point lP="10000" dwLog="10000" />
+   </controlPoints>
+  </Item>
+  <Item enabled="true" type="0" index="11" usage="2" pin="Reset" usagePage="9" />
+  <Item enabled="true" type="0" index="12" usage="1" pin="StepMode" usagePage="9" />
+  <Item enabled="true" type="0" index="13" usage="3" pin="B3" usagePage="9" />
+  <Item enabled="true" type="0" index="14" usage="4" pin="B4" usagePage="9" />
+  <Item enabled="true" type="0" index="15" usage="5" pin="B5" usagePage="9" />
+  <Item enabled="true" type="0" index="16" usage="6" pin="Button:6" usagePage="9" />
+  <Item enabled="true" type="0" index="17" usage="7" pin="Button:7" usagePage="9" />
+  <Item enabled="true" type="0" index="18" usage="8" pin="Button:8" usagePage="9" />
+  <Item enabled="true" type="0" index="19" usage="9" pin="Button:9" usagePage="9" />
+  <Item enabled="true" type="0" index="20" usage="10" pin="Button:10" usagePage="9" />
+  <Item enabled="true" type="0" index="21" usage="11" pin="Button:11" usagePage="9" />
+  <Item enabled="true" type="0" index="22" usage="12" pin="Button:12" usagePage="9" />
+  <Item enabled="true" type="0" index="23" usage="13" pin="Button:13" usagePage="9" />
+  <Item enabled="true" type="0" index="24" usage="14" pin="Button:14" usagePage="9" />
+  <Item enabled="true" type="0" index="25" usage="15" pin="Button:15" usagePage="9" />
+  <Item enabled="true" type="0" index="26" usage="16" pin="Button:16" usagePage="9" />
+  <Item enabled="true" type="0" index="27" usage="17" pin="Button:17" usagePage="9" />
+  <Item enabled="true" type="0" index="28" usage="18" pin="Button:18" usagePage="9" />
+  <Item enabled="true" type="3" index="30" usage="1000" pin="ChangeTool" usagePage="8" />
+  <Item enabled="true" type="3" index="31" usage="1002" pin="SingleStep" usagePage="8" />
+  <Item enabled="true" type="3" index="32" usage="1001" pin="Run" usagePage="8" />
+  <Item enabled="true" type="4" index="1" usage="0" refreshPeriod="100" pin="LCD" usagePage="0" >
+   <Page Number="0" Name="Main" >
+    <Data Format="%-20s" Row="3" TestData="Test Message" DisplayData="3" Col="0" Index="0" />
+    <Data Format="X %7.2f" Row="0" TestData="-100" DisplayData="105" Col="0" Index="0" />
+    <Data Format="Z %7.2f" Row="1" TestData="0" DisplayData="105" Col="0" Index="2" />
+    <Data Format="%1:0,*:1, :b" Row="0" TestData="0" DisplayData="205" Col="9" Index="0" />
+    <Data Format="%1:0,*:1, :b" Row="1" TestData="0" DisplayData="205" Col="9" Index="2" />
+    <Data Format="S %4.0frpm" Row="0" TestData="1500" DisplayData="300" Col="11" Index="0" />
+    <Data Format="F %4.0fmm/min" Row="2" TestData="0" DisplayData="114" Col="0" Index="0" />
+    <Data Format="%d" Row="1" TestData="0" DisplayData="800" Col="11" Index="0" />
+    <Data Format="%d" Row="2" TestData="0" DisplayData="800" Col="11" Index="0" />
+   </Page>
+   <Page Number="1" Name="Probing" >
+    <Data Format="Probe=%-3:0,off:1,on:b" Row="0" TestData="0" DisplayData="109" Col="0" Index="0" />
+    <Data Format="Probing=%-5:0,false:1,true:b" Row="1" TestData="1" DisplayData="110" Col="0" Index="0" />
+    <Data Format="X %7.2f" Row="2" TestData="0" DisplayData="108" Col="0" Index="0" />
+    <Data Format="Z %7.2f" Row="3" TestData="0" DisplayData="108" Col="0" Index="2" />
+   </Page>
+  </Item>
+ </Items>
+</HID>

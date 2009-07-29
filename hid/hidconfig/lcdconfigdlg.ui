@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LCDConfigDlgClass</class>
+ <widget class="QWidget" name="LCDConfigDlgClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>876</width>
+    <height>455</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>LCDConfigDlg</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_4">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QTableWidget" name="tablePages">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>Page #</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Page Name</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QPushButton" name="btnAddPage">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>New Page</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnDeletePage">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Delete Page</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Minimum</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>0</width>
+             <height>2</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QToolButton" name="btnPageUp">
+         <property name="text">
+          <string>...</string>
+         </property>
+         <property name="arrowType">
+          <enum>Qt::UpArrow</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="btnPageDown">
+         <property name="text">
+          <string>...</string>
+         </property>
+         <property name="arrowType">
+          <enum>Qt::DownArrow</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="LCDWidget" name="lcd" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="sizeIncrement">
+            <size>
+             <width>6</width>
+             <height>8</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTableWidget" name="tableData">
+           <property name="focusPolicy">
+            <enum>Qt::StrongFocus</enum>
+           </property>
+           <property name="selectionBehavior">
+            <enum>QAbstractItemView::SelectRows</enum>
+           </property>
+           <attribute name="horizontalHeaderStretchLastSection">
+            <bool>true</bool>
+           </attribute>
+           <attribute name="verticalHeaderVisible">
+            <bool>false</bool>
+           </attribute>
+           <column>
+            <property name="text">
+             <string>Col</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Row</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Value</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Format</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Index</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Test Value</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QPushButton" name="btnAddData">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>New Data</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnDeleteData">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Delete Data</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>Refresh Period (ms)</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="editRefreshRate">
+             <property name="minimumSize">
+              <size>
+               <width>60</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximum">
+              <number>99999999</number>
+             </property>
+             <property name="value">
+              <number>100</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnOk">
+       <property name="text">
+        <string>OK</string>
+       </property>
+       <property name="default">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnCancel">
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>LCDWidget</class>
+   <extends>QWidget</extends>
+   <header>lcdwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>btnOk</tabstop>
+  <tabstop>btnCancel</tabstop>
+  <tabstop>tablePages</tabstop>
+  <tabstop>tableData</tabstop>
+  <tabstop>btnPageUp</tabstop>
+  <tabstop>btnPageDown</tabstop>
+  <tabstop>btnAddPage</tabstop>
+  <tabstop>btnDeletePage</tabstop>
+  <tabstop>btnAddData</tabstop>
+  <tabstop>btnDeleteData</tabstop>
+  <tabstop>editRefreshRate</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>btnAddPage</sender>
+   <signal>clicked()</signal>
+   <receiver>LCDConfigDlgClass</receiver>
+   <slot>onNewPage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>53</x>
+     <y>402</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>55</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnDeletePage</sender>
+   <signal>clicked()</signal>
+   <receiver>LCDConfigDlgClass</receiver>
+   <slot>onDeletePage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>130</x>
+     <y>396</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>142</x>
+     <y>277</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnAddData</sender>
+   <signal>clicked()</signal>
+   <receiver>LCDConfigDlgClass</receiver>
+   <slot>onNewData()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>305</x>
+     <y>402</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>238</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnDeleteData</sender>
+   <signal>clicked()</signal>
+   <receiver>LCDConfigDlgClass</receiver>
+   <slot>onDeleteData()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>371</x>
+     <y>402</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>277</x>
+     <y>287</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnOk</sender>
+   <signal>clicked()</signal>
+   <receiver>LCDConfigDlgClass</receiver>
+   <slot>onOK()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>733</x>
+     <y>431</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>371</x>
+     <y>287</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnCancel</sender>
+   <signal>clicked()</signal>
+   <receiver>LCDConfigDlgClass</receiver>
+   <slot>onCancel()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>818</x>
+     <y>434</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>485</x>
+     <y>289</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tableData</sender>
+   <signal>itemChanged(QTableWidgetItem*)</signal>
+   <receiver>LCDConfigDlgClass</receiver>
+   <slot>onItemChanged(QTableWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>417</x>
+     <y>173</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>439</x>
+     <y>236</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tableData</sender>
+   <signal>currentItemChanged(QTableWidgetItem*,QTableWidgetItem*)</signal>
+   <receiver>LCDConfigDlgClass</receiver>
+   <slot>onCurrentItemChanged(QTableWidgetItem*,QTableWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>660</x>
+     <y>202</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>523</x>
+     <y>415</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tablePages</sender>
+   <signal>itemChanged(QTableWidgetItem*)</signal>
+   <receiver>LCDConfigDlgClass</receiver>
+   <slot>onPageItemChanged(QTableWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>110</x>
+     <y>170</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>189</x>
+     <y>418</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tablePages</sender>
+   <signal>currentItemChanged(QTableWidgetItem*,QTableWidgetItem*)</signal>
+   <receiver>LCDConfigDlgClass</receiver>
+   <slot>onPageCurrentItemChanged(QTableWidgetItem*,QTableWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>156</x>
+     <y>340</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>177</x>
+     <y>413</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnPageUp</sender>
+   <signal>clicked()</signal>
+   <receiver>LCDConfigDlgClass</receiver>
+   <slot>onPageUp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>228</x>
+     <y>143</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>229</x>
+     <y>2</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnPageDown</sender>
+   <signal>clicked()</signal>
+   <receiver>LCDConfigDlgClass</receiver>
+   <slot>onPageDown()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>228</x>
+     <y>287</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>212</x>
+     <y>-13</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onNewPage()</slot>
+  <slot>onDeletePage()</slot>
+  <slot>onNewData()</slot>
+  <slot>onDeleteData()</slot>
+  <slot>onOK()</slot>
+  <slot>onCancel()</slot>
+  <slot>onItemChanged(QTableWidgetItem*)</slot>
+  <slot>onCurrentItemChanged(QTableWidgetItem*,QTableWidgetItem*)</slot>
+  <slot>onPageItemChanged(QTableWidgetItem*)</slot>
+  <slot>onPageCurrentItemChanged(QTableWidgetItem*,QTableWidgetItem*)</slot>
+  <slot>onPageUp()</slot>
+  <slot>onPageDown()</slot>
+ </slots>
+</ui>

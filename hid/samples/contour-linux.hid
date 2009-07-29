@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<HID>
+
+  <Device matchManufacturer="Contour Design" matchPID="48" matchProduct="ShuttlePRO v2" matchVID="2867"/>
+
+  <Items>
+    <Item enabled="true" index="0" logicalMaxOverride="7" logicalMinOverride="-7" outputMax="1.000000" outputMin="-1.000000" outputType="0" pin="Wheel" reverse="false" type="1" usage="56" usagePage="1" useResponseCurve="false" valueType="0">
+      <controlPoints>
+        <point dwLog="0" lP="0"/>
+        <point dwLog="10000" lP="10000"/>
+      </controlPoints>
+    </Item>
+    <Item enabled="true" index="1" logicalMaxOverride="255" logicalMinOverride="0" outputMax="1.000000" outputMin="-1.000000" outputType="0" pin="Dial" reverse="false" type="1" usage="55" usagePage="1" useResponseCurve="false" valueType="0">
+      <controlPoints>
+        <point dwLog="0" lP="0"/>
+        <point dwLog="10000" lP="10000"/>
+      </controlPoints>
+    </Item>
+    <Item enabled="true" index="3" pin="Button:1" type="0" usage="1" usagePage="9"/>
+    <Item enabled="true" index="4" pin="Button:2" type="0" usage="2" usagePage="9"/>
+    <Item enabled="true" index="5" pin="Button:3" type="0" usage="3" usagePage="9"/>
+    <Item enabled="true" index="6" pin="Button:4" type="0" usage="4" usagePage="9"/>
+    <Item enabled="true" index="7" pin="Button:5" type="0" usage="5" usagePage="9"/>
+    <Item enabled="true" index="8" pin="Button:6" type="0" usage="6" usagePage="9"/>
+    <Item enabled="true" index="9" pin="Button:7" type="0" usage="7" usagePage="9"/>
+    <Item enabled="true" index="10" pin="Button:8" type="0" usage="8" usagePage="9"/>
+    <Item enabled="true" index="11" pin="Button:9" type="0" usage="9" usagePage="9"/>
+    <Item enabled="true" index="12" pin="Button:10" type="0" usage="10" usagePage="9"/>
+    <Item enabled="true" index="13" pin="Button:11" type="0" usage="11" usagePage="9"/>
+    <Item enabled="true" index="14" pin="Button:12" type="0" usage="12" usagePage="9"/>
+    <Item enabled="true" index="15" pin="Button:13" type="0" usage="13" usagePage="9"/>
+    <Item enabled="true" index="16" pin="Button:14" type="0" usage="14" usagePage="9"/>
+    <Item enabled="true" index="17" pin="Button:15" type="0" usage="15" usagePage="9"/>
+  </Items>
+
+</HID>

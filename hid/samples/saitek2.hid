@@ -1,0 +1,51 @@
+<!DOCTYPE HID>
+<HID>
+ <Device matchVID="1699" matchPID="1124" matchProduct="Saitek Cyborg USB Stick" />
+ <Items>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="true" outputType="0" type="1" useResponseCurve="true" index="0" usage="48" outputMin="-1" outputMax="1" pin="X" usagePage="1" logicalMaxOverride="1023" >
+   <controlPoints>
+    <point lP="0" dwLog="0" />
+    <point lP="500" dwLog="2500" />
+    <point lP="1250" dwLog="4000" />
+    <point lP="2000" dwLog="4500" />
+    <point lP="4000" dwLog="5000" />
+    <point lP="6000" dwLog="5000" />
+    <point lP="8000" dwLog="5500" />
+    <point lP="8750" dwLog="6000" />
+    <point lP="9500" dwLog="7500" />
+    <point lP="10000" dwLog="10000" />
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="true" outputType="0" type="1" useResponseCurve="false" index="1" usage="49" outputMin="-1" outputMax="1" pin="Y" usagePage="1" logicalMaxOverride="1023" >
+   <controlPoints>
+    <point lP="0" dwLog="0" />
+    <point lP="10000" dwLog="10000" />
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="true" outputType="0" type="1" useResponseCurve="false" index="2" usage="53" outputMin="-1" outputMax="1" pin="Rz" usagePage="1" logicalMaxOverride="511" >
+   <controlPoints>
+    <point lP="0" dwLog="0" />
+    <point lP="10000" dwLog="10000" />
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="true" outputType="0" type="1" useResponseCurve="false" index="3" usage="50" outputMin="-1" outputMax="1" pin="Z" usagePage="1" logicalMaxOverride="511" >
+   <controlPoints>
+    <point lP="0" dwLog="0" />
+    <point lP="10000" dwLog="10000" />
+   </controlPoints>
+  </Item>
+  <Item enabled="true" type="2" index="6" usage="57" pin="Hat-switch" usagePage="1" />
+  <Item enabled="true" type="0" index="7" usage="1" pin="1" usagePage="9" />
+  <Item enabled="true" type="0" index="8" usage="2" pin="2" usagePage="9" />
+  <Item enabled="true" type="0" index="9" usage="3" pin="3" usagePage="9" />
+  <Item enabled="true" type="0" index="10" usage="4" pin="4" usagePage="9" />
+  <Item enabled="true" type="0" index="11" usage="5" pin="5" usagePage="9" />
+  <Item enabled="true" type="0" index="12" usage="6" pin="6" usagePage="9" />
+  <Item enabled="true" type="0" index="13" usage="7" pin="7" usagePage="9" />
+  <Item enabled="true" type="0" index="14" usage="8" pin="8" usagePage="9" />
+  <Item enabled="true" type="0" index="15" usage="9" pin="9" usagePage="9" />
+  <Item enabled="true" type="0" index="16" usage="10" pin="10" usagePage="9" />
+  <Item enabled="true" type="0" index="17" usage="11" pin="11" usagePage="9" />
+  <Item enabled="true" type="0" index="18" usage="12" pin="12" usagePage="9" />
+ </Items>
+</HID>

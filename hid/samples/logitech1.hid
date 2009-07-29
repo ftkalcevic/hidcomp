@@ -1,0 +1,66 @@
+<!DOCTYPE HID>
+<HID>
+ <Device matchSystemId="1-1.4.4.3" />
+ <Items>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="false" outputType="0" type="1" useResponseCurve="false" index="0" usage="48" outputMin="-1" outputMax="1" pin="Generic-Desktop-Controls:X" usagePage="1" logicalMaxOverride="255" >
+   <controlPoints>
+    <point lP="0" dwLog="0" />
+    <point lP="10000" dwLog="10000" />
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="false" outputType="0" type="1" useResponseCurve="false" index="1" usage="49" outputMin="-1" outputMax="1" pin="Generic-Desktop-Controls:Y" usagePage="1" logicalMaxOverride="255" >
+   <controlPoints>
+    <point lP="0" dwLog="0" />
+    <point lP="10000" dwLog="10000" />
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="false" outputType="0" type="1" useResponseCurve="false" index="2" usage="50" outputMin="-1" outputMax="1" pin="Generic-Desktop-Controls:Z" usagePage="1" logicalMaxOverride="255" >
+   <controlPoints>
+    <point lP="0" dwLog="0" />
+    <point lP="10000" dwLog="10000" />
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="false" outputType="0" type="1" useResponseCurve="false" index="3" usage="53" outputMin="-1" outputMax="1" pin="Generic-Desktop-Controls:Rz" usagePage="1" logicalMaxOverride="255" >
+   <controlPoints>
+    <point lP="0" dwLog="0" />
+    <point lP="10000" dwLog="10000" />
+   </controlPoints>
+  </Item>
+  <Item enabled="false" type="2" index="4" usage="57" pin="Generic-Desktop-Controls:Hat-switch" usagePage="1" />
+  <Item enabled="false" type="0" index="5" usage="1" pin="Button:1" usagePage="9" />
+  <Item enabled="false" type="0" index="6" usage="2" pin="Button:2" usagePage="9" />
+  <Item enabled="false" type="0" index="7" usage="3" pin="Button:3" usagePage="9" />
+  <Item enabled="false" type="0" index="8" usage="4" pin="Button:4" usagePage="9" />
+  <Item enabled="false" type="0" index="9" usage="5" pin="Button:5" usagePage="9" />
+  <Item enabled="false" type="0" index="10" usage="6" pin="Button:6" usagePage="9" />
+  <Item enabled="false" type="0" index="11" usage="7" pin="Button:7" usagePage="9" />
+  <Item enabled="false" type="0" index="12" usage="8" pin="Button:8" usagePage="9" />
+  <Item enabled="false" type="0" index="13" usage="9" pin="Button:9" usagePage="9" />
+  <Item enabled="false" type="0" index="14" usage="10" pin="Button:10" usagePage="9" />
+  <Item enabled="false" type="0" index="15" usage="11" pin="Button:11" usagePage="9" />
+  <Item enabled="false" type="0" index="16" usage="12" pin="Button:12" usagePage="9" />
+  <Item enabled="false" type="0" index="17" usage="1" pin="65280:1" usagePage="65280" />
+  <Item enabled="false" type="0" index="18" usage="1" pin="65280:1" usagePage="65280" />
+  <Item enabled="false" type="0" index="19" usage="1" pin="65280:1" usagePage="65280" />
+  <Item enabled="false" type="0" index="20" usage="1" pin="65280:1" usagePage="65280" />
+  <Item enabled="false" type="0" index="21" usage="1" pin="65280:1" usagePage="65280" />
+  <Item enabled="false" type="0" index="22" usage="1" pin="65280:1" usagePage="65280" />
+  <Item enabled="false" type="0" index="23" usage="1" pin="65280:1" usagePage="65280" />
+  <Item enabled="false" type="0" index="24" usage="1" pin="65280:1" usagePage="65280" />
+  <Item enabled="false" type="0" index="25" usage="1" pin="65280:1" usagePage="65280" />
+  <Item enabled="false" type="0" index="26" usage="1" pin="65280:1" usagePage="65280" />
+  <Item enabled="false" type="0" index="27" usage="1" pin="65280:1" usagePage="65280" />
+  <Item enabled="false" type="0" index="28" usage="1" pin="65280:1" usagePage="65280" />
+  <Item enabled="false" type="0" index="29" usage="1" pin="65280:1" usagePage="65280" />
+  <Item enabled="false" type="0" index="30" usage="1" pin="65280:1" usagePage="65280" />
+  <Item enabled="false" type="0" index="31" usage="1" pin="65280:1" usagePage="65280" />
+  <Item enabled="false" type="0" index="32" usage="1" pin="65280:1" usagePage="65280" />
+  <Item enabled="false" type="5" index="33" usage="2" pin="65280:2" usagePage="65280" />
+  <Item enabled="false" type="5" index="34" usage="2" pin="65280:2" usagePage="65280" />
+  <Item enabled="false" type="5" index="35" usage="2" pin="65280:2" usagePage="65280" />
+  <Item enabled="false" type="5" index="36" usage="2" pin="65280:2" usagePage="65280" />
+  <Item enabled="false" type="5" index="37" usage="2" pin="65280:2" usagePage="65280" />
+  <Item enabled="false" type="5" index="38" usage="2" pin="65280:2" usagePage="65280" />
+  <Item enabled="false" type="5" index="39" usage="2" pin="65280:2" usagePage="65280" />
+ </Items>
+</HID>

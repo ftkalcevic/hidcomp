@@ -1,0 +1,22 @@
+* set udev rules
+eg
+
+:/etc/udev/rules.d/ 99-hid.rules
+
+SYSFS{idProduct}=="04d9",  SYSFS{idVendor}=="1c40", MODE="0660", GROUP="plugdev"
+SYSFS{idProduct}=="c216",  SYSFS{idVendor}=="046d", MODE="0660", GROUP="plugdev"
+SYSFS{idProduct}=="0030",  SYSFS{idVendor}=="0b33", MODE="0660", GROUP="plugdev"
+SYSFS{idProduct}=="0410",  SYSFS{idVendor}=="077d", MODE="0660", GROUP="plugdev"
+
+
+
+* blacklist modules
+add to /etc/modprobe.d/blacklist
+
+blacklist ehci_hcd
+blacklist powermate
+
+
+THEN, update-initramfs -u
+
+
