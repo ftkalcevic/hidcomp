@@ -4,7 +4,6 @@
 
 int main(int argc, char *argv[])
 {
-//    HIDDevices::Open( 255 );
     QApplication a(argc, argv);
     a.setApplicationName("hidconfig");
     hidconfig w;
