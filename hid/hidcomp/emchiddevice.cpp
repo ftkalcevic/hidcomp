@@ -187,6 +187,14 @@ void EMCHIDDevice::run()
         HIDParser parser;
         QVarLengthArray<byte> buf;
 	buf.resize(nLongestReport);
+
+	QMap<int,bool> OutputReportChange;
+        for ( std::map<byte, HID_ReportDetails_t>::iterator it = m_pDevice->ReportInfo().Reports.begin(); it != m_pDevice->ReportInfo().Reports.end(); it++ )
+	{
+	    HID_ReportDetails_t &details = it->second;
+	    OutputReportChange.insert( details.ReportId, false );
+	}
+
 	bool bFirst = true;
 
         while ( m_bRun )
@@ -227,11 +235,17 @@ void EMCHIDDevice::run()
 	    } while ( m_bRun && n > 0 );
 
             // Check if we have usb outputs that need to be sent
+	    for ( QMap<int,bool>::iterator it = OutputReportChange.begin(); it != OutputReportChange.end(); it++ )
+		it.value() = false;
+
 	    LOG_MSG( m_Logger, LogTypes::Debug, "Update outputs" );
             bool bChange = false;
             for ( QVector<EMCHIDItem *>::iterator it = hid_objects.begin(); it != hid_objects.end(); it++ )
 	    {
-		bChange = bChange || (*it)->CheckOutputs();
+		bool bItemChanged = (*it)->CheckOutputs();
+		if ( bItemChanged )
+		    OutputReportChange[(*it)->m_pDeviceItem->ReportID] = true;
+		bChange = bChange || bItemChanged;
 	    }
             
             if ( m_bRun && (bChange || bFirst) )
@@ -240,7 +254,7 @@ void EMCHIDDevice::run()
                 // Should be a bit smarter here.  
                 // Send all output reports
                 for ( std::map<byte, HID_ReportDetails_t>::iterator it = m_pDevice->ReportInfo().Reports.begin(); it != m_pDevice->ReportInfo().Reports.end(); it++ )
-                    if ( (it->second).OutReportLength > 0 )
+                    if ( OutputReportChange[(it->second).ReportId] &&  (it->second).OutReportLength > 0 )
                     {
                         byte nReportId = (it->second).ReportId;
 
@@ -263,7 +277,7 @@ void EMCHIDDevice::run()
 
                         // Send the report
                         LOG_MSG( m_Logger, LogTypes::Debug, QString( "Sending report %1").arg(nReportId) );
-                        m_pDevice->AsyncInterruptWrite( buf.data(), nReportLen );
+                        m_pDevice->AsyncInterruptWrite( outBuf.data(), nReportLen );
                     }
             }
             else

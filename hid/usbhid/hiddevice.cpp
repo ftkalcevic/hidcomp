@@ -898,7 +898,14 @@ void HIDDevice::WriteCallback(struct libusb_transfer *transfer)
 
 int HIDDevice::AsyncInterruptWrite( const byte *buf, int len )
 {
-    LOG_MSG( m_Logger, LogTypes::Debug, "Async Interrupt Write" );
+    if ( m_Logger.WillLog( LogTypes::Debug ) )
+    {
+	QString  s;
+	for ( int i = 0; i < len; i++ )
+	    s += QString("%1 ").arg(buf[i],2,16,QChar('0'));
+        LOG_MSG( m_Logger, LogTypes::Debug, QString("Async Interrupt Write %1 bytes: %2").arg(len).arg(s) );
+    }
+
     QVector<byte> msg(len);
     memcpy( msg.data(), buf, len );
 

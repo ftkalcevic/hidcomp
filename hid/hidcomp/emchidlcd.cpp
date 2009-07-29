@@ -4,6 +4,7 @@
 
 #define IN_PAGE_SELECT		    0
 #define OUT_PAGES		    1
+#define OUT_MAX_PAGE		    2
 
 
 
@@ -28,12 +29,17 @@ EMCHIDLCD::EMCHIDLCD(const QString &sPinPrefix, HIDItem *pCfgItem, HID_Collectio
     // Add page select pin
     QString  s = sPin;
     s += "page-select";
-    Pins.push_back( EMCPin(s, HAL_U32, HAL_IN) );
+    Pins.push_back( EMCPin(s, HAL_S32, HAL_IN) );
 
     // Add page count
     s = sPin;
     s += "pages";
-    Pins.push_back( EMCPin(s, HAL_U32, HAL_OUT) );
+    Pins.push_back( EMCPin(s, HAL_S32, HAL_OUT) );
+
+    // Add page count
+    s = sPin;
+    s += "max-page";
+    Pins.push_back( EMCPin(s, HAL_S32, HAL_OUT) );
 
     // Build working Page data - make user pins as we come across them
     QMap<QString,int> pin_list;
@@ -172,7 +178,8 @@ void EMCHIDLCD::Initialise(HIDDevice *pDevice)
 	m_Report[0] = m_pRowItem->ReportID;
 
     HIDLCD *pItem = dynamic_cast<HIDLCD *>(m_pCfgItem);
-    **(hal_u32_t **)(Pins[OUT_PAGES].pData) = pItem->pages().count();;
+    **(hal_s32_t **)(Pins[OUT_PAGES].pData) = pItem->pages().count();
+    **(hal_s32_t **)(Pins[OUT_MAX_PAGE].pData) = pItem->pages().count()-1;
 
     m_bInitialised = true;
 }
@@ -204,13 +211,13 @@ void EMCHIDLCD::Refresh( HIDDevice *pDevice )
 	m_Changes[i].Reset();
 
     // if the page changes, re load all.
-    unsigned int nPage = **(hal_u32_t **)(Pins[IN_PAGE_SELECT].pData);
+    int nPage = **(hal_s32_t **)(Pins[IN_PAGE_SELECT].pData);
     if ( nPage != m_nPage )
     {
 	LOG_MSG( m_Logger, LogTypes::Debug, QString("Page change from %1 to %2").arg(m_nPage).arg(nPage) );
 
 	m_nPage = nPage;
-	if ( m_nPage >= (unsigned int)pItem->pages().count() )
+	if ( nPage < 0 || m_nPage >= pItem->pages().count() )
 	    m_nPage = 0;
 	bRedrawAll = true;
 	ClearLCDBuffer();

@@ -48,7 +48,7 @@ private:
     unsigned int m_nFirsDataIndex;
     QList<QString> m_Display;
     QList<LineChanges> m_Changes;
-    unsigned int m_nPage;
+    int m_nPage;
     bool m_bInitialised;
     bool m_bFirst;
     unsigned int m_nRows;

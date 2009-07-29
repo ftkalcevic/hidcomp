@@ -26,7 +26,7 @@ bool EMCHIDLED::CheckOutputs()
 {
     bool bPinValue = **(hal_bit_t **)(Pins[OUT_BIT].pData) != 0;
 
-    if ( bPinValue && !m_bState || !bPinValue && m_bState )
+    if ( (bPinValue && !m_bState) || (!bPinValue && m_bState) )
     {
         m_bState = bPinValue;
         m_pDeviceItem->Value = m_bState ? 1 : 0;

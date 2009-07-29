@@ -162,7 +162,7 @@ bool EMCLCDItem::CheckDataChange( std::vector<EMCPin> &Pins, bool bForceUpdate )
 	    break;
 	}
 	default:
-	    assert( false );
+	    assert( m_eData || false );
 	    break;
     }
 
