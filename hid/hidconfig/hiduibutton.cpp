@@ -19,6 +19,10 @@ HIDUIButton::HIDUIButton(HIDDevice *pDev, HID_ReportItem_t *item, int index, QGr
     int nRow = layout->rowCount();
     CreateCommonUI( pDev, layout, nRow );
 
+    // default name will be button.n
+    if ( m_lblName->text().isEmpty() )
+	m_txtHalPin->setText( QString("Button.%1").arg(m_pItem->Attributes.Usage) );
+
     // Current value
     m_pLight = new QLabel();
     m_pLight->setPixmap( *m_pOff );
