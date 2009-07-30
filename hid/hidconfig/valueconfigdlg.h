@@ -51,6 +51,7 @@ private:
     void CreateUI();
     void UpdatePoints( int nNewPoints );
     void selectComboItem( QComboBox *pCombo, int nData );
+    void EnableCPoints( bool bUse );
 };
 
 #endif // VALUECONFIGDLG_H
