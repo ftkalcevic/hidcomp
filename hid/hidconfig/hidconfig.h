@@ -20,7 +20,6 @@ public:
 
 private slots:
     void onSelectionChangedHIDDevice();
-    void onExit();
     void onOpenFile();
     void onSaveFile();
     void onNew();
@@ -33,6 +32,8 @@ private:
     virtual void closeEvent(QCloseEvent *event);
     void openFile( QString sFile );
     void updateWindowTitle();
+    bool SaveChanges();
+    bool DoSave();
 
 private:
     std::vector<HIDUIBase *> m_HIDDisplayItems;

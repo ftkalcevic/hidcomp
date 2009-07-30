@@ -44,18 +44,6 @@ void hidconfig::onSelectionChangedHIDDevice()
 {
 }
 
-void hidconfig::closeEvent(QCloseEvent *)
-{
-    if ( m_pThread != NULL )
-    {
-	if ( m_pThread->isRunning() )
-	{
-	    m_pThread->stop();
-	    m_pThread->wait( HIDDataThread::LOOP_TIMEOUT * 2 );
-	}
-    }
-}
-
 void hidconfig::onAbout()
 {
     QMessageBox msg(this);
@@ -74,11 +62,23 @@ void hidconfig::onAbout()
     return;
 }
 
-void hidconfig::onExit()
+void hidconfig::closeEvent( QCloseEvent * event )
 {
-    m_pThread->stop();
-    m_pThread->wait( HIDDataThread::LOOP_TIMEOUT * 2 );
-    close();
+    if ( !SaveChanges() )
+    {
+	event->ignore();
+	return;
+    }
+
+    if ( m_pThread != NULL )
+    {
+	if ( m_pThread->isRunning() )
+	{
+	    m_pThread->stop();
+	    m_pThread->wait( HIDDataThread::LOOP_TIMEOUT * 2 );
+	}
+    }
+    event->accept();
 }
 
 void hidconfig::onOpenFile()
@@ -210,6 +210,11 @@ void hidconfig::openFile( QString sFile )
 
 void hidconfig::onSaveFile()
 {
+    DoSave();
+}
+
+bool hidconfig::DoSave()
+{
     if ( m_pHidCfg == NULL )
 	delete m_pHidCfg;
 
@@ -228,7 +233,7 @@ void hidconfig::onSaveFile()
 	std::vector<HIDDevice *> matches = hidDevices.SearchHIDDevices( m_pHidCfg->criteria->bPID, m_pHidCfg->criteria->nPID, m_pHidCfg->criteria->bVID, m_pHidCfg->criteria->nVID, m_pHidCfg->criteria->bManufacturer, m_pHidCfg->criteria->sManufacturer, m_pHidCfg->criteria->bProduct, m_pHidCfg->criteria->sProduct, m_pHidCfg->criteria->bSerialNumber, m_pHidCfg->criteria->sSerialNumber, m_pHidCfg->criteria->bSystemId, m_pHidCfg->criteria->sSystemId );
 	if ( matches.size() != 1 )
 	    if ( QMessageBox::warning( this, "Bad Criteria", QString("The criteria specified matches %1 HID devices.  If you continue to save the configuration, you will probably not be able to reload this file, or use it with HIDCOMP until the criteria matches exactly 1 device.").arg(matches.size()), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
-		return;
+		return false;
     }
 
     // Check for pins for duplicates or name too long
@@ -258,7 +263,7 @@ void hidconfig::onSaveFile()
 	QMessageBox msg( QMessageBox::Critical, "Pin Error", "There was a problem with the hal pin definitions.  See the detailed text for more informaton.", QMessageBox::NoButton, this, Qt::Dialog );
 	msg.setDetailedText( sInformativeText );
 	msg.exec();
-	return;
+	return false;
     }
 
     // Build output
@@ -280,7 +285,7 @@ void hidconfig::onSaveFile()
     {
 	QString sFilename = QFileDialog::getSaveFileName( this, "Save HID configuration", m_sLastFile, QString("HID config file (*.hid);;All files (*)") );
 	if ( sFilename.isEmpty() || sFilename.isNull() )
-	    break;
+	    return false;
 
 	QFileInfo fi(sFilename);
 	if ( fi.suffix().isEmpty() )
@@ -303,6 +308,7 @@ void hidconfig::onSaveFile()
         m_sLastFile = sFilename;
     }
     updateWindowTitle();
+    return true;
 }
 
 
@@ -510,6 +516,52 @@ void hidconfig::updateWindowTitle()
 	s += m_sLastFile;
     }
     setWindowTitle( s );
+}
+
+
+bool hidconfig::SaveChanges()
+{
+    if ( m_HIDDisplayItems.size() == 0 )    // nothing loaded
+	return true;
+
+    // Build output
+    HID *pHidCfg = new HID;
+    pHidCfg->criteria = new HIDDeviceCriteria;
+    m_pDeviceCriteria->getCriteria( pHidCfg->criteria );
+    for ( int i = 0; i < (int)m_HIDDisplayItems.size(); i++ )
+    {
+	HIDUIBase *pUIItem = m_HIDDisplayItems[i];
+	HID_ReportItem_t *pUSBItem = pUIItem->ReportItem();
+        HIDItem *pCfgItem = NULL;
+        if ( pUSBItem == NULL )
+	    pCfgItem = HIDItem::CreateItem( pUIItem->type(), pUIItem->Index(), 0, 0, pUIItem->enabled(), pUIItem->name() );
+        else
+	    pCfgItem = HIDItem::CreateItem( pUIItem->type(), pUIItem->Index(), pUSBItem->Attributes.UsagePage, pUSBItem->Attributes.Usage, pUIItem->enabled(), pUIItem->name() );
+
+	pUIItem->getConfig( pCfgItem );
+	pHidCfg->items.push_back( pCfgItem );
+    }
+
+    QString sCurrent = pHidCfg->MakeXML().toString();
+    QString sOld;
+
+    if ( m_pHidCfg != NULL )
+	sOld = m_pHidCfg->MakeXML().toString();
+
+    bool bChanges = (sCurrent != sOld);
+
+    if ( !bChanges )
+	return true;
+
+    int nRet = QMessageBox::warning( this, "Save changes", "Save Changes", QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
+    if ( nRet == QMessageBox::No )
+	return true;
+    else if ( nRet == QMessageBox::Cancel )
+	return false;
+    else if ( DoSave() )
+        return true;
+    else
+        return false;
 }
 
 

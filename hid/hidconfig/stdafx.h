@@ -54,6 +54,7 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QFileInfo>
+#include <QCloseEvent>
 
 #ifdef _WIN32
 #pragma warning(pop)
