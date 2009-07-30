@@ -401,12 +401,13 @@ HIDOutputValue::~HIDOutputValue()
 
 /****************************************************
 ****************************************************/
-LCDEntry::LCDEntry( ELCDDisplayData::ELCDDisplayData eData, int nIndex, int nRow, int nCol, const QString &sFormat, const QString &sTestData )
+LCDEntry::LCDEntry( ELCDDisplayData::ELCDDisplayData eData, int nIndex, int nRow, int nCol, const QString &sFormat, double dScale, const QString &sTestData )
 : m_eData( eData )
 , m_nIndex( nIndex )
 , m_nRow( nRow )
 , m_nCol( nCol )
 , m_sFormat( sFormat )
+, m_dScale( dScale )
 , m_sTestData( sTestData )
 {
 }
@@ -417,6 +418,7 @@ LCDEntry::LCDEntry( const LCDEntry &other )
 , m_nRow( other.m_nRow )
 , m_nCol( other.m_nCol )
 , m_sFormat( other.m_sFormat )
+, m_dScale( other.m_dScale )
 , m_sTestData( other.m_sTestData )
 {
 }
@@ -432,6 +434,7 @@ void LCDEntry::ReadXML( QDomElement pNode )
     m_nRow = XMLUtility::getAttribute( pNode, "Row", 0 );
     m_nCol = XMLUtility::getAttribute( pNode, "Col", 0 );
     m_sFormat = XMLUtility::getAttribute( pNode, "Format", "" );
+    m_dScale = XMLUtility::getAttribute( pNode, "Scale", (double)(1.0) );
     m_sTestData = XMLUtility::getAttribute( pNode, "TestData", "" );
 }
 
@@ -442,6 +445,7 @@ QDomElement LCDEntry::WriteXML( QDomElement pNode )
     XMLUtility::setAttribute( pNode, "Row", m_nRow );
     XMLUtility::setAttribute( pNode, "Col", m_nCol );
     XMLUtility::setAttribute( pNode, "Format", m_sFormat );
+    XMLUtility::setAttribute( pNode, "Scale", m_dScale );
     XMLUtility::setAttribute( pNode, "TestData", m_sTestData );
     return pNode;
 }
@@ -479,7 +483,7 @@ void LCDPage::ReadXML( QDomElement pNode )
     for ( uint p = 0; p < entries.length(); p++ )
     {
 	QDomElement entryElement = entries.item(p).toElement();
-        LCDEntry *entry = new LCDEntry(ELCDDisplayData::None,0,0,0,QString(),QString());
+        LCDEntry *entry = new LCDEntry(ELCDDisplayData::None,0,0,0,QString(),1.0,QString());
         entry->ReadXML( entryElement );
         m_data.append( entry );
     }

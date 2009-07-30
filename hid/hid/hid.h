@@ -161,7 +161,7 @@ public:
 class LCDEntry
 {
 public:
-    LCDEntry( ELCDDisplayData::ELCDDisplayData eData, int nIndex, int nRow, int nCol, const QString &sFormat, const QString &sTestData );
+    LCDEntry( ELCDDisplayData::ELCDDisplayData eData, int nIndex, int nRow, int nCol, const QString &sFormat, double dScale, const QString &sTestData );
     LCDEntry( const LCDEntry &that );
     ~LCDEntry();
     QDomElement WriteXML( QDomElement pNode );
@@ -177,6 +177,8 @@ public:
     void setCol(int n) { m_nCol = n; }
     QString format() { return m_sFormat; }
     void setFormat(QString s) { m_sFormat = s; }
+    double scale() { return m_dScale; }
+    void setScale(double d) { m_dScale = d; }
     QString testData() { return m_sTestData; }
     void setTestData(QString s) { m_sTestData = s; }
 
@@ -186,6 +188,7 @@ private:
     int m_nRow;
     int m_nCol;
     QString m_sFormat;      // Format String
+    double m_dScale;
     QString m_sTestData;
 };
 

@@ -138,8 +138,9 @@ static LCDData *FindData( ELCDDisplayData::ELCDDisplayData nId )
 #define DATA_ROW_COL        1
 #define DATA_VALUE_COL      2
 #define DATA_FORMAT_COL     3
-#define DATA_INDEX_COL      4
-#define DATA_TEST_VALUE_COL 5
+#define DATA_SCALE_COL      4
+#define DATA_INDEX_COL      5
+#define DATA_TEST_VALUE_COL 6
 #define DATA_COL            DATA_COL_COL
 
 #define PAGE_NO_COL         0
@@ -348,6 +349,7 @@ void LCDConfigDlg::InsertNewDataRow( LCDWorkingData *pData )
         ui.tableData->setItem(nRow, DATA_COL_COL, new QTableWidgetItem(QString::number(pData->entry.col()), QMetaType::UInt) );
         ui.tableData->setItem(nRow, DATA_ROW_COL, new QTableWidgetItem(QString::number(pData->entry.row()), QMetaType::UInt) );
         ui.tableData->setItem(nRow, DATA_FORMAT_COL, new QTableWidgetItem(pData->entry.format(),QMetaType::QString) );
+        ui.tableData->setItem(nRow, DATA_SCALE_COL, new QTableWidgetItem(QString::number(pData->entry.index()), QMetaType::Double) );
         ui.tableData->setItem(nRow, DATA_INDEX_COL, new QTableWidgetItem(QString::number(pData->entry.index()), QMetaType::UInt) );
         ui.tableData->setItem(nRow, DATA_TEST_VALUE_COL, new QTableWidgetItem(pData->entry.testData()) );
         
@@ -371,7 +373,7 @@ void LCDConfigDlg::onNewData()
 {
     if ( m_pCurrentPage == NULL )
         return;
-    LCDEntry temp( ELCDDisplayData::None, 0, 0, 0, "", "0" );
+    LCDEntry temp( ELCDDisplayData::None, 0, 0, 0, "", 1.0, "0" );
     LCDWorkingData *pData = new LCDWorkingData( temp );
     m_pCurrentPage->Entries.append( pData );
     InsertNewDataRow( pData );
@@ -473,6 +475,7 @@ void LCDConfigDlg::onItemChanged(QTableWidgetItem *item)
     pData->entry.setCol( ui.tableData->item(nRow, DATA_COL_COL)->text().toInt() );
     pData->entry.setRow( ui.tableData->item(nRow, DATA_ROW_COL)->text().toInt() );
     pData->entry.setFormat( ui.tableData->item(nRow, DATA_FORMAT_COL)->text() );
+    pData->entry.setScale( ui.tableData->item(nRow, DATA_SCALE_COL)->text().toDouble() );
     pData->entry.setIndex( ui.tableData->item(nRow, DATA_INDEX_COL)->text().toInt() );
     pData->entry.setTestData( ui.tableData->item(nRow, DATA_TEST_VALUE_COL)->text() );
     pData->entry.setData( (ELCDDisplayData::ELCDDisplayData)ui.tableData->item(nRow,DATA_VALUE_COL)->data(Qt::UserRole).toInt() );
@@ -512,6 +515,7 @@ void LCDConfigDlg::DisplaySample( int row )
     int nCol = ui.tableData->item( row, DATA_COL_COL)->text().toInt();
     ELCDDisplayData::ELCDDisplayData eData = (ELCDDisplayData::ELCDDisplayData )ui.tableData->item(row, DATA_VALUE_COL)->data(Qt::UserRole).toInt();
     QString sFormat = ui.tableData->item(row, DATA_FORMAT_COL)->text();
+    double dScale = ui.tableData->item(row, DATA_SCALE_COL)->text().toDouble();
     //int nIndex = ui.tableData->item( row, DATA_INDEX_COL)->text().toInt();
     QVariant vData = ui.tableData->item(row, DATA_TEST_VALUE_COL)->data(Qt::EditRole);
 
@@ -521,7 +525,7 @@ void LCDConfigDlg::DisplaySample( int row )
          ( !sFormat.isEmpty() ) &&
          ( vData.isValid() ) )
     {
-        QString sData = FormatData( eData, sFormat, vData );
+        QString sData = FormatData( eData, sFormat, dScale, vData );
 
         LCDWorkingData *pData = GetDataPointer( row );
         if ( pData->nLastCol != nCol || pData->nLastRow != nRow || sData != pData->sLastText )
@@ -552,13 +556,13 @@ void LCDConfigDlg::DrawCurrentPage( )
         LCDWorkingData *pData = GetDataPointer( i );
         pData->nLastCol = pData->entry.col();
         pData->nLastRow = pData->entry.row();
-        pData->sLastText = FormatData( pData->entry.data(), pData->entry.format(), QVariant( pData->entry.testData() ) );
+        pData->sLastText = FormatData( pData->entry.data(), pData->entry.format(), pData->entry.scale(), QVariant( pData->entry.testData() ) );
         if ( !pData->sLastText.isEmpty() )
             LCDWrite( pData->nLastRow, pData->nLastCol, pData->sLastText, false );
     }
 }
 
-QString LCDConfigDlg::FormatData( ELCDDisplayData::ELCDDisplayData entryType, const QString &sFormat, const QVariant &value )
+QString LCDConfigDlg::FormatData( ELCDDisplayData::ELCDDisplayData entryType, const QString &sFormat, double dScale, const QVariant &value )
 {
     LCDData *pData = FindData( entryType );
     EDisplayDataType dataType = UnknownType;
@@ -573,11 +577,11 @@ QString LCDConfigDlg::FormatData( ELCDDisplayData::ELCDDisplayData entryType, co
             break;
         case IntType: 
             if ( value.canConvert(QVariant::Int) )
-                return FormatData( &sFormat, value.toInt() );
+                return FormatData( &sFormat, (int)(value.toInt() * dScale) );
             break;
         case FloatType:
             if ( value.canConvert(QVariant::Double) )
-                return FormatData( &sFormat, value.toDouble() );
+                return FormatData( &sFormat, value.toDouble() * dScale );
             break;
         default:
         case UnknownType:
@@ -618,122 +622,6 @@ QString LCDConfigDlg::FormatData( const QString *sFormat, ... )
 	return LCDDataFormatter::vsnprintf( newFormatString.constData(), args );
 }
 
-//QString LCDConfigDlg::FormatData( const QString &sFormat, const QString &s )
-//{
-//    const int nBufLen = m_nColumns*2+1;
-//    char *buf = new char [nBufLen];
-//    QString sRet;
-//
-//    int nBytesStored = -1;
-//    buf[0] = 0;
-//    try
-//    {
-//        nBytesStored = _snprintf( buf, nBufLen, sFormat.toAscii().constData(), s.toAscii().constData() );
-//    }
-//    catch (...)
-//    {
-//    }
-//    if ( nBytesStored == nBufLen || nBytesStored < 0 )
-//        buf[nBufLen-1] = 0;
-//
-//    sRet.append( (const char *)buf );
-//    delete buf;
-//    return sRet;
-//}
-//
-//static bool Formatb( const QString &sFormat, QString &sNewFormat, QMap<int,QString> &map, QString &sDefault )
-//{
-//    // look for %[-][n][.][n]:[n,str:]b
-//    QRegExp exp( ":(\\d+,[^:]+:)+b" );
-//
-//    int pos = exp.indexIn(sFormat, 0);
-//    if (pos >= 0) 
-//    {
-//        QString sList = sFormat.mid( pos+1, exp.matchedLength() - 2 );
-//        sNewFormat = sFormat;
-//        sNewFormat.replace( pos, exp.matchedLength(), "s" );
-//
-//        // Extract the lists
-//        QRegExp exp2("(\\d+),([^:]+):");
-//        pos = 0;
-//        while ( pos >= 0 )
-//        {
-//            pos = exp2.indexIn(sList, pos);
-//            if ( pos >= 0 )
-//            {
-//                int nIndex = exp2.cap(1).toInt();
-//                sDefault = exp2.cap(2);
-//                map.insert( nIndex, sDefault );
-//                pos += exp2.matchedLength();
-//            }
-//        }
-//        return true;
-//    }
-//    else
-//        return false;
-//}
-//
-//QString LCDConfigDlg::FormatData( const QString &sFormat, int n )
-//{
-//    const int nBufLen = m_nColumns*2+1;
-//    char *buf = new char [nBufLen];
-//    QString sRet;
-//
-//    int nBytesStored = -1;
-//    buf[0] = 0;
-//    try
-//    {
-//        // when formatting an integer, check for our %b tag
-//        QString sNewFormat;
-//        QMap<int,QString> map;
-//        QString sDefault;
-//        if ( Formatb( sFormat, sNewFormat, map, sDefault ) )
-//        {
-//            QMap<int,QString>::iterator it = map.find( n );
-//            QString sVar;
-//            if ( it == map.end() )
-//                sVar = sDefault;
-//            else
-//                sVar = it.value();
-//
-//            nBytesStored = _snprintf( buf, nBufLen, sNewFormat.toAscii().constData(), sVar.toAscii().constData() );
-//        }
-//        else 
-//            nBytesStored = _snprintf( buf, nBufLen, sFormat.toAscii().constData(), n );
-//    }
-//    catch (...)
-//    {
-//    }
-//    if ( nBytesStored == nBufLen || nBytesStored < 0 )
-//        buf[nBufLen-1] = 0;
-//
-//    sRet.append( (const char *)buf );
-//    delete buf;
-//    return sRet;
-//}
-//
-//QString LCDConfigDlg::FormatData( const QString &sFormat, double d )
-//{
-//    const int nBufLen = m_nColumns*2+1;
-//    char *buf = new char [nBufLen];
-//    QString sRet;
-//
-//    int nBytesStored = -1;
-//    buf[0] = 0;
-//    try
-//    {
-//        nBytesStored = _snprintf( buf, nBufLen, sFormat.toAscii().constData(), d );
-//    }
-//    catch (...)
-//    {
-//    }
-//    if ( nBytesStored == nBufLen || nBytesStored < 0 )
-//        buf[nBufLen-1] = 0;
-//
-//    sRet.append( (const char *)buf );
-//    delete buf;
-//    return sRet;
-//}
 
 void LCDConfigDlg::setConfig( HIDLCD *lcdData )
 {
@@ -779,7 +667,7 @@ void LCDConfigDlg::getConfig( HIDLCD *lcdData )
         for ( int j = 0; j < pPage->Entries.count(); j++ )
         {
             LCDEntry *pEntry = &(pPage->Entries[j]->entry);
-            LCDEntry *pNewEntry = new LCDEntry( pEntry->data(), pEntry->index(), pEntry->row(), pEntry->col(), pEntry->format(), pEntry->testData() );
+            LCDEntry *pNewEntry = new LCDEntry( pEntry->data(), pEntry->index(), pEntry->row(), pEntry->col(), pEntry->format(), pEntry->scale(), pEntry->testData() );
 
             pNewPage->data().append( pNewEntry );
         }

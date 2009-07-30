@@ -98,11 +98,8 @@ private:
     LCDWorkingPage *m_pCurrentPage;
 
     void DisplaySample( int nRow );
-    QString FormatData( ELCDDisplayData::ELCDDisplayData data, const QString &sFormat, const QVariant &value );
+    QString FormatData( ELCDDisplayData::ELCDDisplayData data, const QString &sFormat, double dScale, const QVariant &value );
     QString FormatData( const QString *sFormat, ... );
-    //QString FormatData( const QString &sFormat, const QString &s );
-    //QString FormatData( const QString &sFormat, int n );
-    //QString FormatData( const QString &sFormat, double d );
     LCDWorkingData *GetDataPointer( int nRow );
     void SetDataPointer( int nRow, LCDWorkingData *pData );
     void ClearDataTable();

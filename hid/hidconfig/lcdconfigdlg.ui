@@ -190,6 +190,11 @@
            </column>
            <column>
             <property name="text">
+             <string>Scale</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
              <string>Index</string>
             </property>
            </column>
