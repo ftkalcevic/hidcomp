@@ -163,6 +163,8 @@ LCDConfigDlg::LCDConfigDlg(HIDLCD *pLCDData, HIDDevice *pDevice, HID_CollectionP
 
     ui.tableData->setColumnWidth(DATA_COL_COL, 40);
     ui.tableData->setColumnWidth(DATA_ROW_COL, 40);
+    ui.tableData->setColumnWidth(DATA_SCALE_COL, 40);
+    ui.tableData->setColumnWidth(DATA_INDEX_COL, 40);
     ui.tableData->setSelectionMode( QAbstractItemView::SingleSelection );
 
     ui.tablePages->setColumnWidth(PAGE_NO_COL, 50);
@@ -349,7 +351,7 @@ void LCDConfigDlg::InsertNewDataRow( LCDWorkingData *pData )
         ui.tableData->setItem(nRow, DATA_COL_COL, new QTableWidgetItem(QString::number(pData->entry.col()), QMetaType::UInt) );
         ui.tableData->setItem(nRow, DATA_ROW_COL, new QTableWidgetItem(QString::number(pData->entry.row()), QMetaType::UInt) );
         ui.tableData->setItem(nRow, DATA_FORMAT_COL, new QTableWidgetItem(pData->entry.format(),QMetaType::QString) );
-        ui.tableData->setItem(nRow, DATA_SCALE_COL, new QTableWidgetItem(QString::number(pData->entry.index()), QMetaType::Double) );
+        ui.tableData->setItem(nRow, DATA_SCALE_COL, new QTableWidgetItem(QString::number(pData->entry.scale()), QMetaType::Double) );
         ui.tableData->setItem(nRow, DATA_INDEX_COL, new QTableWidgetItem(QString::number(pData->entry.index()), QMetaType::UInt) );
         ui.tableData->setItem(nRow, DATA_TEST_VALUE_COL, new QTableWidgetItem(pData->entry.testData()) );
         
