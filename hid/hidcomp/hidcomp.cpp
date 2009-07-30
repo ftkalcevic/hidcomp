@@ -38,10 +38,13 @@ const unsigned int MODULE_NAME_LEN = HAL_NAME_LEN-20;	    // magic number from h
 #endif
 
 static bool bDone = false;
+static bool bRunning = false;
 
 static void quit(int /*sig*/) 
 {
     bDone = true;
+    if ( !bRunning )	// if we aren't running yet, we are still configuring, so terminate
+	exit(0);
 }
 
 
@@ -197,6 +200,7 @@ int main(int argc, char* argv[])
 	    nWaitTime = EMC_POLL_TIME_MS;
 
         // main loop
+	bRunning = true;
         while ( !bDone )
         {
             // I can't find a sleep in QT, so we wait on the first thread till timeout.
@@ -213,6 +217,7 @@ int main(int argc, char* argv[])
 	    if ( bHasLCD )
 		emcIFace.Update();
         }
+	bRunning = false;
 	LOG_MSG( m_Logger, LogTypes::Debug, "Terminating" );
 
         // Tell the threads to stop
@@ -246,6 +251,8 @@ int main(int argc, char* argv[])
 }
 
 /*
+reset device on exit(?)
+check initial output values on startup
 debug/error handling
 test
     - build complete thingy

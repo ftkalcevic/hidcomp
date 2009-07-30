@@ -401,6 +401,7 @@ int HIDParser::ParseReportData( const uint8_t* ReportData, uint16_t ReportSize, 
 		CurrReportItem->Attributes.UnitType = CurrStateTable.UnitType;
 		CurrReportItem->Attributes.UsagePage = CurrStateTable.UsagePage;
                 CurrReportItem->CollectionPath = CurrCollectionPath;
+                CurrReportItem->Value = 0;
                 if ( CurrCollectionPath != NULL )
                     CurrCollectionPath->ReportItems.push_back( CurrReportItem );
 

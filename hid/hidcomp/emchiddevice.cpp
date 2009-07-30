@@ -254,7 +254,7 @@ void EMCHIDDevice::run()
                 // Should be a bit smarter here.  
                 // Send all output reports
                 for ( std::map<byte, HID_ReportDetails_t>::iterator it = m_pDevice->ReportInfo().Reports.begin(); it != m_pDevice->ReportInfo().Reports.end(); it++ )
-                    if ( OutputReportChange[(it->second).ReportId] &&  (it->second).OutReportLength > 0 )
+                    if ( (bFirst || OutputReportChange[(it->second).ReportId]) &&  (it->second).OutReportLength > 0 )
                     {
                         byte nReportId = (it->second).ReportId;
 
