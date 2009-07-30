@@ -1,0 +1,93 @@
+.\" Copyright (c) 2009 Frank Tkalcevic
+.\"                (ftkalcevic AT franksworkshop DOT com DOT au)
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\"
+.\"
+.de URL
+\\$2 \(laURL: \\$1 \(ra\\$3
+..
+.if \n[.g] .mso www.tmac
+.TH HIDCOMP "9"  "EMC Documentation" 
+.SH NAME
+hidcomp \- USB HID device component interface for EMC.
+.SH SYNOPSIS
+.B hidcomp 
+[\fI-ini inifile\fR] [\fI-d\fR] [\fI-n name\R] configfile ...
+.SH DESCRIPTION
+\fBhidcomp\fR is yet another way to interface USB HID devices to EMC.  A USB HID device (Human Interface Device)
+may be a joystick, a gamepad, a multi-media device or a custom built USB pendant device.  
+As long as the device implements the interface according to the USB HID specification, it should work.
+.B hidcomp
+has been tested with Logitech game pads, Saitek joysticks, the Contour Design Shuttle Pro, Griffin PowerMate, and 
+custom pendants built using the Generic HID tools (See 
+.URL http://www.franksworkshop.com.au
+).
+
+.B hidcomp
+supports multiple HID devices.  Each device is defined by it's configuration file, created with the \fBhidconfig\fR(1) application.
+Each configuration file is listed on the command line.  Device instances are named hidcomp.0, hidcomp.1, etc according to the order they
+appear on the command line.  The pins and parameters are dependant on the configuration.  See \fBhidconfig\fR(1) for details.
+.SH OPTIONS
+.TP
+\fB-ini inifile\fR
+The ini file that is used to start emc.  This defaults to emc.ini.  If it is not emc.ini, or in a location that \fBhidcomp\fR can't find it, it must be sepecified.
+.TP
+\fB-d\fR
+Turn on debugging.  Debugging sends volumous amounts of data to stderr.  In order to catch the debug, start emc on the command line and 
+redirect stderr to a file.  For example...
+
+.RS
+/usr/bin/emc mill.ini 2> logfile
+.RE
+.TP
+\fB-n name\fR
+Change the name of the component.  The default name is \fBhidcomp\fR.
+.SH "USAGE"
+When run, \fBhidcomp\fR will export a large number of pins based on the definition in the configuration file.  These can then be used in the EMC HAL file to control 
+parts of the EMC machine, usually via \fBhalui\fR(1).
+.SH "EXPORTED PINS"
+The exported pins are defined in the configuration file created by \fBhidconfig\fR.
+.SH "PERMISSIONS"
+USB devices, by default, are owned by root and may be claimed by a device driver.  This can be a problem when running \fBhidconfig\fR(1) which needs to be able to query the 
+USB devices.  The fix for this is to update the \fBudev\fR rules.  This is described well in the \fBhal_input\fR(1) man page.
+.SH "EXAMPLES"
+.B hidcomp 
+is a user space component so it must be loaded into emc using loadusr...
+
+.RS 
+loadusr -W hidcomp -ini lathe.ini pendant.hid
+.RE
+
+.B hidcomp
+can take a while to start, so it is recommended to use the \fI-W\fR option of \fBloadusr\fR to wait for the component to start.
+.SH "SEE ALSO"
+\fBhidconfig\fR(1)
+.SH AUTHOR
+Frank Tkalcevic <ftkalcevic at franksworkshop dot com dot au>
+.SH REPORTING BUGS
+Report bugs to the author.
+.SH COPYRIGHT
+Copyright \(co 2009 Frank Tkalcevic
+.br
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
