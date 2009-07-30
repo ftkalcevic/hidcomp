@@ -11,6 +11,7 @@ public:
     int m_nRow;
     int m_nCol;
     QByteArray m_sFormat;			// Format String - use QByteArray because we work with char *
+    double m_dScale;
     QString m_sLookupDefault;			// Default if nothing in lookup
     QMap<int,QString> m_Lookup;			// look up table to %b enum format
     int m_nPinIndex;				// for user types, the index to the input pin in the pin structure

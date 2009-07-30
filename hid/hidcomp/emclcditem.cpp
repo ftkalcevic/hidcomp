@@ -180,21 +180,21 @@ QString EMCLCDItem::FormatData( int n )
 {
     if ( m_Lookup.count() > 0 )
 	return FormatEnum( n );
-    return LCDDataFormatter::snprintf( m_sFormat.constData(), n );
+    return LCDDataFormatter::snprintf( m_sFormat.constData(), (int)((double)n*m_dScale) );
 }
 
 QString EMCLCDItem::FormatData( unsigned int n )
 {
     if ( m_Lookup.count() > 0 )
 	return FormatEnum( (int)n );
-    return LCDDataFormatter::snprintf( m_sFormat.constData(), n );
+    return LCDDataFormatter::snprintf( m_sFormat.constData(), (unsigned int)((double)n*m_dScale) );
 }
 
 QString EMCLCDItem::FormatData( double d )
 {
     if ( m_Lookup.count() > 0 )
 	return FormatEnum( (int)d );
-    return LCDDataFormatter::snprintf( m_sFormat.constData(), d );
+    return LCDDataFormatter::snprintf( m_sFormat.constData(), d*m_dScale );
 }
 
 QString EMCLCDItem::FormatData( bool b )

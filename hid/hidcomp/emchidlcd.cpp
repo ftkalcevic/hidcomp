@@ -58,6 +58,7 @@ EMCHIDLCD::EMCHIDLCD(const QString &sPinPrefix, HIDItem *pCfgItem, HID_Collectio
 	    pEntry->m_nRow = pLCDEntry->row();
 	    pEntry->m_nCol = pLCDEntry->col();
 	    pEntry->ProcessFormatString( pLCDEntry );
+	    pEntry->m_dScale = pLCDEntry->scale();
 	    pEntry->Init();
 
 	    // build user pins - duplicates can appear but that means pins are shared
