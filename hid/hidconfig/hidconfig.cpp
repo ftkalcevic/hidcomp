@@ -517,7 +517,7 @@ void hidconfig::updateWindowTitle()
 /*
 TODO
 - default button bad on lcd config dialog
-- test
+- test more
 - timer/watchdog, is there anything to do
 */
 
