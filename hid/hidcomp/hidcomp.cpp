@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
 
     Logger m_Logger( app.applicationName(), "main" );
 
-    fprintf( stderr, "hidcomp %d.%d\n", VERSION_MAJOR, VERSION_MINOR );
+    LOG_MSG( m_Logger, LogTypes::Info, QString( "hidcomp %1.%1").arg(VERSION_MAJOR).arg(VERSION_MINOR) );
 
     int retval = 0;
     bDone = false;
