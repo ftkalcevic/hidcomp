@@ -1,5 +1,7 @@
-dh_testdir
-dh_testroot
+#!/bin/bash
+
+dh_testdir || exit
+dh_testroot || exit
 dh_clean 
 dh_installdirs
 
