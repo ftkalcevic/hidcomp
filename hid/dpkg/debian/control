@@ -1,15 +1,14 @@
-Package: hidcomp
 Source: hidcomp
-Version: 1.1
 Section: misc
 Priority: extra
+Maintainer: Frank Tkalcevic <ftkalcevic@franksworkshop.com.au>
+
+Package: hidcomp
 Architecture: i386
-Depends:
+Depends: ${shlibs:Depends}
 Recommends: 
 Enhances: emc2
 Suggests: 
-Installed-Size: 200000
-Maintainer: Frank Tkalcevic <ftkalcevic@franksworkshop.com.au>
 Conflicts:
 Replaces: 
 Provides: 
@@ -17,4 +16,3 @@ Description: USB HID (Human Interface Device) interface component for EMC
  USB HID (Human Interface Device) interface component for EMC.  Supports 
  standard axis and buttons.  Also supports encoder inputs, LED outputs and 
  LCD outputs.
-

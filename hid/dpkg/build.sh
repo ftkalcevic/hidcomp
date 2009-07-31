@@ -1,34 +1,31 @@
-rm -rf debian
-mkdir debian
-mkdir debian/DEBIAN
-mkdir debian/usr
-mkdir debian/usr/bin
-mkdir debian/usr/share
-mkdir debian/usr/share/doc
-mkdir debian/usr/share/doc/hidcomp
-mkdir debian/usr/share/man
-mkdir debian/usr/share/man/man1
-mkdir debian/usr/share/man/man9
-#ln -s DEBIAN/control debian/control
+dh_testdir
+dh_testroot
+dh_clean 
+dh_installdirs
 
-cp ../hidcomp/release/hidcomp debian/usr/bin
-cp ../hidconfig/release/hidconfig debian/usr/bin
-#dpkg-shlibdeps --ignore-missing-info  debian/usr/bin/hidconfig debian/usr/bin/hidcomp
+mkdir -p debian/tmp/usr/bin
+mkdir -p debian/tmp/usr/share/doc/hidcomp
+mkdir -p debian/tmp/usr/share/man/man1
+mkdir -p debian/tmp/usr/share/man/man9
 
-strip debian/usr/bin/hidcomp
-strip debian/usr/bin/hidconfig
+cp ../hidcomp/release/hidcomp debian/tmp/usr/bin
+cp ../hidconfig/release/hidconfig debian/tmp/usr/bin
+chrpath -d debian/tmp/usr/bin/hidcomp
+chrpath -d debian/tmp/usr/bin/hidconfig
+cp ../hidcomp/hidcomp.9 debian/tmp/usr/share/man/man9/hidcomp.9
+cp ../hidconfig/hidconfig.1 debian/tmp/usr/share/man/man1/hidconfig.1
+cp debian/copyright debian/tmp/usr/share/doc/hidcomp/copyright
 
-cp src/hidcomp.9 debian/usr/share/man/man9/hidcomp.9
-gzip -9 -f debian/usr/share/man/man9/hidcomp.9
+dh_installchangelogs
 
-cp src/hidconfig.1 debian/usr/share/man/man1/hidconfig.1
-gzip -9 -f debian/usr/share/man/man1/hidconfig.1
+dh_strip
+dh_compress
+dh_fixperms
+dh_installdeb
+dh_makeshlibs
+dh_shlibdeps
+dh_gencontrol
+dh_md5sums
+dh_builddeb
 
-cp src/copyright debian/usr/share/doc/hidcomp/copyright
-cp src/changelog debian/usr/share/doc/hidcomp/changelog
-gzip -9 debian/usr/share/doc/hidcomp/changelog
-
-cp src/control debian/DEBIAN/control
-
-fakeroot dpkg-deb --build debian .
 

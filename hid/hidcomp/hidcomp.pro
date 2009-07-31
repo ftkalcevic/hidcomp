@@ -10,6 +10,7 @@ DESTDIR=release
 }
 
 QT += xml xmlpatterns
+QT -= gui
 
 DEFINES += QT_XML_LIB
 

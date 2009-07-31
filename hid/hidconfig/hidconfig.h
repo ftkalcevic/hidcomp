@@ -43,6 +43,7 @@ private slots:
     void onNewData( QVector<byte> data );
     void outputChanged( HID_ReportItem_t *);
     void onAbout();
+    void onExit();
 
 private:
     virtual void closeEvent(QCloseEvent *event);

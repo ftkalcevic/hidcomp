@@ -78,6 +78,11 @@ void hidconfig::onAbout()
     return;
 }
 
+void hidconfig::onExit()
+{
+    close();
+}
+
 void hidconfig::closeEvent( QCloseEvent * event )
 {
     if ( !SaveChanges() )
