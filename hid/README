@@ -1,0 +1,11 @@
+hidcomp/hidconfig are built against Qt4.5.1 using a static library.
+To build, first run...
+
+	qmake
+
+then 
+
+	make
+
+the binaries are in hid/hidcomp/release/hidcomp and 
+hid/hidconfig/release/hidconfig.  There is also a debug build.
