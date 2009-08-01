@@ -321,12 +321,12 @@ bool hidconfig::DoSave()
 	}
 	else
 	{
+	    m_sLastFile = sFilename;
+
 	    file.write( doc.toString().toLatin1() );
 	    file.close();
 	    break;
 	}
-
-        m_sLastFile = sFilename;
     }
     updateWindowTitle();
     return true;

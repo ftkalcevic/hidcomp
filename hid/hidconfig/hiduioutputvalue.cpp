@@ -47,9 +47,11 @@ void HIDUIOutputValue::onValueChanged( int value )
 }
 
 
-QList<QString> HIDUIOutputValue::PinNames( const QString & )
+QList<QString> HIDUIOutputValue::PinNames( const QString &sPrefix )
 {
     QList<QString> list;
+    list.push_back( sPrefix + "." + name() + "." + "ivalue" );
+
     return list;
 }
 

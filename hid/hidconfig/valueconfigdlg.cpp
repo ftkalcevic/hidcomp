@@ -66,8 +66,9 @@ ValueConfigDlg::ValueConfigDlg( HID_ReportItem_t *item, QWidget *parent, bool bU
     m_nWhichPoints = POINTS_CUSTOM;
     m_Points[POINTS_CUSTOM] = responseCurve;
     ui.cpointView->setPoints( m_Points[m_nWhichPoints] );
-    ui.cpointView->setDeviceMin( item->Attributes.LogicalMinimum );
-    ui.cpointView->setDeviceMax( item->Attributes.LogicalMaximum );
+    ui.cpointView->setDeviceMin( nLogicalMinOverride );
+    ui.cpointView->setDeviceMax( nLogicalMaxOverride );
+    ui.chkReverse->setChecked( bReverseAxis );
     ui.cpointView->setReverse( bReverseAxis );
 
     ui.chkUseCPoints->setChecked( bUseResponseCurve );

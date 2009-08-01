@@ -163,6 +163,8 @@ QList<QString> HIDUILCD::PinNames( const QString &sPrefix )
 {
     QList<QString> list;
     list.push_back( sPrefix + "." + name() + "." + "page-select" );
+    list.push_back( sPrefix + "." + name() + "." + "pages" );
+    list.push_back( sPrefix + "." + name() + "." + "max-page" );
 
     for ( int p = 0; p < m_lcdData.pages().count(); p++ )
 	for ( int e = 0; e < m_lcdData.pages()[p]->data().count(); e++ )
