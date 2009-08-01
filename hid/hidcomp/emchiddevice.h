@@ -12,6 +12,7 @@
 #include "emchidvalue.h"
 #include "emchidhatswitch.h"
 #include "emchidled.h"
+#include "emchidoutput.h"
 #include "emchidlcd.h"
 #include "emchiddevice.h"
 

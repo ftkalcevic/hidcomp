@@ -11,6 +11,7 @@ HEADERS += \
 	emchiditem.h \
 	emchidlcd.h \
 	emchidled.h \
+	emchidoutput.h \
 	emchidvalue.h \
 	emcinterface.h \
 	emclcditem.h \
@@ -25,6 +26,7 @@ SOURCES += \
 	emchiditem.cpp \
 	emchidlcd.cpp \
 	emchidled.cpp \
+	emchidoutput.cpp \
 	emchidvalue.cpp \
 	emcinterface.cpp \
 	emclcditem.cpp \

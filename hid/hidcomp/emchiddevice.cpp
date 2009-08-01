@@ -88,7 +88,7 @@ EMCHIDDevice::EMCHIDDevice( const QString sModuleName, const QString sPinPrefix,
 		    case HIDItemType::Hatswitch:    obj = new EMCHIDHatSwitch( sPinPrefix,pCfgItem, pDeviceItem ); break;
 		    case HIDItemType::LED:	    obj = new EMCHIDLED( sPinPrefix, pCfgItem, pDeviceItem ); break;
 		    case HIDItemType::LCD:	    break;
-		    case HIDItemType::OutputValue:  break;
+		    case HIDItemType::OutputValue:  obj = new EMCHIDOutput( sPinPrefix, pCfgItem, pDeviceItem ); break;
 		}
 	    }
         }
