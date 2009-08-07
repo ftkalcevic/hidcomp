@@ -1,4 +1,4 @@
-hidcomop (1.1) release; urgency=low
+hidcomp (1.1) release; urgency=low
 
   * Remove the need to add lines to the emc.nml file when the USB HID device
     doesn't use an LCD device (and hence the need to interface to the EMC
