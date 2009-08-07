@@ -1,3 +1,11 @@
+hidcomop (1.1) release; urgency=low
+
+  * Remove the need to add lines to the emc.nml file when the USB HID device
+    doesn't use an LCD device (and hence the need to interface to the EMC
+    messaging
+
+ -- Frank Tkalcevic <ftkalcevic@franksworkshop.com.au>  Fri, 07 Aug 2009 16:54:35 +1000
+
 hidcomp (1.0) release; urgency=low
 
   * Made Debian package.
