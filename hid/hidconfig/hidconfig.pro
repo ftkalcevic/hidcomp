@@ -23,9 +23,14 @@ INCLUDEPATH +=  ./generatedfiles/release
 win32:INCLUDEPATH += ../libusb-win32-device-bin-0.1.12.1/include
 unix:INCLUDEPATH += ../libusb-1.0.2/libusb ../utility ../usbhid ../hid ../include
 
-unix:LIBS += -L../hid/debug -lhid -L../usbhid/debug -lusbhid -L../utility/debug -lutility -L../libusb-1.0.2/libusb/.libs -l:libusb-1.0.a 
+CONFIG(debug,debug|release) {    
+    LIBS += -L../hid/debug -lhid -L../usbhid/debug -lusbhid -L../utility/debug -lutility -L../libusb-1.0.2/libusb/.libs -l:libusb-1.0.a 
+} else {    
+    LIBS += -L../hid/release -lhid -L../usbhid/release -lusbhid -L../utility/release -lutility -L../libusb-1.0.2/libusb/.libs -l:libusb-1.0.a 
+}
 
-PRE_TARGETDEPS = ../hid/debug/libhid.a ../usbhid/debug/libusbhid.a ../utility/debug/libutility.a
+debug:PRE_TARGETDEPS = ../hid/debug/libhid.a ../usbhid/debug/libusbhid.a ../utility/debug/libutility.a 
+release:PRE_TARGETDEPS = ../hid/release/libhid.a ../usbhid/release/libusbhid.a ../utility/release/libutility.a 
 
 PRECOMPILED_HEADER = stdafx.h
 DEFINES += USING_PCH
