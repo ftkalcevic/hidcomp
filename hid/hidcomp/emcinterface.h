@@ -44,6 +44,6 @@ private:
     QString m_sLastMsg;
 };
 
-extern EmcInterface emcIFace;
+extern EmcInterface *emcIFace;
 
 #endif

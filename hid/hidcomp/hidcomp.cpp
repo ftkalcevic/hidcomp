@@ -29,7 +29,7 @@
 #include "emcinterface.h"
 
 
-EmcInterface emcIFace;
+EmcInterface *emcIFace;
 
 
 const int MAIN_THREAD_SLEEP_MS = 100;	// 100ms
@@ -204,8 +204,12 @@ int main(int argc, char* argv[])
 	// ready
 	hal_ready( hal_comp_id );
 
-	if ( !emcIFace.Initialise( argc, argv ) )
-	    throw;
+	if ( bHasLCD )
+	{
+	    emcIFace = new EmcInterface();
+	    if ( !emcIFace->Initialise( argc, argv ) )
+		throw;
+	}
 
         // Each device does its own work in a background thread.  Just kick them off.
         for ( unsigned int i = 0; i < devices.size(); i++ )
@@ -231,8 +235,8 @@ int main(int argc, char* argv[])
                     bDone = true;
                 }
 
-	    if ( bHasLCD )
-		emcIFace.Update();
+	    if ( bHasLCD && emcIFace != NULL )
+		emcIFace->Update();
         }
 	bRunning = false;
 	LOG_MSG( m_Logger, LogTypes::Debug, "Terminating" );
@@ -254,7 +258,12 @@ int main(int argc, char* argv[])
 	    delete devices[i];
 	devices.clear();
 
-	emcIFace.Close();
+	if ( emcIFace != NULL )
+	{
+	    emcIFace->Close();
+	    delete emcIFace;
+	    emcIFace = NULL;
+	}
 
 	LOG_MSG( m_Logger, LogTypes::Debug, "Clean up done" );
     }

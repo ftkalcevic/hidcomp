@@ -52,7 +52,7 @@ bool EMCLCDItem::CheckDataChange( std::vector<EMCPin> &Pins, bool bForceUpdate )
 	case ELCDDisplayData::TaskFilePath:
 	case ELCDDisplayData::TaskCommand:
 	{
-	    QString sValue = emcIFace.GetStringData( m_eData, m_nIndex );
+	    QString sValue = emcIFace->GetStringData( m_eData, m_nIndex );
 	    if ( bForceUpdate || sValue != m_sLastString )
 	    {
 		m_sLastString = sValue;
@@ -105,7 +105,7 @@ bool EMCLCDItem::CheckDataChange( std::vector<EMCPin> &Pins, bool bForceUpdate )
 	case ELCDDisplayData::IOLubeOn:
 	case ELCDDisplayData::IOLubeLevel:
 	{
-	    int n = emcIFace.GetIntData( m_eData, m_nIndex );
+	    int n = emcIFace->GetIntData( m_eData, m_nIndex );
 	    if ( bForceUpdate || n != m_nLastS32 )
 	    {
 		m_nLastS32 = n;
@@ -128,7 +128,7 @@ bool EMCLCDItem::CheckDataChange( std::vector<EMCPin> &Pins, bool bForceUpdate )
 	case ELCDDisplayData::MotionAxisInput:
 	case ELCDDisplayData::MotionSpindleSpeed:
 	{
-	    double d = emcIFace.GetFloatData( m_eData, m_nIndex );
+	    double d = emcIFace->GetFloatData( m_eData, m_nIndex );
 	    if ( bForceUpdate || d != m_dLastFloat )
 	    {
 		m_dLastFloat = d;
