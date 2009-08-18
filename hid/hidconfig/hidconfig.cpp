@@ -501,9 +501,17 @@ void hidconfig::outputChanged( HID_ReportItem_t *pItem )
 	ptr++;
 	len--;
     }
+
     // Make the report
     HIDParser parser;
     parser.MakeOutputReport( ptr, (byte)len, m_device->ReportInfo().ReportItems, nReportId );
+    if ( m_Logger.WillLog( LogTypes::Debug ) )
+    {
+        QString sDebug = QString("Sending %1 bytes ").arg(nBufferLen);
+	for ( int i = 0; i < nBufferLen; i++ )
+	    sDebug += QString(" %1").arg(buffer[i], 2, 16, QChar('0'));
+        LOG_MSG( m_Logger, LogTypes::Debug, sDebug.toLatin1().constData() );
+    }
 
     // Send the report
     int nRet = m_device->InterruptWrite( buffer, nBufferLen, USB_TIMEOUT );
