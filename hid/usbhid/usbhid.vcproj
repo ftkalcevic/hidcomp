@@ -198,10 +198,6 @@
 		<Filter
 			Name="GeneratedFiles"
 			>
-			<File
-				RelativePath=".\generatedfiles\qrc_usbhid.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
