@@ -33,6 +33,7 @@ HIDDevices::HIDDevices()
 
 HIDDevices::~HIDDevices(void)
 {
+    // todo
 }
 
 bool HIDDevices::Open( int nDebugLevel )

@@ -168,10 +168,6 @@
 				RelativePath=".\hidtypes.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\usages.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -196,10 +192,6 @@
 			</File>
 			<File
 				RelativePath=".\hidtypes.h"
-				>
-			</File>
-			<File
-				RelativePath=".\usages.h"
 				>
 			</File>
 		</Filter>
