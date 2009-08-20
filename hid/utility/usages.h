@@ -27,16 +27,22 @@
 
 class Usage
 {
-public:
+    friend class Usages;
+
     QString m_sName;
     unsigned short m_nId;
 
     Usage(QString sName, unsigned short nId);
+public:
+    const QString &name() const { return m_sName; }
+    unsigned short id() const { return m_nId; }
 };
 
 class UsagePage
 {
-public:
+    friend class Usages;
+
+private:
     QString m_sName;
     unsigned short m_nId;
     std::vector<Usage*> m_Usages;
@@ -44,7 +50,14 @@ public:
 
     UsagePage(QString sName, unsigned short nId);
     void AddUsage( Usage *u );
-    QString GetUsageString(unsigned short nUsage);
+
+public:
+    const std::vector<Usage*> usages() const { return m_Usages; }
+    QString GetUsageString(unsigned short nUsage) const;
+    const Usage * GetUsage(unsigned short nUsage) const;
+
+    unsigned short id() const { return m_nId; }
+    const QString &name() const { return m_sName; }
 };
 
 
@@ -56,6 +69,8 @@ public:
     ~Usages(void);
 
     static void GetUsages( unsigned short nPage, unsigned short nUsage, QString &sPage, QString &sUsage );
+    static const std::vector<UsagePage*> &GetUsagesPages() { LoadUsages(); return m_UsagePages; }
+    static const UsagePage *GetUsagePage(unsigned short nPage);
 
 private:
     static std::vector<UsagePage*> m_UsagePages;
@@ -160,6 +175,6 @@ private:
 #define USAGEPAGE_MAGNETIC_STRIPE_READING_DEVICES   0x8E
 #define USAGEPAGE_CAMERA_CONTROL_PAGE               0x90
 #define USAGEPAGE_ARCADE_PAGE                       0x91
-#define USAGEPAGE_VENDOR_DEFINED                    0xFFFF
+#define USAGEPAGE_VENDOR_DEFINED                    0xFF00
 
 #endif
