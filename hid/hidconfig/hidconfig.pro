@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = hidconfig
-CONFIG += qt
+CONFIG += qt precompile_header
 include(../build.pro)
 
 CONFIG(debug,debug|release) {
@@ -9,9 +9,10 @@ DESTDIR=debug
 DESTDIR=release
 }
 
-QT += xml xmlpatterns
+QT += xml 
 
-DEFINES += QT_XML_LIB
+DEFINES += QT_XML_LIB USING_PCH
+PRECOMPILED_HEADER=stdafx.h
 
 INCLUDEPATH +=  ./generatedfiles
 CONFIG(debug,debug|release) {
@@ -31,10 +32,6 @@ CONFIG(debug,debug|release) {
 
 debug:PRE_TARGETDEPS = ../hid/debug/libhid.a ../usbhid/debug/libusbhid.a ../utility/debug/libutility.a 
 release:PRE_TARGETDEPS = ../hid/release/libhid.a ../usbhid/release/libusbhid.a ../utility/release/libutility.a 
-
-PRECOMPILED_HEADER = stdafx.h
-DEFINES += USING_PCH
-QMAKE_CXXFLAGS += -include stdafx.h
 
 DEPENDPATH += .
 CONFIG(debug,debug|release) {

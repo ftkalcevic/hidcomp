@@ -3,8 +3,7 @@ HEADERS += hiddevice.h \
 	hiddevices.h \
 	hiddevicethread.h \
 	hidparser.h \
-	hidtypes.h \
-	types.h
+	hidtypes.h
 
 #Source files
 SOURCES += hiddevice.cpp \

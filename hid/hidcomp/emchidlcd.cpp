@@ -140,6 +140,9 @@ EMCHIDLCD::EMCHIDLCD(const QString &sPinPrefix, HIDItem *pCfgItem, HID_Collectio
 	}
 	m_Pages.append( pPage );
     }
+
+    foreach (LCDFont *pFont, pItem->fonts() )
+    	m_fonts.push_back( new LCDFont(*pFont) );
 }
 
 EMCHIDLCD::~EMCHIDLCD(void)
@@ -154,6 +157,8 @@ void EMCHIDLCD::Initialise(HIDDevice *pDevice)
 {
     // Query the device for rows and columns
     HIDQueryDisplayParmeters( pDevice );
+
+    LCDSendUserFonts(pDevice, m_fonts);
 
     // Force timer start to one minute ago
     m_timer = m_timer.addSecs(-60);
@@ -175,7 +180,7 @@ void EMCHIDLCD::Initialise(HIDDevice *pDevice)
 	return;
     }
     m_pCharReportCollection = m_pColItem->CollectionPath;
-    m_nCharReportID = m_pCharReportCollection->ReportID;
+    m_nCharReportID = m_pColItem->ReportID;
 
     // Find the index to the first data item
     m_nFirsDataIndex = 0;
@@ -267,7 +272,7 @@ void EMCHIDLCD::Refresh( HIDDevice *pDevice )
     if ( bRedrawAll )
     {
 	for ( unsigned int i = 0; i < m_nRows; i++ )
-	    OutputHIDLCD( pDevice, i, 0, m_Display[i], 0, m_nColumns, i == 0 ? true : false );
+	    OutputHIDLCD( pDevice, i, 0, m_Display[i], 0, m_nColumns );
     } 
     else if ( bUpdate )
     {
@@ -275,7 +280,7 @@ void EMCHIDLCD::Refresh( HIDDevice *pDevice )
 	{
 	    LineChanges &changes = m_Changes[i];
 	    if ( changes.Changed() )
-		OutputHIDLCD( pDevice, i, changes.Low(), m_Display[i], changes.Low(), changes.High() - changes.Low() + 1, false );
+		OutputHIDLCD( pDevice, i, changes.Low(), m_Display[i], changes.Low(), changes.High() - changes.Low() + 1);
 	}
     }
     m_bFirst = false;
@@ -320,7 +325,7 @@ void EMCHIDLCD::ClearLCDBuffer()
 }
 
 
-void EMCHIDLCD::OutputHIDLCD( HIDDevice *pDevice, unsigned int nRow, unsigned int nCol, const QString &sText, unsigned int nPos, unsigned int nLen, bool bClearDisplay )
+void EMCHIDLCD::OutputHIDLCD( HIDDevice *pDevice, unsigned int nRow, unsigned int nCol, const QString &sText, unsigned int nPos, unsigned int nLen )
 {
     if ( m_pRowItem == NULL || m_pColItem == NULL )
 	return;
@@ -330,7 +335,7 @@ void EMCHIDLCD::OutputHIDLCD( HIDDevice *pDevice, unsigned int nRow, unsigned in
     m_pColItem->Value = nCol;
 
     // copy the changed text to the report
-    for ( unsigned int i = 0; i < nLen && m_nFirsDataIndex + i < m_pCharReportCollection->ReportItems.count(); i++ )
+    for ( unsigned int i = 0; i < nLen && m_nFirsDataIndex + i < m_pCharReportCollection->ReportItems.size(); i++ )
 	m_pCharReportCollection->ReportItems[m_nFirsDataIndex + i]->Value = sText[nPos + i].toAscii();
 
     // null terminate the string if the buffer isn't full
@@ -411,10 +416,10 @@ void EMCHIDLCD::LCDSendUserFonts(HIDDevice *pDevice, QList<LCDFont*> &fonts)
 	for ( int i = 0; i < pFont->data().count() && nIndex + i < pCollection->ReportItems.size(); i++ )
 	    pCollection->ReportItems[nIndex + i]->Value = pFont->data()[i];
 
-	HID_ReportDetails_t pReportDetails = m_pDevice->ReportInfo().Reports[nReportId];
+	HID_ReportDetails_t pReportDetails = pDevice->ReportInfo().Reports[nReportId];
 	int nBufLen = pReportDetails.OutReportLength;
 	int nOffset = 0;
-	if ( m_pDevice->ReportInfo().Reports.size() > 1 )
+	if ( pDevice->ReportInfo().Reports.size() > 1 )
 	    nOffset=1;
 
 	QVarLengthArray<byte> buf;
@@ -423,10 +428,10 @@ void EMCHIDLCD::LCDSendUserFonts(HIDDevice *pDevice, QList<LCDFont*> &fonts)
 	    buf[0] = nReportId;
 
 	HIDParser parser;
-	parser.MakeOutputReport( buf.data() + nOffset, (byte)nBufLen, m_pDevice->ReportInfo().ReportItems, nReportId );
+	parser.MakeOutputReport( buf.data() + nOffset, (byte)nBufLen, pDevice->ReportInfo().ReportItems, nReportId );
 
 	// Send the report
-	int nRet = m_pDevice->InterruptWrite( buf.data(), nBufLen + nOffset, USB_TIMEOUT );
+	int nRet = pDevice->InterruptWrite( buf.data(), nBufLen + nOffset, USB_TIMEOUT );
 	LOG_MSG( m_Logger, LogTypes::Debug, QString("interrupt write returned %1\n").arg(nRet).toLatin1().constData() );
     }
 }

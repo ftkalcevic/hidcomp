@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = hidcomp
-CONFIG += qt
+CONFIG += qt precompiled_header
 include(../build.pro)
 
 CONFIG(debug,debug|release) {
@@ -9,10 +9,11 @@ DESTDIR=debug
 DESTDIR=release
 }
 
-QT += xml xmlpatterns
+QT += xml
 QT -= gui
 
-DEFINES += QT_XML_LIB
+DEFINES += QT_XML_LIB USING_PCH
+PRECOMPILED_HEADER=stdafx.h
 
 INCLUDEPATH +=  ./generatedfiles
 CONFIG(debug,debug|release) {

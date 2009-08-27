@@ -78,11 +78,13 @@ private:
     int m_nReportIdSpace;
     QTime m_timer;
     int m_nRefreshPeriodMS;
+    QList<LCDFont *> m_fonts;
 
     bool WriteLCDBuffer( unsigned int nRow, int unsigned nCol, const QString &s );
     void ClearLCDBuffer();
-    void OutputHIDLCD( HIDDevice *pDevice, unsigned int nRow, unsigned int nCol, const QString &s, unsigned int nPos, unsigned int nLen, bool bClearDisplay );
+    void OutputHIDLCD( HIDDevice *pDevice, unsigned int nRow, unsigned int nCol, const QString &s, unsigned int nPos, unsigned int nLen );
     void HIDQueryDisplayParmeters( HIDDevice *pDevice );
+    void LCDSendUserFonts(HIDDevice *pDevice, QList<LCDFont*> &fonts);
 };
 
 
