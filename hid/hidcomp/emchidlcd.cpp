@@ -27,7 +27,8 @@
 
 EMCHIDLCD::EMCHIDLCD(const QString &sPinPrefix, HIDItem *pCfgItem, HID_CollectionPath_t *pCollection )
 : EMCHIDItem(QCoreApplication::applicationName(), "EMCHIDItem", pCfgItem, NULL)
-, m_pCollection( pCollection )
+, m_pLCDCollection( pCollection )
+, m_pCharReportCollection( NULL )
 , m_nPage( 0xFFFFFFFF )
 , m_bInitialised( false )
 , m_bFirst( true )
@@ -149,15 +150,6 @@ EMCHIDLCD::~EMCHIDLCD(void)
 }
 
 
-static HID_ReportItem_t *FindItem( HID_CollectionPath_t *pCol, unsigned short nUsage )
-{
-    for ( unsigned int i = 0; i < pCol->ReportItems.size(); i++ )
-	if ( pCol->ReportItems[i]->Attributes.Usage == nUsage )
-	    return pCol->ReportItems[i];
-    return NULL;
-}
-
-
 void EMCHIDLCD::Initialise(HIDDevice *pDevice)
 {
     // Query the device for rows and columns
@@ -173,18 +165,34 @@ void EMCHIDLCD::Initialise(HIDDevice *pDevice)
     }
 
     // Find the report items we use
-    m_pClearDisplayItem = FindItem( m_pCollection, USAGE_CLEAR_DISPLAY );
-    m_pRowItem = FindItem( m_pCollection, USAGE_ROW );
-    m_pColItem = FindItem( m_pCollection, USAGE_COLUMN );
+    m_pRowItem = pDevice->ReportInfo().FindReportItem( m_pLCDCollection, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_CHARACTER_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_ROW );
+    m_pColItem = pDevice->ReportInfo().FindReportItem( m_pLCDCollection, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_CHARACTER_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_COLUMN );
+    if ( m_pRowItem == NULL || m_pColItem == NULL )
+    {
+	LOG_MSG( m_Logger, LogTypes::Error, "Failed to locate Row and Column entries in LCD report" );
+	m_pRowItem = NULL;
+	m_pColItem = NULL;
+	return;
+    }
+    m_pCharReportCollection = m_pColItem->CollectionPath;
+    m_nCharReportID = m_pCharReportCollection->ReportID;
 
     // Find the index to the first data item
     m_nFirsDataIndex = 0;
-    for ( ; m_nFirsDataIndex < m_pCollection->ReportItems.size(); m_nFirsDataIndex++ )
-	if ( m_pCollection->ReportItems[m_nFirsDataIndex]->Attributes.Usage == USAGE_DISPLAY_DATA )
+    for ( ; m_nFirsDataIndex < m_pCharReportCollection->ReportItems.size(); m_nFirsDataIndex++ )
+	if ( m_pCharReportCollection->ReportItems[m_nFirsDataIndex]->Attributes.Usage == USAGE_DISPLAY_DATA )
 	    break;
 
+    if ( m_nFirsDataIndex >= m_pCharReportCollection->ReportItems.size() )
+    {
+	LOG_MSG( m_Logger, LogTypes::Error, "Failed to locate Display Data entry in LCD report" );
+	m_pRowItem = NULL;
+	m_pColItem = NULL;
+	return;
+    }
+
     // Create the report buffer
-    HID_ReportDetails_t pReportDetails = pDevice->ReportInfo().Reports[m_pRowItem->ReportID];
+    HID_ReportDetails_t pReportDetails = pDevice->ReportInfo().Reports[m_nCharReportID];
     int nBufLen = pReportDetails.OutReportLength;
     m_nReportIdSpace = 0;
     if ( pDevice->ReportInfo().Reports.size() > 1 )
@@ -192,7 +200,7 @@ void EMCHIDLCD::Initialise(HIDDevice *pDevice)
 
     m_Report.resize( nBufLen + m_nReportIdSpace );
     if ( m_nReportIdSpace )
-	m_Report[0] = m_pRowItem->ReportID;
+	m_Report[0] = m_nCharReportID;
 
     HIDLCD *pItem = dynamic_cast<HIDLCD *>(m_pCfgItem);
     **(hal_s32_t **)(Pins[OUT_PAGES].pData) = pItem->pages().count();
@@ -314,20 +322,23 @@ void EMCHIDLCD::ClearLCDBuffer()
 
 void EMCHIDLCD::OutputHIDLCD( HIDDevice *pDevice, unsigned int nRow, unsigned int nCol, const QString &sText, unsigned int nPos, unsigned int nLen, bool bClearDisplay )
 {
+    if ( m_pRowItem == NULL || m_pColItem == NULL )
+	return;
+
     // Set report attributes
-    m_pClearDisplayItem->Value = bClearDisplay ? 1 : 0;
     m_pRowItem->Value = nRow;
     m_pColItem->Value = nCol;
 
     // copy the changed text to the report
-    for ( unsigned int i = 0; i < nLen; i++ )
-	m_pCollection->ReportItems[m_nFirsDataIndex + i]->Value = sText[nPos + i].toAscii();
+    for ( unsigned int i = 0; i < nLen && m_nFirsDataIndex + i < m_pCharReportCollection->ReportItems.count(); i++ )
+	m_pCharReportCollection->ReportItems[m_nFirsDataIndex + i]->Value = sText[nPos + i].toAscii();
+
     // null terminate the string if the buffer isn't full
     if ( nPos + nLen < m_nColumns )
-	m_pCollection->ReportItems[m_nFirsDataIndex + nLen]->Value = 0;
+	m_pCharReportCollection->ReportItems[m_nFirsDataIndex + nLen]->Value = 0;
 
     HIDParser parser;
-    parser.MakeOutputReport( m_Report.data() + m_nReportIdSpace, (byte)(m_Report.count() - m_nReportIdSpace), m_pCollection->ReportItems, m_pClearDisplayItem->ReportID );
+    parser.MakeOutputReport( m_Report.data() + m_nReportIdSpace, (byte)(m_Report.count() - m_nReportIdSpace), m_pCharReportCollection->ReportItems, m_nCharReportID );
 
     // Send the report
     int nRet = pDevice->AsyncInterruptWrite( m_Report.data(), m_Report.count() );
@@ -343,8 +354,14 @@ void EMCHIDLCD::HIDQueryDisplayParmeters( HIDDevice *pDevice )
     m_nColumns = 2;
 
     // find the feature report that contains the rows and columns count.  That's all we want.
-    HID_ReportItem_t *pRowItem = pDevice->FindReportItem( REPORT_ITEM_TYPE_Feature, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_ROWS );
-    HID_ReportItem_t *pColItem = pDevice->FindReportItem( REPORT_ITEM_TYPE_Feature, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_COLUMNS );
+    HID_ReportItem_t *pRowItem = pDevice->ReportInfo().FindReportItem( m_pLCDCollection, REPORT_ITEM_TYPE_Feature, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_DISPLAY_ATTRIBUTES_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_ROWS );
+    HID_ReportItem_t *pColItem = pDevice->ReportInfo().FindReportItem( m_pLCDCollection, REPORT_ITEM_TYPE_Feature, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_DISPLAY_ATTRIBUTES_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_COLUMNS );
+
+    if ( pRowItem == NULL || pColItem == NULL )
+    {
+	LOG_MSG(m_Logger, LogTypes::Error, "Failed to find Rows or Columns fields in the display attributes report." );
+	return;
+    }
 
     HID_ReportDetails_t pReportDetails = pDevice->ReportInfo().Reports[pRowItem->ReportID];
     int nBufLen = pReportDetails.FeatureReportLength;
@@ -368,4 +385,50 @@ void EMCHIDLCD::HIDQueryDisplayParmeters( HIDDevice *pDevice )
 	m_nColumns = pColItem->Value;
     }
 }
+
+
+void EMCHIDLCD::LCDSendUserFonts(HIDDevice *pDevice, QList<LCDFont*> &fonts)
+{
+    HID_ReportItem_t *pCharIndex = pDevice->ReportInfo().FindReportItem( m_pLCDCollection, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_FONT_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_DISPLAY_DATA );
+    if ( pCharIndex == NULL )
+    {
+	LOG_MSG( m_Logger, LogTypes::Error, "Failed to find USAGE_DISPLAY_DATA in font report" );
+	return;
+    }
+    HID_CollectionPath_t *pCollection = pCharIndex->CollectionPath;
+    byte nReportId = pCharIndex->ReportID;
+
+    // Find the index to the first data item
+    unsigned int nIndex = 0;
+    for ( ; nIndex < pCollection->ReportItems.size(); nIndex++ )
+	if ( pCollection->ReportItems[nIndex]->Attributes.Usage == USAGE_FONT_DATA )
+	    break;
+
+    foreach (LCDFont *pFont, fonts )
+    {
+	pCharIndex->Value = pFont->index();
+
+	for ( int i = 0; i < pFont->data().count() && nIndex + i < pCollection->ReportItems.size(); i++ )
+	    pCollection->ReportItems[nIndex + i]->Value = pFont->data()[i];
+
+	HID_ReportDetails_t pReportDetails = m_pDevice->ReportInfo().Reports[nReportId];
+	int nBufLen = pReportDetails.OutReportLength;
+	int nOffset = 0;
+	if ( m_pDevice->ReportInfo().Reports.size() > 1 )
+	    nOffset=1;
+
+	QVarLengthArray<byte> buf;
+	buf.resize(nBufLen+nOffset);
+	if ( nOffset )
+	    buf[0] = nReportId;
+
+	HIDParser parser;
+	parser.MakeOutputReport( buf.data() + nOffset, (byte)nBufLen, m_pDevice->ReportInfo().ReportItems, nReportId );
+
+	// Send the report
+	int nRet = m_pDevice->InterruptWrite( buf.data(), nBufLen + nOffset, USB_TIMEOUT );
+	LOG_MSG( m_Logger, LogTypes::Debug, QString("interrupt write returned %1\n").arg(nRet).toLatin1().constData() );
+    }
+}
+
 

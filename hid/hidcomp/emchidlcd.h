@@ -1,3 +1,19 @@
+// hidcomp/hidconfig, HID device interface for emc
+// Copyright (C) 2008, Frank Tkalcevic, www.franksworkshop.com
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 #ifndef __EMCHIDLCD_H__
 #define __EMCHIDLCD_H__
 
@@ -44,7 +60,9 @@ public:
     void Initialise(HIDDevice *pDevice);
 
 private:
-    HID_CollectionPath_t *m_pCollection;
+    HID_CollectionPath_t *m_pLCDCollection;
+    HID_CollectionPath_t *m_pCharReportCollection;
+    byte m_nCharReportID;
     unsigned int m_nFirsDataIndex;
     QList<QString> m_Display;
     QList<LineChanges> m_Changes;
@@ -54,7 +72,6 @@ private:
     unsigned int m_nRows;
     unsigned int m_nColumns;
     QList<EMCLCDPage *> m_Pages;
-    HID_ReportItem_t *m_pClearDisplayItem;
     HID_ReportItem_t *m_pRowItem;
     HID_ReportItem_t *m_pColItem;
     QVarLengthArray<byte> m_Report;

@@ -1,6 +1,6 @@
 <!DOCTYPE HID>
 <HID>
- <Device matchVID="7232" matchManufacturer="FranksWorkshop" matchPID="1241" matchProduct="Generic HID Device" />
+ <Device matchVID="7232" matchPID="1241" />
  <Items>
   <Item enabled="false" type="5" index="0" usage="65280" pin="Select-DFU-Mode" usagePage="65280" />
   <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="false" outputType="0" type="1" useResponseCurve="false" index="1" usage="65280" outputMin="-1" outputMax="1" pin="x" usagePage="65280" logicalMaxOverride="65535" >
