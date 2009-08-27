@@ -8,6 +8,7 @@ HEADERS += ./hidconfig.h \
     ./comboboxdelegate.h \
     ./controlpointswidget.h \
     ./devicewidget.h \
+    ./editfontdlg.h \
     ./hatswitchwidget.h \
     ./hiddatathread.h \
     ./hiduibase.h \
@@ -19,6 +20,7 @@ HEADERS += ./hidconfig.h \
     ./hiduivalue.h \
     ./lcdchar.h \
     ./lcdconfigdlg.h \
+    ./lcdfontwidget.h \
     ./lcdwidget.h \
     ./scanning.h \
     ./selectdevice.h \
@@ -32,6 +34,7 @@ SOURCES += ./hidconfig.cpp \
     ./comboboxdelegate.cpp \
     ./controlpointswidget.cpp \
     ./devicewidget.cpp \
+    ./editfontdlg.cpp \
     ./hatswitchwidget.cpp \
     ./hiddatathread.cpp \
     ./hiduibase.cpp \
@@ -42,6 +45,7 @@ SOURCES += ./hidconfig.cpp \
     ./hiduioutputvalue.cpp \
     ./hiduivalue.cpp \
     ./lcdconfigdlg.cpp \
+    ./lcdfontwidget.cpp \
     ./lcdwidget.cpp \
     ./main.cpp \
     ./scanning.cpp \
@@ -52,7 +56,8 @@ SOURCES += ./hidconfig.cpp \
     ./valueconfigdlg.cpp
 
 #Forms
-FORMS += ./hidconfig.ui \
+FORMS += ./editfontdlg.ui \
+    ./hidconfig.ui \
     ./scanning.ui \
     ./selectdevicedlg.ui \
     ./valueconfigdlg.ui \
