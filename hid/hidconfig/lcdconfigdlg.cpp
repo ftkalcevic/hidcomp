@@ -14,10 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "stdafx.h"
 #include "lcdconfigdlg.h"
 #include "lcddisplaydata.h"
 #include "usages.h"
 #include "lcddataformatter.h"
+#include "editfontdlg.h"
 
 //#ifdef _WIN32
     #define ACTIVE_G_CODES 16
@@ -165,7 +167,7 @@ static LCDData *FindData( ELCDDisplayData::ELCDDisplayData nId )
 
 
 
-LCDConfigDlg::LCDConfigDlg(HIDLCD *pLCDData, HIDDevice *pDevice, HID_CollectionPath_t *pCol, int nRows, int nColumns, QWidget *parent)
+LCDConfigDlg::LCDConfigDlg(HIDLCD *pLCDData, HIDDevice *pDevice, HID_CollectionPath_t *pCol, int nRows, int nColumns, bool bUserFonts, int nMinFontIndex, int nMaxFontIndex, QWidget *parent)
 : QDialog(parent)
 , m_Logger( QCoreApplication::applicationName().toAscii().constData(), "LCDConfigDlg" )
 , m_pDevice( pDevice )
@@ -174,6 +176,9 @@ LCDConfigDlg::LCDConfigDlg(HIDLCD *pLCDData, HIDDevice *pDevice, HID_CollectionP
 , m_nColumns(nColumns)
 , m_bUpdating( false )
 , m_pCurrentPage( NULL )
+, m_bUserFonts(bUserFonts)
+, m_nMinFontIndex(nMinFontIndex)
+, m_nMaxFontIndex(nMaxFontIndex)
 {
     ui.setupUi(this);
 
@@ -199,6 +204,9 @@ LCDConfigDlg::LCDConfigDlg(HIDLCD *pLCDData, HIDDevice *pDevice, HID_CollectionP
         m_pDataTypeDelegate->addItem( lcdData[i].eData, lcdData[i].sDisplayName );
     ui.tableData->setItemDelegateForColumn( DATA_VALUE_COL, m_pDataTypeDelegate );
     ui.tableData->setColumnWidth( DATA_VALUE_COL, 185 );    // Should do this better - ask combo its max width
+
+    if ( !bUserFonts )
+	ui.btnUserFonts->setVisible( false );
 
     ui.lcd->setSize( nRows, nColumns );
 
@@ -662,11 +670,16 @@ void LCDConfigDlg::setConfig( HIDLCD *lcdData )
 
             NewPageRow( i, pWorkingPage );
         }   
+	// copy fonts
+	m_fonts.clear();
+	for ( int i = 0; i < lcdData->fonts().count(); i++ )
+	    m_fonts.push_back( new LCDFont(*(lcdData->fonts()[i])) );
     }
     catch (...)
     {
     }
     m_bUpdating = false;
+    LCDSendUserFonts();
     ui.tablePages->selectRow( 0 );
 }
 
@@ -690,50 +703,61 @@ void LCDConfigDlg::getConfig( HIDLCD *lcdData )
             pNewPage->data().append( pNewEntry );
         }
     }
+    lcdData->fonts().clear();
+    foreach ( LCDFont *pFont, m_fonts )
+	lcdData->fonts().append( new LCDFont(*pFont) );
 }
-
-
-static HID_ReportItem_t *FindItem( HID_CollectionPath_t *pCol, unsigned short nUsage )
-{
-    for ( unsigned int i = 0; i < pCol->ReportItems.size(); i++ )
-	if ( pCol->ReportItems[i]->Attributes.Usage == nUsage )
-	    return pCol->ReportItems[i];
-    return NULL;
-}
-
 
 void LCDConfigDlg::LCDClear()
 {
-    ui.lcd->Clear();
+    for ( int i = 0; i < m_nRows; i++ )
+	LCDWrite( i, 0, QString(m_nColumns,QChar(' ')), false );
+}
 
-    HID_ReportItem_t *pClearDisplayItem = FindItem( m_pCol, USAGE_CLEAR_DISPLAY );
-    HID_ReportItem_t *pRowItem = FindItem( m_pCol, USAGE_ROW );
-    HID_ReportItem_t *pColItem = FindItem( m_pCol, USAGE_COLUMN );
-    HID_ReportItem_t *pDataItem = FindItem( m_pCol, USAGE_DISPLAY_DATA );
+void LCDConfigDlg::LCDSendUserFonts()
+{
+    HID_ReportItem_t *pCharIndex = m_pDevice->ReportInfo().FindReportItem( m_pCol, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_FONT_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_DISPLAY_DATA );
+    if ( pCharIndex == NULL )
+    {
+	LOG_MSG( m_Logger, LogTypes::Error, "Failed to find USAGE_DISPLAY_DATA in font report" );
+    }
+    HID_CollectionPath_t *pCollection = pCharIndex->CollectionPath;
+    byte nReportId = pCharIndex->ReportID;
 
-    pClearDisplayItem->Value = 1;
-    pRowItem->Value = 0;
-    pColItem->Value = 0;
-    pDataItem->Value = 0;
+    // Find the index to the first data item
+    unsigned int nIndex = 0;
+    for ( ; nIndex < pCollection->ReportItems.size(); nIndex++ )
+	if ( pCollection->ReportItems[nIndex]->Attributes.Usage == USAGE_FONT_DATA )
+	    break;
 
-    HID_ReportDetails_t pReportDetails = m_pDevice->ReportInfo().Reports[pClearDisplayItem->ReportID];
-    int nBufLen = pReportDetails.OutReportLength;
-    int nOffset = 0;
-    if ( m_pDevice->ReportInfo().Reports.size() > 1 )
-	nOffset=1;
+    foreach (LCDFont *pFont, m_fonts )
+    {
+	ui.lcd->SetUserFont( pFont->index(), pFont->data() );
 
-    byte *buf = new byte[nBufLen+nOffset];
-    if ( nOffset )
-	*buf = pRowItem->ReportID;
+	pCharIndex->Value = pFont->index();
 
-    HIDParser parser;
-    parser.MakeOutputReport( buf + nOffset, (byte)nBufLen, m_pDevice->ReportInfo().ReportItems, pClearDisplayItem->ReportID );
+	for ( int i = 0; i < pFont->data().count() && nIndex + i < pCollection->ReportItems.size(); i++ )
+	    pCollection->ReportItems[nIndex + i]->Value = pFont->data()[i];
 
-    // Send the report
-    int nRet = m_pDevice->InterruptWrite( buf, nBufLen + nOffset, USB_TIMEOUT );
-    LOG_MSG( m_Logger, LogTypes::Debug, QString("interrupt write returned %1\n").arg(nRet).toLatin1().constData() );
+	HID_ReportDetails_t pReportDetails = m_pDevice->ReportInfo().Reports[nReportId];
+	int nBufLen = pReportDetails.OutReportLength;
+	int nOffset = 0;
+	if ( m_pDevice->ReportInfo().Reports.size() > 1 )
+	    nOffset=1;
 
-    delete buf;
+	byte *buf = new byte[nBufLen+nOffset];
+	if ( nOffset )
+	    *buf = nReportId;
+
+	HIDParser parser;
+	parser.MakeOutputReport( buf + nOffset, (byte)nBufLen, m_pDevice->ReportInfo().ReportItems, nReportId );
+
+	// Send the report
+	int nRet = m_pDevice->InterruptWrite( buf, nBufLen + nOffset, USB_TIMEOUT );
+	LOG_MSG( m_Logger, LogTypes::Debug, QString("interrupt write returned %1\n").arg(nRet).toLatin1().constData() );
+
+	delete buf;
+    }
 }
 
 
@@ -741,25 +765,24 @@ void LCDConfigDlg::LCDWrite( int nRow, int nCol, QString sText, bool bHighlight 
 {
     ui.lcd->Write( nRow, nCol, sText, bHighlight );
 
-    HID_ReportItem_t *pClearDisplayItem = FindItem( m_pCol, USAGE_CLEAR_DISPLAY );
-    HID_ReportItem_t *pRowItem = FindItem( m_pCol, USAGE_ROW );
-    HID_ReportItem_t *pColItem = FindItem( m_pCol, USAGE_COLUMN );
+    HID_ReportItem_t *pRowItem = m_pDevice->ReportInfo().FindReportItem( m_pCol, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_CHARACTER_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_ROW );
+    HID_ReportItem_t *pColItem = m_pDevice->ReportInfo().FindReportItem( m_pCol, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_CHARACTER_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_COLUMN );
+    HID_CollectionPath_t *pCollection = pColItem->CollectionPath;
 
     // Find the index to the first data item
     unsigned int nIndex = 0;
-    for ( ; nIndex < m_pCol->ReportItems.size(); nIndex++ )
-	if ( m_pCol->ReportItems[nIndex]->Attributes.Usage == USAGE_DISPLAY_DATA )
+    for ( ; nIndex < pCollection->ReportItems.size(); nIndex++ )
+	if ( pCollection->ReportItems[nIndex]->Attributes.Usage == USAGE_DISPLAY_DATA )
 	    break;
 
-    pClearDisplayItem->Value = 0;
     pRowItem->Value = nRow;
     pColItem->Value = nCol;
-    for ( int i = 0; i < sText.length() && nIndex+i < (int)m_nColumns; i++ )
-	m_pCol->ReportItems[nIndex + i]->Value = sText[i].toAscii();
+    for ( int i = 0; i < sText.length() && i < m_nColumns && nIndex+i < pCollection->ReportItems.size(); i++ )
+	pCollection->ReportItems[nIndex + i]->Value = sText[i].toAscii();
     if ( sText.length() < m_nColumns )
-	m_pCol->ReportItems[nIndex + sText.length()]->Value = 0;
+	pCollection->ReportItems[nIndex + sText.length()]->Value = 0;
 
-    HID_ReportDetails_t pReportDetails = m_pDevice->ReportInfo().Reports[pClearDisplayItem->ReportID];
+    HID_ReportDetails_t pReportDetails = m_pDevice->ReportInfo().Reports[pRowItem->ReportID];
     int nBufLen = pReportDetails.OutReportLength;
     int nOffset = 0;
     if ( m_pDevice->ReportInfo().Reports.size() > 1 )
@@ -770,11 +793,26 @@ void LCDConfigDlg::LCDWrite( int nRow, int nCol, QString sText, bool bHighlight 
 	*buf = pRowItem->ReportID;
 
     HIDParser parser;
-    parser.MakeOutputReport( buf + nOffset, (byte)nBufLen, m_pDevice->ReportInfo().ReportItems, pClearDisplayItem->ReportID );
+    parser.MakeOutputReport( buf + nOffset, (byte)nBufLen, m_pDevice->ReportInfo().ReportItems, pRowItem->ReportID );
 
     // Send the report
     int nRet = m_pDevice->InterruptWrite( buf, nBufLen + nOffset, USB_TIMEOUT );
     LOG_MSG( m_Logger, LogTypes::Debug, QString("interrupt write returned %1\n").arg(nRet).toLatin1().constData() );
 
     delete buf;
+}
+
+
+void LCDConfigDlg::onEditUserFonts()
+{
+    EditFontDlg dlg(m_fonts, m_nMinFontIndex, m_nMaxFontIndex, this);
+    if ( dlg.exec() == QDialog::Accepted )
+    {
+	foreach ( LCDFont *pFont, m_fonts )
+	    delete pFont;
+	m_fonts.clear();
+	m_fonts = dlg.fontData();
+
+	LCDSendUserFonts();
+    }
 }

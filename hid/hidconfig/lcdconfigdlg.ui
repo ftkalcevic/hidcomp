@@ -293,6 +293,35 @@
       </spacer>
      </item>
      <item>
+      <widget class="QPushButton" name="btnUserFonts">
+       <property name="minimumSize">
+        <size>
+         <width>90</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>User Fonts...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_4">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
       <widget class="QPushButton" name="btnOk">
        <property name="text">
         <string>OK</string>
@@ -529,6 +558,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnUserFonts</sender>
+   <signal>clicked()</signal>
+   <receiver>LCDConfigDlgClass</receiver>
+   <slot>onEditUserFonts()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>619</x>
+     <y>432</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>680</x>
+     <y>416</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onNewPage()</slot>
@@ -543,5 +588,6 @@
   <slot>onPageCurrentItemChanged(QTableWidgetItem*,QTableWidgetItem*)</slot>
   <slot>onPageUp()</slot>
   <slot>onPageDown()</slot>
+  <slot>onEditUserFonts()</slot>
  </slots>
 </ui>

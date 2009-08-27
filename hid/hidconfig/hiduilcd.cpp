@@ -78,13 +78,15 @@ void HIDUILCD::onConfigClicked(bool)
 {
     // retreive the display attributes
     int nRows, nCols ;
-    QueryDisplayParmeters( nRows, nCols );
+    bool bUserFonts;
+    int nMinFontIndex, nMaxFontIndex;
+    QueryDisplayParmeters( nRows, nCols, bUserFonts, nMinFontIndex, nMaxFontIndex );
     if ( nRows == 0 )
 	nRows = 2;
     if ( nCols == 0 )
 	nCols = 20;
 
-    LCDConfigDlg dlg( &m_lcdData, m_pDevice, m_pCol, nRows, nCols, this );
+    LCDConfigDlg dlg( &m_lcdData, m_pDevice, m_pCol, nRows, nCols, bUserFonts, nMinFontIndex, nMaxFontIndex, this );
 
     if ( dlg.exec() == QDialog::Accepted )
     {
@@ -108,14 +110,14 @@ void HIDUILCD::getConfig( HIDItem *pItem )
     *lcdData = m_lcdData;
 }
 
-void HIDUILCD::QueryDisplayParmeters( int &nRows, int &nCols )
+void HIDUILCD::QueryDisplayParmeters( int &nRows, int &nCols, bool &bUserFonts, int &nMinIndex, int &nMaxIndex )
 {
     nRows = 0;
     nCols = 0;
 
     // find the feature report that contains the rows and columns count.  That's all we want.
-    HID_ReportItem_t *pRowItem = m_pDevice->FindReportItem( REPORT_ITEM_TYPE_Feature, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_ROWS );
-    HID_ReportItem_t *pColItem = m_pDevice->FindReportItem( REPORT_ITEM_TYPE_Feature, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_COLUMNS );
+    HID_ReportItem_t *pRowItem = m_pDevice->ReportInfo().FindReportItem( m_pCol, REPORT_ITEM_TYPE_Feature, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_DISPLAY_ATTRIBUTES_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_ROWS );
+    HID_ReportItem_t *pColItem = m_pDevice->ReportInfo().FindReportItem( m_pCol, REPORT_ITEM_TYPE_Feature, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_DISPLAY_ATTRIBUTES_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_COLUMNS );
 
     HID_ReportDetails_t pReportDetails = m_pDevice->ReportInfo().Reports[pRowItem->ReportID];
     int nBufLen = pReportDetails.FeatureReportLength;
@@ -134,25 +136,21 @@ void HIDUILCD::QueryDisplayParmeters( int &nRows, int &nCols )
 	HIDParser parser;
 	parser.DecodeReport( buf+nOffset, (byte)nBufLen, m_pDevice->ReportInfo().ReportItems, pRowItem->ReportID, REPORT_ITEM_TYPE_Feature );
 	nRows = pRowItem->Value;
-	if ( pColItem->ReportID != pRowItem->ReportID )
-	{
-	    // attributes are in different reports.
-	    pReportDetails = m_pDevice->ReportInfo().Reports[pColItem->ReportID];
-	    nBufLen = pReportDetails.FeatureReportLength;
-
-	    delete buf;
-	    buf = new byte[nBufLen+nOffset];
-	    b = m_pDevice->GetReport( pRowItem->ReportID, REPORT_ITEM_TYPE_Feature, buf, nBufLen );
-	    if ( !b ) 
-	    {
-		LOG_MSG(m_Logger, LogTypes::Warning, QString("Failed to retreive feature report") );
-		return;
-	    }
-	    parser.DecodeReport( buf+nOffset, (byte)nBufLen, m_pDevice->ReportInfo().ReportItems, pRowItem->ReportID, REPORT_ITEM_TYPE_Feature );
-	}
 	nCols = pColItem->Value;
 	delete buf;
     }
+
+    HID_ReportItem_t *pFontDataItem = m_pDevice->ReportInfo().FindReportItem( m_pCol, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_FONT_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_DISPLAY_DATA );
+    if ( pFontDataItem == NULL )
+	bUserFonts = false;
+    else
+    {
+	bUserFonts = true;
+	nMinIndex = pFontDataItem->Attributes.LogicalMinimum;
+	nMaxIndex = pFontDataItem->Attributes.LogicalMaximum;
+    }
+
+
     return;
 }
 

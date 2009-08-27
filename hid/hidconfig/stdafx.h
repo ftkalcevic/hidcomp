@@ -71,6 +71,8 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QCloseEvent>
+#include <QList>
+#include <QVector>
 
 #ifdef _WIN32
 #pragma warning(pop)
@@ -78,6 +80,7 @@
 #endif
 
 #include "utility.h"
+#include "datatypes.h"
 #include "hidtypes.h"
 #include "log.h"
 

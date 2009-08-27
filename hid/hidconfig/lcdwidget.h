@@ -28,6 +28,7 @@ public:
     LCDWidget(QWidget *parent);
     ~LCDWidget();
     void Write( int nRow, int nCol, const QString &s, bool bHighlight );
+    void SetUserFont( byte index, const QVector<byte> &data );
     void Erase( int nRow, int nCol, int nLen );
     void Clear();
     void setSize( int nRows, int nCols );

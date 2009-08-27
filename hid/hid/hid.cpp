@@ -526,6 +526,84 @@ QDomElement LCDPage::WriteXML( QDomElement pNode )
 }
 
 
+/****************************************************
+****************************************************/
+LCDFont::LCDFont( byte nIndex, const QVector<byte> &data )
+: m_nIndex( nIndex )
+{
+    setData( data );
+}
+
+LCDFont::LCDFont( const LCDFont &other )
+{
+    m_nIndex = other.m_nIndex;
+    setData( other.m_data );
+}
+
+LCDFont::~LCDFont()
+{
+    m_data.clear();
+}
+
+void LCDFont::setData( const QVector<byte> &data )
+{ 
+    m_data.resize( data.size() );
+    for ( int i = 0; i < data.size(); i++ )
+	m_data[i] = data[i];
+}
+
+bool LCDFont::GetFontBit( int cols, int r, int c, const byte *data )
+{
+    int nBit = r * cols + (cols-c-1);
+    int nByte = nBit / 8;
+    nBit &= 0x07;
+    return (data[nByte] & (1 << nBit)) != 0;
+}
+
+void LCDFont::SetFontBit( int cols, int r, int c, byte *data, bool bSet )
+{
+    int nBit = r * cols + (cols-c-1);
+    int nByte = nBit / 8;
+    nBit &= 0x07;
+    if ( bSet )
+	data[nByte] |= 1 << nBit;
+    else
+	data[nByte] &= ~(1 << nBit);
+}
+
+void LCDFont::ReadXML( QDomElement pNode )
+{
+    m_nIndex =  (byte)XMLUtility::getAttribute( pNode, "Index", 0 );
+
+    m_data.clear();
+    QDomNodeList entries = XMLUtility::elementsByTagName( pNode, "Data" );
+    for ( uint p = 0; p < entries.length(); p++ )
+    {
+	QDomElement entryElement = entries.item(p).toElement();
+	int n = XMLUtility::getAttribute( entryElement, "bits", 0 );
+        m_data.append( (byte)n );
+    }
+}
+
+
+QDomElement LCDFont::WriteXML( QDomElement pNode )
+{
+    XMLUtility::setAttribute( pNode, "Index", m_nIndex );
+
+    if ( m_data.count() > 0 )
+    {
+        for ( int i = 0; i < m_data.count(); i++ )
+        {
+	    QDomElement pDataElem = pNode.ownerDocument().createElement("Data");
+	    pNode.appendChild(pDataElem);
+	    XMLUtility::setAttribute( pDataElem, "bits", m_data[i] );
+        }
+    }
+
+    return pNode;
+}
+
+
 
 /****************************************************
 ****************************************************/
@@ -541,6 +619,8 @@ HIDLCD::HIDLCD( const HIDLCD &other )
     m_nSamplePeriod = other.m_nSamplePeriod;
     for ( int i = 0; i < other.m_pages.count(); i++ )
         m_pages.append( new LCDPage(*other.m_pages[i]) );
+    for ( int i = 0; i < other.m_fonts.count(); i++ )
+        m_fonts.append( new LCDFont(*other.m_fonts[i]) );
 }
 
 HIDLCD & HIDLCD::operator= ( const HIDLCD & other )
@@ -549,6 +629,8 @@ HIDLCD & HIDLCD::operator= ( const HIDLCD & other )
     clear();
     for ( int i = 0; i < other.m_pages.count(); i++ )
         m_pages.append( new LCDPage(*other.m_pages[i]) );
+    for ( int i = 0; i < other.m_fonts.count(); i++ )
+        m_fonts.append( new LCDFont(*other.m_fonts[i]) );
     return *this;
 }
 
@@ -562,6 +644,9 @@ void HIDLCD::clear()
     for ( int i = 0; i < m_pages.count(); i++ )
 	delete m_pages[i];
     m_pages.clear();
+    for ( int i = 0; i < m_fonts.count(); i++ )
+	delete m_fonts[i];
+    m_fonts.clear();
 }
 
 void HIDLCD::ReadXML( QDomElement pNode )
@@ -576,6 +661,15 @@ void HIDLCD::ReadXML( QDomElement pNode )
         LCDPage *page = new LCDPage(0,QString());
         page->ReadXML( pageElement );
         m_pages.append( page );
+    }
+    m_fonts.clear();
+    QDomNodeList fonts = XMLUtility::elementsByTagName( pNode, "Font" );
+    for ( uint f = 0; f < fonts.length(); f++ )
+    {
+	QDomElement fontElement = fonts.item(f).toElement();
+        LCDFont *font = new LCDFont();
+        font->ReadXML( fontElement );
+        m_fonts.append( font );
     }
 }
 
@@ -593,6 +687,17 @@ QDomElement HIDLCD::WriteXML( QDomElement pNode )
 	    pElem.appendChild(pPageNode);
 
             m_pages[p]->WriteXML( pPageNode );
+        }
+    }
+
+    if ( m_fonts.count() > 0 )
+    {
+        for ( int f = 0; f < m_fonts.count(); f++ )
+        {
+	    QDomElement pFontNode = pNode.ownerDocument().createElement("Font");
+	    pElem.appendChild(pFontNode);
+
+            m_fonts[f]->WriteXML( pFontNode );
         }
     }
 

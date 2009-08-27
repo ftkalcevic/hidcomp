@@ -60,7 +60,7 @@ this software.
 #include <vector>
 #include <map>
 
-#include "types.h"
+#include "datatypes.h"
 #include "log.h"
 
 #define MAX_DESCRIPTOR_SIZE     128
@@ -164,7 +164,11 @@ public:
     std::vector<HID_ReportItem_t *> ReportItems;
     std::map<byte, HID_ReportDetails_t> Reports;
     std::vector<HID_CollectionPath_t *> Collections;
-} ;
+
+    HID_ReportItem_t *FindReportItem( HID_CollectionPath_t *pCol, HID_ReportItemTypes_t type, 
+				      unsigned short nCollectionUsagePage, unsigned short nCollectionUsage, 
+				      unsigned short nUsagePage, unsigned short nUsage );
+};
 
 
 

@@ -22,6 +22,7 @@
 #endif
 #include <QDomElement>
 #include <QList>
+#include <QVector>
 #ifdef _WIN32
 #pragma warning(pop)
 #pragma warning(disable:4251)
@@ -32,6 +33,7 @@
 #include "log.h"
 #include "cpoints.h"
 #include "lcddisplaydata.h"
+#include "datatypes.h"
 
 namespace HIDItemType
 {
@@ -229,6 +231,28 @@ private:
     QList<LCDEntry *> m_data;
 };
 
+class LCDFont
+{   
+public:
+    LCDFont( byte nIndex, const QVector<byte> &data );
+    LCDFont( const LCDFont &that );
+    LCDFont() : m_nIndex(0) {}
+    ~LCDFont();
+    QDomElement WriteXML( QDomElement pNode );
+    void ReadXML( QDomElement pNode );
+
+    byte index() { return m_nIndex; }
+    void setIndex( byte n ) { m_nIndex = n; }
+    void setData( const QVector<byte> &data );
+    const QVector<byte> &data() const { return m_data; }
+    static bool GetFontBit( int cols, int r, int c, const byte *data );
+    static void SetFontBit( int cols, int r, int c, byte *data, bool bSet );
+
+private:
+    byte m_nIndex;
+    QVector<byte> m_data;
+};
+
 class HIDLCD: public HIDOutputItem
 {
 public:
@@ -243,10 +267,12 @@ public:
     int samplePeriod() { return m_nSamplePeriod; }
     void setSamplePeriod( int n ) { m_nSamplePeriod = n; }
     QList<LCDPage *> &pages() { return m_pages; }
+    QList<LCDFont *> &fonts() { return m_fonts; }
 
 private:
     int m_nSamplePeriod;        // ms
     QList<LCDPage *> m_pages;
+    QList<LCDFont *> m_fonts;
     void clear();
 };
 

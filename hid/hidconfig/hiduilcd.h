@@ -33,7 +33,7 @@ public slots:
 
 private:
     void CreateLCDUI( HIDDevice *pDev, QGridLayout *layout, int nRow);
-    void QueryDisplayParmeters( int &nRows, int &nCols );
+    void QueryDisplayParmeters( int &nRows, int &nCols, bool &bUserFonts, int &nMin, int &nMax );
 
     virtual void setConfig( HIDItem *pItem );
     virtual void getConfig( HIDItem *pItem );

@@ -35,19 +35,137 @@
 
 #define	MAX_LINE_WIDTH	    128	    // some arbitrary number.  LCDs usually aren't more than 40 wide.
 
+static bool isOctal( QChar c, int &n )
+{
+    if ( c.isDigit() && c >= QChar('0') && c <= QChar('7') )
+    {
+	n = c.toAscii() - '0';
+	return true;
+    }
+    return false;
+}
+
+static bool isHex( QChar c, int &n )
+{
+    if ( c >= QChar('0') && c <= QChar('9') )
+    {
+	n = c.toAscii() - '0';
+	return true;
+    }
+    else
+    {
+	c = c.toUpper();
+	if ( c >= QChar('A') && c <= QChar('F') )
+	{
+	    n = c.toAscii() - 'A' + 10;
+	    return true;
+	}
+    }
+    return false;
+}
+
+static QString ProcessEscapeSequences( const QString &sFormatString )
+{
+    QString sRet;
+    int nLen = sFormatString.length();
+    for ( int i = 0; i < sFormatString.length(); i++ )
+    {
+	QChar c = sFormatString[i];
+	if ( c == '\\' )
+	{
+	    i++;
+	    if ( i < nLen )
+	    {
+		int n;
+		c = sFormatString[i];
+		switch ( c.toAscii() )
+		{
+		    case 'a': sRet += QChar('\a'); continue;
+		    case 'b': sRet += QChar('\b'); continue;
+		    case 'f': sRet += QChar('\f'); continue;
+		    case 'n': sRet += QChar('\n'); continue;
+		    case 'r': sRet += QChar('\r'); continue;
+		    case 't': sRet += QChar('\t'); continue;
+		    case 'v': sRet += QChar('\v'); continue;
+		    default:
+			if ( c == 'x' )
+			{
+			    QChar nBadChar = 0;
+			    int nValue = 0;
+			    for ( int j = 0; j < 2; j++ )
+			    {
+				i++;
+				if ( i < nLen )
+				{
+				    c = sFormatString[i];
+				    if ( isHex(c,n) )
+					nValue = (nValue << 4) | n;
+				    else
+				    {
+					nBadChar = c;
+					break;
+				    }
+				}
+				else
+				    break;
+			    }
+			    sRet += QChar( nValue );
+			    if ( nBadChar != 0 )
+				sRet += nBadChar;
+			}
+			else if ( isOctal(c,n) )
+			{
+			    QChar nBadChar = 0;
+			    int nValue = n;
+			    for ( int j = 0; j < 2; j++ )
+			    {
+				i++;
+				if ( i < nLen )
+				{
+				    c = sFormatString[i];
+				    if ( isOctal(c,n) )
+					nValue = (nValue << 3) | n;
+				    else
+				    {
+					nBadChar = c;
+					break;
+				    }
+				}
+				else
+				    break;
+			    }
+			    sRet += QChar( nValue );
+			    if ( nBadChar != 0 )
+				sRet += nBadChar;
+			}
+			else
+			{
+			    sRet += c;
+			}
+			continue;
+		}
+	    }
+	}
+	else
+	    sRet += c;
+	 
+    }
+    return sRet;
+}
 
 bool LCDDataFormatter::ProcessFormatString( const QString &sFormatString, QByteArray &newFormatString, QString &sDefaultString, QMap<int,QString> &lookupTable )
 {
+    QString sNewFormat = ProcessEscapeSequences( sFormatString );
+
     // look for %[-][n][.][n]:[n,str:]b
     QRegExp exp( ":(\\d+,[^:]+:)+b" );
 
-    QString sNewFormat = sFormatString;
-    int pos = exp.indexIn(sFormatString, 0);
+    int pos = exp.indexIn(sNewFormat, 0);
     if (pos >= 0) 
     {
 	// a match.  this is a %b enum formatter.  Replace %...b with %s and extract the enums
-        QString sList = sFormatString.mid( pos+1, exp.matchedLength() - 2 );
-	sNewFormat = sFormatString;
+        QString sList = sNewFormat.mid( pos+1, exp.matchedLength() - 2 );
+	sNewFormat = sNewFormat;
         sNewFormat.replace( pos, exp.matchedLength(), "s" );
 
         // Extract the lists
@@ -64,10 +182,6 @@ bool LCDDataFormatter::ProcessFormatString( const QString &sFormatString, QByteA
                 pos += exp2.matchedLength();
             }
         }
-    }
-    else
-    {
-	sNewFormat = sFormatString;
     }
 
     newFormatString = sNewFormat.toAscii();

@@ -14,7 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "stdafx.h"
 #include "lcdwidget.h"
+#include "hid.h"
 
 const int X_BORDER = 2;
 const int Y_BORDER = 2;
@@ -187,7 +189,7 @@ void LCDWidget::Write( int nRow, int nCol, const QString &str, bool bHighlight )
     for ( int c = 0; c < s.length(); c++ )
     {
         QChar data = s[c];
-        if ( data.isPrint() )
+        if ( m_chars.contains(data.toAscii()) )
         {
             QRect rc = CellQRect( nRow, nCol + c );
             p.fillRect( rc, m_bkgBrush ); 
@@ -234,4 +236,33 @@ QSize LCDWidget::sizeHint() const
     int w = width();
     QSize s = QSize( w, heightForWidth(w) );
     return s;;
+}
+
+static void setBit( int r, int c, byte *data, bool bSet )
+{
+    if ( bSet )
+	data[c] |= 1 << r;
+    else
+	data[c] &= ~(1 << r);
+}
+
+
+void LCDWidget::SetUserFont( byte index, const QVector<byte> &data )
+{
+    // for some reason the data in this set is in columns, whereas everything
+    // else is in rows.  We need to convert.
+    byte char_data[5];
+    memset( char_data, 0, sizeof(char_data) );
+
+    for ( int r = 0; r < LCDChar::PIXELS_Y; r++ )
+	for ( int c = 0; c < LCDChar::PIXELS_X; c++ )
+	    setBit( r, c, char_data, LCDFont::GetFontBit( LCDChar::PIXELS_X, r, c, data.data() ) );
+
+    if ( m_chars.contains(index) )
+    {
+	delete m_chars[index&0x7];
+	delete m_chars[index&0x7|0x8];
+    }
+    m_chars[index] = new LCDChar( char_data[0], char_data[1], char_data[2], char_data[3], char_data[4] );
+    m_chars[index|0x8] = new LCDChar( char_data[0], char_data[1], char_data[2], char_data[3], char_data[4] );
 }
