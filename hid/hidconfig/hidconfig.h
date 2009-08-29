@@ -23,6 +23,7 @@
 #include "hiduivalue.h"
 #include "devicewidget.h"
 #include "hid.h"
+#include "mru.h"
 
 class hidconfig : public QMainWindow
 {
@@ -44,6 +45,7 @@ private slots:
     void outputChanged( HID_ReportItem_t *);
     void onAbout();
     void onExit();
+    void onMRUSelected(const QString &sFile);
 
 private:
     virtual void closeEvent(QCloseEvent *event);
@@ -51,6 +53,9 @@ private:
     void updateWindowTitle();
     bool SaveChanges();
     bool DoSave();
+    void writeSettings();
+    void readSettings();
+    void SetLoaded();
 
 private:
     std::vector<HIDUIBase *> m_HIDDisplayItems;
@@ -63,6 +68,8 @@ private:
     HID *m_pHidCfg;
     Logger m_Logger;
     HIDDevices m_hidDevices;
+    MRU m_MRU;
+    QSettings m_Settings;
 };
 
 #endif // _HIDCONFIG_H

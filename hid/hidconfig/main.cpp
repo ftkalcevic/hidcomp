@@ -22,6 +22,8 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     a.setApplicationName("hidconfig");
+    a.setOrganizationName( "FranksWorkshop" );
+    a.setOrganizationDomain( "www.franksworkshop.com.au" );
     hidconfig w;
     w.show();
     w.ProcessCommandline();

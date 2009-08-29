@@ -73,6 +73,7 @@
 #include <QCloseEvent>
 #include <QList>
 #include <QVector>
+#include <QSettings>
 
 #ifdef _WIN32
 #pragma warning(pop)

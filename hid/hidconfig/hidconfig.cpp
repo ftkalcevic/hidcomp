@@ -48,6 +48,9 @@ hidconfig::hidconfig(QWidget *parent, Qt::WFlags flags)
     m_Logger( QCoreApplication::applicationName(), "Browse" )
 {
     ui.setupUi(this);
+    m_MRU.setMenu( ui.menuFile );
+    connect( &m_MRU, SIGNAL(MRUSelected(const QString &)), this, SLOT(onMRUSelected(const QString &)) );
+    readSettings();
 }
 
 hidconfig::~hidconfig()
@@ -55,6 +58,35 @@ hidconfig::~hidconfig()
 
 }
 
+void hidconfig::writeSettings()
+{
+    m_Settings.setValue("window/size", size());
+    m_Settings.setValue("window/pos", pos());
+
+    for ( int i = 0; i < MAX_MRU; i++ )
+	if ( i < m_MRU.count() )
+	    m_Settings.setValue( QString("application/mru%1").arg(i), m_MRU[i] );
+	else
+	    m_Settings.setValue( QString("application/mru%1").arg(i), "" );
+
+    m_Settings.setValue( "window/layout", this->saveState() );
+}
+
+void hidconfig::readSettings()
+{
+    resize(m_Settings.value("window/size", size()).toSize());
+    move(m_Settings.value("window/pos", pos()).toPoint());
+
+    for ( int i = MAX_MRU-1; i >= 0; i-- )
+    {
+	QString sMRU = m_Settings.value(QString("application/mru%1").arg(i), "" ).toString();
+	if ( sMRU.length() > 0 )
+	    m_MRU.append( sMRU );
+    }
+
+    if ( m_Settings.contains( "window/layout" ) )
+	this->restoreState( m_Settings.value( "window/layout", QByteArray()).toByteArray() );
+}
 
 void hidconfig::onSelectionChangedHIDDevice()
 {
@@ -99,6 +131,7 @@ void hidconfig::closeEvent( QCloseEvent * event )
 	    m_pThread->wait( HIDDataThread::LOOP_TIMEOUT * 2 );
 	}
     }
+    writeSettings();
     event->accept();
 }
 
@@ -111,9 +144,16 @@ void hidconfig::onOpenFile()
     openFile( sFile );
 }
 
+void hidconfig::onMRUSelected(const QString &sFile)
+{
+    openFile( sFile );
+}
+
+
 void hidconfig::openFile( QString sFile )
 {
     m_sLastFile = sFile;
+    m_MRU.append( m_sLastFile );
     if ( m_pHidCfg != NULL )
 	delete m_pHidCfg;
 
@@ -190,8 +230,7 @@ void hidconfig::openFile( QString sFile )
     }
 
     // Once a device si loaded, we can't open another, or create a new one (just lazy programming - no clean up code)
-    ui.actionNew->setEnabled( false );
-    ui.actionOpen->setEnabled( false );
+    SetLoaded();
 
     // set the criteria
     m_pDeviceCriteria->setCriteria( m_pHidCfg->criteria );
@@ -322,6 +361,7 @@ bool hidconfig::DoSave()
 	else
 	{
 	    m_sLastFile = sFilename;
+	    m_MRU.append( m_sLastFile );
 
 	    file.write( doc.toString().toLatin1() );
 	    file.close();
@@ -341,9 +381,17 @@ void hidconfig::onNew()
 	m_device = dlg.m_pSelection;
 
 	DisplayDevice();
-	ui.actionNew->setEnabled( false );
-	ui.actionOpen->setEnabled( false );
+	SetLoaded();
     }
+}
+
+// once loaded, prevent another config from being created or
+// loaded from file. (Just lazy programming that doesn't clean up properly)
+void hidconfig::SetLoaded()
+{
+    ui.actionNew->setEnabled( false );
+    ui.actionOpen->setEnabled( false );
+    m_MRU.setEnabled( false );
 }
 
 void hidconfig::onDebug()

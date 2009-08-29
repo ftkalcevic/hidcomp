@@ -23,7 +23,7 @@ EditFontDlg::EditFontDlg( const QList<LCDFont *> &fonts, int nMinFontIndex, int 
 		break;
 	    }
 	if ( !bFound )
-	    m_fonts.push_back( new LCDFont( index, QVector<byte>( m_nCols ) ) );
+	    m_fonts.push_back( new LCDFont( (byte)index, QVector<byte>( m_nCols ) ) );
     }
     ui.lcdFont->setSize( m_nRows, m_nCols );
 
