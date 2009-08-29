@@ -2,23 +2,46 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hidconfig", "hidconfig.vcproj", "{AFDB8B1D-FAB5-4B8D-82A0-8066C120E75E}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 	ProjectSection(ProjectDependencies) = postProject
-		{8EF9DFFA-CE24-437A-A397-AC1FF9D3A4B2} = {8EF9DFFA-CE24-437A-A397-AC1FF9D3A4B2}
-		{333E3489-24F0-4B97-878C-996053F7DC54} = {333E3489-24F0-4B97-878C-996053F7DC54}
+		{EB6451BE-3BF1-4186-A797-4CADCA774441} = {EB6451BE-3BF1-4186-A797-4CADCA774441}
 		{18155E2E-09CA-41A7-B103-D5C3F52FFA7C} = {18155E2E-09CA-41A7-B103-D5C3F52FFA7C}
+		{333E3489-24F0-4B97-878C-996053F7DC54} = {333E3489-24F0-4B97-878C-996053F7DC54}
+		{8EF9DFFA-CE24-437A-A397-AC1FF9D3A4B2} = {8EF9DFFA-CE24-437A-A397-AC1FF9D3A4B2}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "utility", "..\utility\utility.vcproj", "{333E3489-24F0-4B97-878C-996053F7DC54}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "usbhid", "..\usbhid\usbhid.vcproj", "{18155E2E-09CA-41A7-B103-D5C3F52FFA7C}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 	ProjectSection(ProjectDependencies) = postProject
 		{333E3489-24F0-4B97-878C-996053F7DC54} = {333E3489-24F0-4B97-878C-996053F7DC54}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hid", "..\hid\hid.vcproj", "{8EF9DFFA-CE24-437A-A397-AC1FF9D3A4B2}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 	ProjectSection(ProjectDependencies) = postProject
-		{18155E2E-09CA-41A7-B103-D5C3F52FFA7C} = {18155E2E-09CA-41A7-B103-D5C3F52FFA7C}
 		{333E3489-24F0-4B97-878C-996053F7DC54} = {333E3489-24F0-4B97-878C-996053F7DC54}
+		{18155E2E-09CA-41A7-B103-D5C3F52FFA7C} = {18155E2E-09CA-41A7-B103-D5C3F52FFA7C}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "qtcommon", "..\qtcommon\qtcommon.vcproj", "{EB6451BE-3BF1-4186-A797-4CADCA774441}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
 Global
@@ -47,6 +70,10 @@ Global
 		{8EF9DFFA-CE24-437A-A397-AC1FF9D3A4B2}.Debug|Win32.Build.0 = Debug|Win32
 		{8EF9DFFA-CE24-437A-A397-AC1FF9D3A4B2}.Release|Win32.ActiveCfg = Release|Win32
 		{8EF9DFFA-CE24-437A-A397-AC1FF9D3A4B2}.Release|Win32.Build.0 = Release|Win32
+		{EB6451BE-3BF1-4186-A797-4CADCA774441}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EB6451BE-3BF1-4186-A797-4CADCA774441}.Debug|Win32.Build.0 = Debug|Win32
+		{EB6451BE-3BF1-4186-A797-4CADCA774441}.Release|Win32.ActiveCfg = Release|Win32
+		{EB6451BE-3BF1-4186-A797-4CADCA774441}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
