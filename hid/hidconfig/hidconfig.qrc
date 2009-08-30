@@ -1,14 +1,10 @@
 <RCC>
-  <qresource prefix="/hidconfig" >
-    <file alias="icon" >resources/joystick.PNG</file>
-    <file alias="GreenLight" >resources/greenlight.bmp</file>
-    <file alias="RedLight" >resources/redlight.bmp</file>
-    <file alias="HatDot" >resources/hatdot.bmp</file>
-    <file alias="HatArrow" >resources/hatarrow.bmp</file>
-    <file alias="HatDotHi" >resources/hatdothi.bmp</file>
-    <file alias="HatArrowHi" >resources/hatarrowhi.bmp</file>
-    <file alias="Open" >resources/open.png</file>
-    <file alias="Save" >resources/save.png</file>
-    <file alias="New" >resources/new.png</file>
-  </qresource>
+    <qresource prefix="/hidconfig" >
+        <file alias="icon" >resources/joystick.PNG</file>
+        <file alias="GreenLight" >resources/greenlight.bmp</file>
+        <file alias="RedLight" >resources/redlight.bmp</file>
+        <file alias="Open" >resources/open.png</file>
+        <file alias="Save" >resources/save.png</file>
+        <file alias="New" >resources/new.png</file>
+    </qresource>
 </RCC>
