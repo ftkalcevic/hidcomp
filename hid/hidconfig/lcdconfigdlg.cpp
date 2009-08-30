@@ -203,6 +203,7 @@ LCDConfigDlg::LCDConfigDlg(HIDLCD *pLCDData, HIDLCDDevice &lcdDevice, QWidget *p
 	ui.btnUserFonts->setVisible( false );
 
     ui.lcd->setSize( m_LCDDevice.rows(), m_LCDDevice.columns() );
+    ui.lcd->setReadOnly( true );
 
     setConfig( pLCDData );
 }
@@ -735,6 +736,7 @@ void LCDConfigDlg::onEditUserFonts()
 	m_fonts.clear();
 	m_fonts = dlg.fontData();
 
-	LCDSendUserFonts();
+	LCDSendUserFonts();	// Refresh user fonts
+	DrawCurrentPage();	// Refresh display
     }
 }
