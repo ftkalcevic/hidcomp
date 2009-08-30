@@ -23,7 +23,7 @@
 #include "comboboxdelegate.h"
 #include "hiddevices.h"
 #include "hid.h"
-
+#include "hidlcddevice.h"
 
 enum EDisplayDataType
 {
@@ -50,6 +50,7 @@ public:
     int nLastCol;
 };
 
+
 class LCDWorkingPage
 {
 public:
@@ -72,12 +73,13 @@ public:
 
 
 
+
 class LCDConfigDlg : public QDialog
 {
     Q_OBJECT
 
 public:
-    LCDConfigDlg(HIDLCD *lcdData, HIDDevice *pDevice, HID_CollectionPath_t *pCol, int nRows, int nColumns, bool bUserFonts, int nMinFontIndex, int nMaxFontIndex, QWidget *parent = 0);
+    LCDConfigDlg(HIDLCD *pLCDData, HIDLCDDevice &lcdDevice, QWidget *parent=0);
     ~LCDConfigDlg();
 
     void setConfig( HIDLCD *lcdData );
@@ -108,15 +110,11 @@ private:
     SpinBoxDelegate *m_pSpinBoxIndexDelegate;
     ComboBoxDelegate *m_pDataTypeDelegate;
 
-    int m_nRows;
-    int m_nColumns;
+    HIDLCDDevice &m_LCDDevice;
     bool m_bUpdating;
     int m_nSampleRate; 
     LCDWorkingPage *m_pCurrentPage;
     QList<LCDFont *> m_fonts;
-    bool m_bUserFonts;
-    int m_nMinFontIndex;
-    int m_nMaxFontIndex;
 
     void DisplaySample( int nRow );
     QString FormatData( ELCDDisplayData::ELCDDisplayData data, const QString &sFormat, double dScale, const QVariant &value );

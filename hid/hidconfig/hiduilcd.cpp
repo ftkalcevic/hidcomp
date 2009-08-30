@@ -70,23 +70,21 @@ void HIDUILCD::CreateLCDUI( HIDDevice *, QGridLayout *layout, int nRow)
 	m_txtHalPin->setText( Utility::MakeHALSafeName(m_lblName->text()) );
     else
 	m_txtHalPin->setText( "LCD" );
-
 }
 
 
 void HIDUILCD::onConfigClicked(bool)
 {
     // retreive the display attributes
-    int nRows, nCols ;
-    bool bUserFonts;
-    int nMinFontIndex, nMaxFontIndex;
-    QueryDisplayParmeters( nRows, nCols, bUserFonts, nMinFontIndex, nMaxFontIndex );
-    if ( nRows == 0 )
-	nRows = 2;
-    if ( nCols == 0 )
-	nCols = 20;
+    HIDLCDDevice lcdDevice( m_pDevice, m_pCol );
+    if ( !lcdDevice.Init() )
+    {
+	LOG_MSG( m_Logger, LogTypes::Error, "Failed to initialise LCD device" );
+	QMessageBox::critical( this, "LCD Error", "Failed to initialise LCD device" );
+	return;
+    }
 
-    LCDConfigDlg dlg( &m_lcdData, m_pDevice, m_pCol, nRows, nCols, bUserFonts, nMinFontIndex, nMaxFontIndex, this );
+    LCDConfigDlg dlg( &m_lcdData, lcdDevice, this );
 
     if ( dlg.exec() == QDialog::Accepted )
     {
@@ -109,52 +107,6 @@ void HIDUILCD::getConfig( HIDItem *pItem )
     HIDLCD *lcdData = dynamic_cast<HIDLCD *>( pItem );
     *lcdData = m_lcdData;
 }
-
-void HIDUILCD::QueryDisplayParmeters( int &nRows, int &nCols, bool &bUserFonts, int &nMinIndex, int &nMaxIndex )
-{
-    nRows = 0;
-    nCols = 0;
-
-    // find the feature report that contains the rows and columns count.  That's all we want.
-    HID_ReportItem_t *pRowItem = m_pDevice->ReportInfo().FindReportItem( m_pCol, REPORT_ITEM_TYPE_Feature, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_DISPLAY_ATTRIBUTES_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_ROWS );
-    HID_ReportItem_t *pColItem = m_pDevice->ReportInfo().FindReportItem( m_pCol, REPORT_ITEM_TYPE_Feature, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_DISPLAY_ATTRIBUTES_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_COLUMNS );
-
-    HID_ReportDetails_t pReportDetails = m_pDevice->ReportInfo().Reports[pRowItem->ReportID];
-    int nBufLen = pReportDetails.FeatureReportLength;
-    int nOffset = 0;
-    if ( m_pDevice->ReportInfo().Reports.size() > 1 )
-	nOffset=1;
-
-    byte *buf = new byte[nBufLen+nOffset];
-    bool b = m_pDevice->GetReport( pRowItem->ReportID, REPORT_ITEM_TYPE_Feature, buf, nBufLen + nOffset );
-    if ( !b ) 
-    {
-        LOG_MSG(m_Logger, LogTypes::Warning, QString("Failed to retreive feature report") );
-    }
-    else
-    {
-	HIDParser parser;
-	parser.DecodeReport( buf+nOffset, (byte)nBufLen, m_pDevice->ReportInfo().ReportItems, pRowItem->ReportID, REPORT_ITEM_TYPE_Feature );
-	nRows = pRowItem->Value;
-	nCols = pColItem->Value;
-	delete buf;
-    }
-
-    HID_ReportItem_t *pFontDataItem = m_pDevice->ReportInfo().FindReportItem( m_pCol, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_FONT_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_DISPLAY_DATA );
-    if ( pFontDataItem == NULL )
-	bUserFonts = false;
-    else
-    {
-	bUserFonts = true;
-	nMinIndex = pFontDataItem->Attributes.LogicalMinimum;
-	nMaxIndex = pFontDataItem->Attributes.LogicalMaximum;
-    }
-
-
-    return;
-}
-
-
 
 
 QList<QString> HIDUILCD::PinNames( const QString &sPrefix )

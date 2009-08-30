@@ -167,18 +167,12 @@ static LCDData *FindData( ELCDDisplayData::ELCDDisplayData nId )
 
 
 
-LCDConfigDlg::LCDConfigDlg(HIDLCD *pLCDData, HIDDevice *pDevice, HID_CollectionPath_t *pCol, int nRows, int nColumns, bool bUserFonts, int nMinFontIndex, int nMaxFontIndex, QWidget *parent)
+LCDConfigDlg::LCDConfigDlg(HIDLCD *pLCDData, HIDLCDDevice &lcdDevice, QWidget *parent)
 : QDialog(parent)
 , m_Logger( QCoreApplication::applicationName().toAscii().constData(), "LCDConfigDlg" )
-, m_pDevice( pDevice )
-, m_pCol( pCol )
-, m_nRows(nRows)
-, m_nColumns(nColumns)
+, m_LCDDevice( lcdDevice )
 , m_bUpdating( false )
 , m_pCurrentPage( NULL )
-, m_bUserFonts(bUserFonts)
-, m_nMinFontIndex(nMinFontIndex)
-, m_nMaxFontIndex(nMaxFontIndex)
 {
     ui.setupUi(this);
 
@@ -192,8 +186,8 @@ LCDConfigDlg::LCDConfigDlg(HIDLCD *pLCDData, HIDDevice *pDevice, HID_CollectionP
     ui.tablePages->setSelectionMode( QAbstractItemView::SingleSelection );
     ui.tablePages->setSelectionBehavior( QAbstractItemView::SelectRows );
 
-    m_pSpinBoxColDelegate = new SpinBoxDelegate(0,m_nColumns-1);
-    m_pSpinBoxRowDelegate = new SpinBoxDelegate(0,m_nRows-1);
+    m_pSpinBoxColDelegate = new SpinBoxDelegate(0,m_LCDDevice.columns()-1);
+    m_pSpinBoxRowDelegate = new SpinBoxDelegate(0,m_LCDDevice.rows()-1);
     m_pSpinBoxIndexDelegate = new SpinBoxDelegate(0,0x7FFFFFFF);
     ui.tableData->setItemDelegateForColumn( DATA_COL_COL, m_pSpinBoxColDelegate );
     ui.tableData->setItemDelegateForColumn( DATA_ROW_COL, m_pSpinBoxRowDelegate );
@@ -205,10 +199,10 @@ LCDConfigDlg::LCDConfigDlg(HIDLCD *pLCDData, HIDDevice *pDevice, HID_CollectionP
     ui.tableData->setItemDelegateForColumn( DATA_VALUE_COL, m_pDataTypeDelegate );
     ui.tableData->setColumnWidth( DATA_VALUE_COL, 185 );    // Should do this better - ask combo its max width
 
-    if ( !bUserFonts )
+    if ( !m_LCDDevice.hasUserFonts() )
 	ui.btnUserFonts->setVisible( false );
 
-    ui.lcd->setSize( nRows, nColumns );
+    ui.lcd->setSize( m_LCDDevice.rows(), m_LCDDevice.columns() );
 
     setConfig( pLCDData );
 }
@@ -545,8 +539,8 @@ void LCDConfigDlg::DisplaySample( int row )
     //int nIndex = ui.tableData->item( row, DATA_INDEX_COL)->text().toInt();
     QVariant vData = ui.tableData->item(row, DATA_TEST_VALUE_COL)->data(Qt::EditRole);
 
-    if ( ( nRow >= 0 && nRow <= m_nRows ) &&
-         ( nCol >= 0 && nCol <= m_nColumns ) &&
+    if ( ( nRow >= 0 && nRow <= m_LCDDevice.rows() ) &&
+         ( nCol >= 0 && nCol <= m_LCDDevice.columns() ) &&
          ( eData > 0 ) &&
          ( !sFormat.isEmpty() ) &&
          ( vData.isValid() ) )
@@ -622,7 +616,7 @@ QString LCDConfigDlg::FormatData( const QString *sFormat, ... )
     va_list args;
     va_start(args, sFormat);
 
-    const int nBufLen = m_nColumns*2+1;
+    const int nBufLen = m_LCDDevice.columns()*2+1;
     QByteArray buf;
     buf.resize(nBufLen);
 
@@ -710,53 +704,16 @@ void LCDConfigDlg::getConfig( HIDLCD *lcdData )
 
 void LCDConfigDlg::LCDClear()
 {
-    for ( int i = 0; i < m_nRows; i++ )
-	LCDWrite( i, 0, QString(m_nColumns,QChar(' ')), false );
+    for ( int i = 0; i < m_LCDDevice.rows(); i++ )
+	LCDWrite( i, 0, QString(m_LCDDevice.columns(),QChar(' ')), false );
 }
 
 void LCDConfigDlg::LCDSendUserFonts()
 {
-    HID_ReportItem_t *pCharIndex = m_pDevice->ReportInfo().FindReportItem( m_pCol, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_FONT_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_DISPLAY_DATA );
-    if ( pCharIndex == NULL )
-    {
-	LOG_MSG( m_Logger, LogTypes::Error, "Failed to find USAGE_DISPLAY_DATA in font report" );
-    }
-    HID_CollectionPath_t *pCollection = pCharIndex->CollectionPath;
-    byte nReportId = pCharIndex->ReportID;
-
-    // Find the index to the first data item
-    unsigned int nIndex = 0;
-    for ( ; nIndex < pCollection->ReportItems.size(); nIndex++ )
-	if ( pCollection->ReportItems[nIndex]->Attributes.Usage == USAGE_FONT_DATA )
-	    break;
-
     foreach (LCDFont *pFont, m_fonts )
     {
 	ui.lcd->SetUserFont( pFont->index(), pFont->data() );
-
-	pCharIndex->Value = pFont->index();
-
-	for ( int i = 0; i < pFont->data().count() && nIndex + i < pCollection->ReportItems.size(); i++ )
-	    pCollection->ReportItems[nIndex + i]->Value = pFont->data()[i];
-
-	HID_ReportDetails_t pReportDetails = m_pDevice->ReportInfo().Reports[nReportId];
-	int nBufLen = pReportDetails.OutReportLength;
-	int nOffset = 0;
-	if ( m_pDevice->ReportInfo().Reports.size() > 1 )
-	    nOffset=1;
-
-	byte *buf = new byte[nBufLen+nOffset];
-	if ( nOffset )
-	    *buf = nReportId;
-
-	HIDParser parser;
-	parser.MakeOutputReport( buf + nOffset, (byte)nBufLen, m_pDevice->ReportInfo().ReportItems, nReportId );
-
-	// Send the report
-	int nRet = m_pDevice->InterruptWrite( buf, nBufLen + nOffset, USB_TIMEOUT );
-	LOG_MSG( m_Logger, LogTypes::Debug, QString("interrupt write returned %1\n").arg(nRet).toLatin1().constData() );
-
-	delete buf;
+	m_LCDDevice.LCDSendUserFont( pFont->index(), pFont->data() );
     }
 }
 
@@ -764,48 +721,13 @@ void LCDConfigDlg::LCDSendUserFonts()
 void LCDConfigDlg::LCDWrite( int nRow, int nCol, QString sText, bool bHighlight )
 {
     ui.lcd->Write( nRow, nCol, sText, bHighlight );
-
-    HID_ReportItem_t *pRowItem = m_pDevice->ReportInfo().FindReportItem( m_pCol, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_CHARACTER_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_ROW );
-    HID_ReportItem_t *pColItem = m_pDevice->ReportInfo().FindReportItem( m_pCol, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_CHARACTER_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_COLUMN );
-    HID_CollectionPath_t *pCollection = pColItem->CollectionPath;
-
-    // Find the index to the first data item
-    unsigned int nIndex = 0;
-    for ( ; nIndex < pCollection->ReportItems.size(); nIndex++ )
-	if ( pCollection->ReportItems[nIndex]->Attributes.Usage == USAGE_DISPLAY_DATA )
-	    break;
-
-    pRowItem->Value = nRow;
-    pColItem->Value = nCol;
-    for ( int i = 0; i < sText.length() && i < m_nColumns && nIndex+i < pCollection->ReportItems.size(); i++ )
-	pCollection->ReportItems[nIndex + i]->Value = sText[i].toAscii();
-    if ( sText.length() < m_nColumns )
-	pCollection->ReportItems[nIndex + sText.length()]->Value = 0;
-
-    HID_ReportDetails_t pReportDetails = m_pDevice->ReportInfo().Reports[pRowItem->ReportID];
-    int nBufLen = pReportDetails.OutReportLength;
-    int nOffset = 0;
-    if ( m_pDevice->ReportInfo().Reports.size() > 1 )
-	nOffset=1;
-
-    byte *buf = new byte[nBufLen+nOffset];
-    if ( nOffset )
-	*buf = pRowItem->ReportID;
-
-    HIDParser parser;
-    parser.MakeOutputReport( buf + nOffset, (byte)nBufLen, m_pDevice->ReportInfo().ReportItems, pRowItem->ReportID );
-
-    // Send the report
-    int nRet = m_pDevice->InterruptWrite( buf, nBufLen + nOffset, USB_TIMEOUT );
-    LOG_MSG( m_Logger, LogTypes::Debug, QString("interrupt write returned %1\n").arg(nRet).toLatin1().constData() );
-
-    delete buf;
+    m_LCDDevice.LCDWrite( nRow, nCol, sText );
 }
 
 
 void LCDConfigDlg::onEditUserFonts()
 {
-    EditFontDlg dlg(m_fonts, m_nMinFontIndex, m_nMaxFontIndex, this);
+    EditFontDlg dlg(m_fonts, m_LCDDevice.minFontIndex(), m_LCDDevice.maxFontIndex(), this);
     if ( dlg.exec() == QDialog::Accepted )
     {
 	foreach ( LCDFont *pFont, m_fonts )
