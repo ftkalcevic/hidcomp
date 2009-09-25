@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = hidconfig
 CONFIG += qt precompile_header
-include(../build.pro)
+include(../build.pri)
 
 CONFIG(debug,debug|release) {
 DESTDIR=debug
