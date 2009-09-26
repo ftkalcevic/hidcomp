@@ -9,7 +9,6 @@ HEADERS += ./hidconfig.h \
     ./controlpointswidget.h \
     ./devicewidget.h \
     ./editfontdlg.h \
-    ./hatswitchwidget.h \
     ./hiddatathread.h \
     ./hiduibase.h \
     ./hiduibutton.h \
@@ -18,10 +17,8 @@ HEADERS += ./hidconfig.h \
     ./hiduiled.h \
     ./hiduioutputvalue.h \
     ./hiduivalue.h \
-    ./lcdchar.h \
     ./lcdconfigdlg.h \
     ./lcdfontwidget.h \
-    ./lcdwidget.h \
     ./scanning.h \
     ./selectdevice.h \
     ./spinboxdelegate.h \
@@ -35,7 +32,6 @@ SOURCES += ./hidconfig.cpp \
     ./controlpointswidget.cpp \
     ./devicewidget.cpp \
     ./editfontdlg.cpp \
-    ./hatswitchwidget.cpp \
     ./hiddatathread.cpp \
     ./hiduibase.cpp \
     ./hiduibutton.cpp \
@@ -46,7 +42,6 @@ SOURCES += ./hidconfig.cpp \
     ./hiduivalue.cpp \
     ./lcdconfigdlg.cpp \
     ./lcdfontwidget.cpp \
-    ./lcdwidget.cpp \
     ./main.cpp \
     ./scanning.cpp \
     ./selectdevice.cpp \
