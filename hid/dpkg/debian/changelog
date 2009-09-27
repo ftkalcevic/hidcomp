@@ -1,3 +1,11 @@
+hidcomp (1.2) release; urgency=low
+
+  * Added User Fonts to LCD devices
+  * Proper support for multiple LCD devices.
+  * Updated to reflect release of GenericHID
+
+ -- Frank Tkalcevic <ftkalcevic@franksworkshop.com.au>  Sun, 27 Sep 2009 14:06:46 +1000
+
 hidcomp (1.1) release; urgency=low
 
   * Remove the need to add lines to the emc.nml file when the USB HID device
