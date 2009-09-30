@@ -55,7 +55,7 @@
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>File</string>
+     <string>&amp;File</string>
     </property>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
@@ -65,7 +65,7 @@
    </widget>
    <widget class="QMenu" name="menuOptions">
     <property name="title">
-     <string>Options</string>
+     <string>&amp;Options</string>
     </property>
     <addaction name="actionDebug"/>
    </widget>
