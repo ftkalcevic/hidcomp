@@ -17,6 +17,7 @@
 #include "stdafx.h"
 #include "log.h"
 #include "emchiddevice.h"
+#include "lcdproc.h"
 
 
 static bool checkDeviceItemConfig( HIDItem *pCfgItem, HID_ReportItem_t *pReportItem, QString &sError )

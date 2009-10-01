@@ -224,6 +224,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\lcdproc.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 			</File>
@@ -271,6 +275,10 @@
 			</File>
 			<File
 				RelativePath=".\emcpin.h"
+				>
+			</File>
+			<File
+				RelativePath=".\lcdproc.h"
 				>
 			</File>
 			<File

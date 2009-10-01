@@ -610,6 +610,7 @@ QDomElement LCDFont::WriteXML( QDomElement pNode )
 HIDLCD::HIDLCD( int nIndex, unsigned short nUsagePage, unsigned short nUsage, bool bEnabled, const QString &sPinName )
 : HIDOutputItem( nIndex, nUsagePage, nUsage, bEnabled, sPinName, HIDItemType::LCD )
 , m_nSamplePeriod( 100 )
+, m_nLCDProcPort( 0 )
 {
 }
 
@@ -617,6 +618,7 @@ HIDLCD::HIDLCD( const HIDLCD &other )
 : HIDOutputItem( other )
 {
     m_nSamplePeriod = other.m_nSamplePeriod;
+    m_nLCDProcPort = other.m_nLCDProcPort;
     for ( int i = 0; i < other.m_pages.count(); i++ )
         m_pages.append( new LCDPage(*other.m_pages[i]) );
     for ( int i = 0; i < other.m_fonts.count(); i++ )
@@ -626,6 +628,7 @@ HIDLCD::HIDLCD( const HIDLCD &other )
 HIDLCD & HIDLCD::operator= ( const HIDLCD & other )
 {
     m_nSamplePeriod = other.m_nSamplePeriod;
+    m_nLCDProcPort = other.m_nLCDProcPort;
     clear();
     for ( int i = 0; i < other.m_pages.count(); i++ )
         m_pages.append( new LCDPage(*other.m_pages[i]) );
@@ -652,6 +655,7 @@ void HIDLCD::clear()
 void HIDLCD::ReadXML( QDomElement pNode )
 {
     m_nSamplePeriod =  XMLUtility::getAttribute( pNode, "refreshPeriod", 100 );
+    m_nLCDProcPort =  XMLUtility::getAttribute( pNode, "LCDProcPort", 0 );
 
     m_pages.clear();
     QDomNodeList pages = XMLUtility::elementsByTagName( pNode, "Page" );
@@ -678,6 +682,7 @@ QDomElement HIDLCD::WriteXML( QDomElement pNode )
     QDomElement pElem = HIDOutputItem::WriteXML( pNode );
 
     XMLUtility::setAttribute( pElem, "refreshPeriod", m_nSamplePeriod );
+    XMLUtility::setAttribute( pElem, "LCDProcPort", m_nLCDProcPort );
 
     if ( m_pages.count() > 0 )
     {

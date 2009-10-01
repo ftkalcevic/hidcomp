@@ -266,11 +266,14 @@ public:
 
     int samplePeriod() { return m_nSamplePeriod; }
     void setSamplePeriod( int n ) { m_nSamplePeriod = n; }
+    int LCDProcPort() { return m_nLCDProcPort; }
+    void setLCDProcPort( int n ) { m_nLCDProcPort = n; }
     QList<LCDPage *> &pages() { return m_pages; }
     QList<LCDFont *> &fonts() { return m_fonts; }
 
 private:
     int m_nSamplePeriod;        // ms
+    int m_nLCDProcPort;
     QList<LCDPage *> m_pages;
     QList<LCDFont *> m_fonts;
     void clear();

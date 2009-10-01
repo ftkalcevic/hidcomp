@@ -17,7 +17,6 @@
 #ifndef __EMCHIDDEVICE_H__
 #define __EMCHIDDEVICE_H__
 
-#include <QThread>
 #include "emcpin.h"
 #include <vector>
 #include "hid.h"

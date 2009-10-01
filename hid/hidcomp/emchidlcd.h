@@ -18,6 +18,7 @@
 #define __EMCHIDLCD_H__
 
 #include "emclcditem.h"
+#include "lcdproc.h"
 
 class LineChanges
 {
@@ -74,17 +75,46 @@ private:
     QList<EMCLCDPage *> m_Pages;
     HID_ReportItem_t *m_pRowItem;
     HID_ReportItem_t *m_pColItem;
+    HID_ReportItem_t *m_pPixelAddressItem;
+    HID_ReportItem_t *m_pClearScreenItem;
+    HID_ReportItem_t *m_pBacklightItem;
+    HID_ReportItem_t *m_pBackgroundColourItem;
+    HID_ReportItem_t *m_pForegroundColourItem;
+    HID_ReportItem_t *m_pFontItem;
+    HID_ReportItem_t *m_pRectXItem;
+    HID_ReportItem_t *m_pRectYItem;
+    HID_ReportItem_t *m_pRectWidthItem;
+    HID_ReportItem_t *m_pRectHeightItem;
+    HID_ReportItem_t *m_pRectFillItem;
     QVarLengthArray<byte> m_Report;
     int m_nReportIdSpace;
     QTime m_timer;
     int m_nRefreshPeriodMS;
+    int m_nPort;
     QList<LCDFont *> m_fonts;
+    LCDProc *m_pLCDProc;
+    bool m_bClearScreen;
+    int m_nBackgroundColour;
+    int m_nForegroundColour;
+    int m_nFont;
+    int m_nIntensity;
 
+    int SendReport( HIDDevice *pDevice, byte nReportId );
+    void SendDisplayControlReport(HIDDevice *pDevice);
+    void ProcessCommand( HIDDevice *pDevice, LCDCmd *pCmd );
     bool WriteLCDBuffer( unsigned int nRow, int unsigned nCol, const QString &s );
     void ClearLCDBuffer();
     void OutputHIDLCD( HIDDevice *pDevice, unsigned int nRow, unsigned int nCol, const QString &s, unsigned int nPos, unsigned int nLen );
     void HIDQueryDisplayParmeters( HIDDevice *pDevice );
     void LCDSendUserFonts(HIDDevice *pDevice, QList<LCDFont*> &fonts);
+
+    void DoClearScreen(HIDDevice *pDevice);
+    void DoSetBackground( HIDDevice *pDevice, LCDSetBackground *pCmd );
+    void DoSetForeground( HIDDevice *pDevice, LCDSetForeground *pCmd );
+    void DoText( HIDDevice *pDevice, LCDText *pCmd );
+    void DoSetFont( HIDDevice *pDevice, LCDSetFont *pCmd );
+    void DoSetBacklight( HIDDevice *pDevice, LCDSetBacklight *pCmd );
+    void DoRectangle( HIDDevice *pDevice, LCDRectangle *pCmd );
 };
 
 

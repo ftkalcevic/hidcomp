@@ -651,6 +651,7 @@ void LCDConfigDlg::setConfig( HIDLCD *lcdData )
     try
     {
         ui.editRefreshRate->setValue( lcdData->samplePeriod() );
+        ui.editPort->setValue( lcdData->LCDProcPort() );
         // load pages
         int nPages = lcdData->pages().count();
         for ( int i = 0; i < nPages; i++ )
@@ -682,6 +683,7 @@ void LCDConfigDlg::setConfig( HIDLCD *lcdData )
 void LCDConfigDlg::getConfig( HIDLCD *lcdData )
 {
     lcdData->setSamplePeriod( ui.editRefreshRate->value() );
+    lcdData->setLCDProcPort( ui.editPort->value() );
     lcdData->pages().clear();
     int nPages = ui.tablePages->rowCount();
     for ( int i = 0; i < nPages; i++ )

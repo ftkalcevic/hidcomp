@@ -22,7 +22,7 @@
 #define OUT_PAGES		    1
 #define OUT_MAX_PAGE		    2
 
-
+#define RGB(r,g,b) ( ((uint16_t)(b>>3) & 0x1F) | ((((uint16_t)(g>>3)) & 0x1f) << 5) | (((uint16_t)(r>>3) & 0x1f) << 11) )
 
 
 EMCHIDLCD::EMCHIDLCD(const QString &sPinPrefix, HIDItem *pCfgItem, HID_CollectionPath_t *pCollection )
@@ -32,10 +32,30 @@ EMCHIDLCD::EMCHIDLCD(const QString &sPinPrefix, HIDItem *pCfgItem, HID_Collectio
 , m_nPage( 0xFFFFFFFF )
 , m_bInitialised( false )
 , m_bFirst( true )
+, m_pRowItem( NULL )
+, m_pColItem( NULL )
+, m_pPixelAddressItem( NULL )
+, m_pClearScreenItem( NULL )
+, m_pBacklightItem( NULL )
+, m_pBackgroundColourItem( NULL )
+, m_pForegroundColourItem( NULL )
+, m_pFontItem( NULL )
+, m_pRectXItem( NULL )
+, m_pRectYItem( NULL )
+, m_pRectWidthItem( NULL )
+, m_pRectHeightItem( NULL )
+, m_pRectFillItem( NULL )
+, m_pLCDProc( NULL )
+, m_bClearScreen( false )	// should read-back defaults from device
+, m_nBackgroundColour( 0 )
+, m_nForegroundColour( 0xFFFF )
+, m_nFont( 0 )
+, m_nIntensity( 50 )
 {
     HIDLCD *pItem = dynamic_cast<HIDLCD *>(pCfgItem);
 
     m_nRefreshPeriodMS = pItem->samplePeriod();
+    m_nPort = pItem->LCDProcPort();
 
     QString sPin;
     sPin = sPinPrefix;		// comp.idx.[pCfgItem->sPinName]...
@@ -169,9 +189,17 @@ void EMCHIDLCD::Initialise(HIDDevice *pDevice)
 	m_Changes.append( LineChanges() );
     }
 
-    // Find the report items we use
+    // Find what features the LCD has.
+    // clear screen
+    // bg/fg
+    // font
+    // backlight
+    // rectangle
+
+    // currently we only support lcds that have row/col/data (optionally pixel address) in the Character Report
     m_pRowItem = pDevice->ReportInfo().FindReportItem( m_pLCDCollection, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_CHARACTER_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_ROW );
     m_pColItem = pDevice->ReportInfo().FindReportItem( m_pLCDCollection, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_CHARACTER_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_COLUMN );
+    m_pPixelAddressItem = pDevice->ReportInfo().FindReportItem( m_pLCDCollection, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_CHARACTER_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_CURSOR_PIXEL_POSITIONING );
     if ( m_pRowItem == NULL || m_pColItem == NULL )
     {
 	LOG_MSG( m_Logger, LogTypes::Error, "Failed to locate Row and Column entries in LCD report" );
@@ -181,6 +209,18 @@ void EMCHIDLCD::Initialise(HIDDevice *pDevice)
     }
     m_pCharReportCollection = m_pColItem->CollectionPath;
     m_nCharReportID = m_pColItem->ReportID;
+
+    m_pClearScreenItem = pDevice->ReportInfo().FindReportItem( m_pLCDCollection, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_DISPLAY_CONTROL_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_CLEAR_DISPLAY );
+    m_pBacklightItem = pDevice->ReportInfo().FindReportItem( m_pLCDCollection, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_DISPLAY_CONTROL_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_DISPLAY_BRIGHTNESS );
+    m_pBackgroundColourItem = pDevice->ReportInfo().FindReportItem( m_pLCDCollection, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_DISPLAY_CONTROL_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_BACKGROUND_COLOUR );
+    m_pForegroundColourItem = pDevice->ReportInfo().FindReportItem( m_pLCDCollection, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_DISPLAY_CONTROL_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_FOREGROUND_COLOUR );
+    m_pFontItem = pDevice->ReportInfo().FindReportItem( m_pLCDCollection, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_DISPLAY_CONTROL_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_SELECT_FONT );
+    
+    m_pRectXItem = pDevice->ReportInfo().FindReportItem( m_pLCDCollection, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_DRAW_RECT_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_RECT_X );
+    m_pRectYItem = pDevice->ReportInfo().FindReportItem( m_pLCDCollection, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_DRAW_RECT_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_RECT_Y );
+    m_pRectWidthItem = pDevice->ReportInfo().FindReportItem( m_pLCDCollection, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_DRAW_RECT_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_RECT_WIDTH );
+    m_pRectHeightItem = pDevice->ReportInfo().FindReportItem( m_pLCDCollection, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_DRAW_RECT_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_RECT_HEIGHT );
+    m_pRectFillItem = pDevice->ReportInfo().FindReportItem( m_pLCDCollection, REPORT_ITEM_TYPE_Out, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_DRAW_RECT_REPORT, USAGEPAGE_ALPHANUMERIC_DISPLAY, USAGE_RECT_FILLED );
 
     // Find the index to the first data item
     m_nFirsDataIndex = 0;
@@ -210,6 +250,18 @@ void EMCHIDLCD::Initialise(HIDDevice *pDevice)
     HIDLCD *pItem = dynamic_cast<HIDLCD *>(m_pCfgItem);
     **(hal_s32_t **)(Pins[OUT_PAGES].pData) = pItem->pages().count();
     **(hal_s32_t **)(Pins[OUT_MAX_PAGE].pData) = pItem->pages().count()-1;
+
+    if ( m_nPort > 0 )
+    {
+	m_pLCDProc = new LCDProc( m_nPort );
+	if ( !m_pLCDProc->Initialise() )
+	{
+	    LOG_MSG( m_Logger, LogTypes::Error, "Failed to initialise LCD Listen Port" );
+	    delete m_pLCDProc;
+	    m_pLCDProc = NULL;
+	    return;
+	}
+    }
 
     m_bInitialised = true;
 }
@@ -281,6 +333,19 @@ void EMCHIDLCD::Refresh( HIDDevice *pDevice )
 	    LineChanges &changes = m_Changes[i];
 	    if ( changes.Changed() )
 		OutputHIDLCD( pDevice, i, changes.Low(), m_Display[i], changes.Low(), changes.High() - changes.Low() + 1);
+	}
+    }
+
+    // check the socket
+    if ( m_pLCDProc != NULL )
+    {
+	while ( m_pLCDProc->queueLength() > 0 )
+	{
+	    LCDCmd *pCmd = m_pLCDProc->getQueueMessage();
+	    if ( pCmd != NULL )
+	    {
+		ProcessCommand( pDevice, pCmd );
+	    }
 	}
     }
     m_bFirst = false;
@@ -435,5 +500,205 @@ void EMCHIDLCD::LCDSendUserFonts(HIDDevice *pDevice, QList<LCDFont*> &fonts)
 	LOG_MSG( m_Logger, LogTypes::Debug, QString("interrupt write returned %1\n").arg(nRet).toLatin1().constData() );
     }
 }
+
+
+void EMCHIDLCD::ProcessCommand( HIDDevice *pDevice, LCDCmd *pCmd )
+{
+    switch ( pCmd->nCmd )
+    {
+	case ELCDCmd::ClearScreen:	DoClearScreen(pDevice); break;
+	case ELCDCmd::SetBackground:	DoSetBackground( pDevice, (LCDSetBackground *)pCmd ); break;
+	case ELCDCmd::SetForeground:	DoSetForeground( pDevice, (LCDSetForeground *)pCmd ); break;
+	case ELCDCmd::Text:		DoText( pDevice, (LCDText *)pCmd ); break;
+	case ELCDCmd::SetFont:		DoSetFont( pDevice, (LCDSetFont *)pCmd ); break;
+	case ELCDCmd::SetBacklight:	DoSetBacklight( pDevice, (LCDSetBacklight *)pCmd ); break;
+	case ELCDCmd::Rectangle:	DoRectangle( pDevice, (LCDRectangle *)pCmd ); break;
+    }
+}
+
+
+void EMCHIDLCD::DoClearScreen(HIDDevice *pDevice) 
+{
+    if ( m_pClearScreenItem != NULL )
+    {
+	m_bClearScreen = true;
+	SendDisplayControlReport(pDevice);
+    }
+}
+
+void EMCHIDLCD::DoSetBackground( HIDDevice *pDevice, LCDSetBackground *pCmd ) 
+{
+    if ( m_pBackgroundColourItem != NULL )
+    {
+	m_nBackgroundColour = RGB( pCmd->r, pCmd->g, pCmd->b );
+	SendDisplayControlReport(pDevice);
+    }
+}
+
+void EMCHIDLCD::DoSetForeground( HIDDevice *pDevice, LCDSetForeground *pCmd ) 
+{
+    if ( m_pForegroundColourItem != NULL )
+    {
+	m_nForegroundColour = RGB( pCmd->r, pCmd->g, pCmd->b );
+	SendDisplayControlReport(pDevice);
+    }
+}
+
+// This function is used by the external socket connection methods.  There is no
+// optimisaton or checking of coordinate ranges.
+void EMCHIDLCD::DoText( HIDDevice *pDevice, LCDText *pCmd ) 
+{
+    if ( m_pRowItem == NULL || m_pColItem == NULL )
+	return;
+
+    // Set report attributes
+    m_pRowItem->Value = pCmd->x;
+    m_pColItem->Value = pCmd->y;
+    if ( m_pPixelAddressItem != NULL )
+	m_pPixelAddressItem->Value = pCmd->pixel_coord;
+
+    // copy the changed text 
+    unsigned nLen = pCmd->s.length();
+    for ( unsigned int i = 0; i < nLen && m_nFirsDataIndex + i < m_pCharReportCollection->ReportItems.size(); i++ )
+	m_pCharReportCollection->ReportItems[m_nFirsDataIndex + i]->Value = pCmd->s[i].toAscii();
+
+    // null terminate the string if the buffer isn't full
+    if ( nLen < m_nColumns )
+	m_pCharReportCollection->ReportItems[m_nFirsDataIndex + nLen]->Value = 0;
+
+    HIDParser parser;
+    parser.MakeOutputReport( m_Report.data() + m_nReportIdSpace, (byte)(m_Report.count() - m_nReportIdSpace), m_pCharReportCollection->ReportItems, m_nCharReportID );
+
+    // Send the report
+    int nRet = pDevice->AsyncInterruptWrite( m_Report.data(), m_Report.count() );
+    LOG_MSG( m_Logger, LogTypes::Debug, QString("interrupt write returned %1\n").arg(nRet).toLatin1().constData() );
+}
+
+void EMCHIDLCD::DoSetFont( HIDDevice *pDevice, LCDSetFont *pCmd ) 
+{
+    if ( m_pFontItem != NULL )
+    {
+	m_nFont = pCmd->font;
+	SendDisplayControlReport(pDevice);
+    }
+}
+
+void EMCHIDLCD::DoSetBacklight( HIDDevice *pDevice, LCDSetBacklight *pCmd ) 
+{
+    if ( m_pBacklightItem != NULL )
+    {
+	m_nIntensity = pCmd->intensity;
+	SendDisplayControlReport(pDevice);
+    }
+}
+
+void EMCHIDLCD::DoRectangle( HIDDevice *pDevice, LCDRectangle *pCmd ) 
+{
+    if ( m_pRectXItem == NULL &&
+	 m_pRectYItem == NULL &&
+	 m_pRectWidthItem == NULL &&
+	 m_pRectHeightItem == NULL &&
+	 m_pRectFillItem == NULL )
+    {
+	return;
+    }
+
+    byte nReportId;
+    if ( m_pRectXItem != NULL )
+    {
+	nReportId = m_pRectXItem->ReportID;
+	m_pRectXItem->Value = pCmd->x;
+    }
+    if ( m_pRectYItem != NULL )
+    {
+	nReportId = m_pRectYItem->ReportID;
+	m_pRectYItem->Value = pCmd->y;
+    }
+    if ( m_pRectWidthItem != NULL )
+    {
+	nReportId = m_pRectWidthItem->ReportID;
+	m_pRectWidthItem->Value = pCmd->width;
+    }
+    if ( m_pRectHeightItem != NULL )
+    {
+	nReportId = m_pRectHeightItem->ReportID;
+	m_pRectHeightItem->Value = pCmd->height;
+    }
+    if ( m_pRectFillItem != NULL )
+    {
+	nReportId = m_pRectFillItem->ReportID;
+	m_pRectFillItem->Value = pCmd->fill;
+    }
+
+    SendReport( pDevice, nReportId );
+}
+
+void EMCHIDLCD::SendDisplayControlReport(HIDDevice *pDevice)
+{
+    if ( m_pClearScreenItem == NULL &&
+         m_pBacklightItem == NULL && 
+	 m_pBackgroundColourItem == NULL &&
+         m_pForegroundColourItem == NULL &&
+         m_pFontItem == NULL )
+    {
+	return;
+    }
+
+    byte nReportId;
+    if ( m_pClearScreenItem != NULL )
+    {
+	nReportId = m_pClearScreenItem->ReportID;
+	m_pClearScreenItem->Value = m_bClearScreen;
+    }
+    if ( m_pBackgroundColourItem != NULL )
+    {
+	nReportId = m_pBackgroundColourItem->ReportID;
+	m_pBackgroundColourItem->Value = m_nBackgroundColour;
+    }
+    if ( m_pForegroundColourItem != NULL )
+    {
+	nReportId = m_pForegroundColourItem->ReportID;
+	m_pForegroundColourItem->Value = m_nForegroundColour;
+    }
+    if ( m_pFontItem != NULL )
+    {
+	nReportId = m_pFontItem->ReportID;
+	m_pFontItem->Value = m_nFont;
+    }
+    if ( m_pBacklightItem != NULL )
+    {
+	nReportId = m_pBacklightItem->ReportID;
+	m_pBacklightItem->Value = m_nIntensity;
+    }
+
+    SendReport( pDevice, nReportId );
+
+    m_bClearScreen = false;
+}
+
+
+
+int EMCHIDLCD::SendReport( HIDDevice *pDevice, byte nReportId )
+{
+    HID_ReportDetails_t pReportDetails = pDevice->ReportInfo().Reports[nReportId];
+    int nBufLen = pReportDetails.OutReportLength;
+    int nOffset = 0;
+    if ( pDevice->ReportInfo().Reports.size() > 1 )
+	nOffset=1;
+
+    QVarLengthArray<byte> buf;
+    buf.resize(nBufLen+nOffset);
+    if ( nOffset )
+	buf[0] = nReportId;
+
+    HIDParser parser;
+    parser.MakeOutputReport( buf.data() + nOffset, (byte)nBufLen, pDevice->ReportInfo().ReportItems, nReportId );
+
+    // Send the report
+    int nRet = pDevice->InterruptWrite( buf.data(), nBufLen + nOffset, USB_TIMEOUT );
+    LOG_MSG( m_Logger, LogTypes::Debug, QString("interrupt write returned %1\n").arg(nRet).toLatin1().constData() );
+    return nRet;
+}
+
 
 

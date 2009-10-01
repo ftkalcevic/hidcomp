@@ -39,6 +39,7 @@ HIDUILCD::HIDUILCD(HIDDevice *pDev, HID_CollectionPath_t *col, int nIndex, QGrid
     connect( pButton, SIGNAL(clicked(bool)), this, SLOT(onConfigClicked(bool)));
 
     m_lcdData.setSamplePeriod( 100 );
+    m_lcdData.setLCDProcPort( 0 );
 }
 
 

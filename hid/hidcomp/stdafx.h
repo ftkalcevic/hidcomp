@@ -26,10 +26,15 @@
 
 #include <QMap>
 #include <QString>
+#include <QStringList>
 #include <QRegExp>
 #include <QTime>
 #include <QVarLengthArray>
 #include <QCoreApplication>
+#include <QtNetwork/QTcpServer>
+#include <QtNetwork/QTcpSocket>
+#include <QThread>
+#include <QMutex>
 
 #ifdef _WIN32
 #pragma warning(pop)
