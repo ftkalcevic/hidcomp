@@ -282,7 +282,10 @@
      <item>
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>LCDProc Port</string>
+        <string>LCD External Access Port</string>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::NoTextInteraction</set>
        </property>
       </widget>
      </item>
