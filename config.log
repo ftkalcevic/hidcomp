@@ -27,9 +27,9 @@ uname -v = #1 Tue Sep 30 22:54:33 EEST 2008
 /usr/bin/oslevel       = unknown
 /bin/universe          = unknown
 
-PATH: /home/frankt/qt/qtsdk-2009.02/qt/bin
-PATH: /home/frankt/qt/qtsdk-2009.02/qt/bin
-PATH: /home/frankt/qt/qtsdk-2009.02/qt/bin
+PATH: /home/frankt/qt/qtsdk-2009.03/qt/bin
+PATH: /home/frankt/qt/qtsdk-2009.03/qt/bin
+PATH: /home/frankt/qt/qtsdk-2009.03/qt/bin
 PATH: /usr/local/sbin
 PATH: /usr/local/bin
 PATH: /usr/sbin
@@ -344,6 +344,7 @@ config.status:1005: creating examples/Makefile
 config.status:1005: creating doc/Makefile
 config.status:1005: creating doc/doxygen.cfg
 config.status:1005: creating config.h
+config.status:1227: config.h is unchanged
 config.status:1279: executing depfiles commands
 config.status:1279: executing libtool commands
 
@@ -427,17 +428,17 @@ lt_cv_sys_max_cmd_len=98304
 ## Output variables. ##
 ## ----------------- ##
 
-ACLOCAL='${SHELL} /home/frankt/src/hid/libusb-1.0.2/missing --run aclocal-1.10'
+ACLOCAL='${SHELL} /home/frankt/svn/hid/libusb-1.0.2/missing --run aclocal-1.10'
 AMDEPBACKSLASH='\'
 AMDEP_FALSE='#'
 AMDEP_TRUE=''
-AMTAR='${SHELL} /home/frankt/src/hid/libusb-1.0.2/missing --run tar'
+AMTAR='${SHELL} /home/frankt/svn/hid/libusb-1.0.2/missing --run tar'
 AM_CFLAGS='-std=gnu99 -fgnu89-inline -Wall -Wundef -Wunused -Wstrict-prototypes -Werror-implicit-function-declaration -Wno-pointer-sign -Wshadow'
 AM_LDFLAGS=''
 AR='ar'
-AUTOCONF='${SHELL} /home/frankt/src/hid/libusb-1.0.2/missing --run autoconf'
-AUTOHEADER='${SHELL} /home/frankt/src/hid/libusb-1.0.2/missing --run autoheader'
-AUTOMAKE='${SHELL} /home/frankt/src/hid/libusb-1.0.2/missing --run automake-1.10'
+AUTOCONF='${SHELL} /home/frankt/svn/hid/libusb-1.0.2/missing --run autoconf'
+AUTOHEADER='${SHELL} /home/frankt/svn/hid/libusb-1.0.2/missing --run autoheader'
+AUTOMAKE='${SHELL} /home/frankt/svn/hid/libusb-1.0.2/missing --run automake-1.10'
 AWK='mawk'
 BUILD_EXAMPLES_FALSE=''
 BUILD_EXAMPLES_TRUE='#'
@@ -470,7 +471,7 @@ LIBTOOL='$(SHELL) $(top_builddir)/libtool'
 LIPO=''
 LN_S='ln -s'
 LTLIBOBJS=''
-MAKEINFO='${SHELL} /home/frankt/src/hid/libusb-1.0.2/missing --run makeinfo'
+MAKEINFO='${SHELL} /home/frankt/svn/hid/libusb-1.0.2/missing --run makeinfo'
 MKDIR_P='/bin/mkdir -p'
 NM='/usr/bin/nm -B'
 NMEDIT=''
@@ -527,7 +528,7 @@ host_vendor='pc'
 htmldir='${docdir}'
 includedir='${prefix}/include'
 infodir='${datarootdir}/info'
-install_sh='$(SHELL) /home/frankt/src/hid/libusb-1.0.2/install-sh'
+install_sh='$(SHELL) /home/frankt/svn/hid/libusb-1.0.2/install-sh'
 libdir='${exec_prefix}/lib'
 libexecdir='${exec_prefix}/libexec'
 localedir='${datarootdir}/locale'

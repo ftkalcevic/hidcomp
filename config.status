@@ -363,7 +363,7 @@ Copyright (C) 2008 Free Software Foundation, Inc.
 This config.status script is free software; the Free Software Foundation
 gives unlimited permission to copy, distribute and modify it."
 
-ac_pwd='/home/frankt/src/hid/libusb-1.0.2'
+ac_pwd='/home/frankt/svn/hid/libusb-1.0.2'
 srcdir='.'
 INSTALL='/usr/bin/install -c'
 MKDIR_P='/bin/mkdir -p'
@@ -583,7 +583,7 @@ finish_cmds='PATH="\$PATH:/sbin" ldconfig -n $libdir'
 finish_eval=''
 hardcode_into_libs='yes'
 sys_lib_search_path_spec='/usr/lib/gcc/i486-linux-gnu/4.2.4 /usr/lib /lib'
-sys_lib_dlsearch_path_spec='/lib /usr/lib /lib/i486-linux-gnu /usr/lib/i486-linux-gnu /usr/local/lib '
+sys_lib_dlsearch_path_spec='/lib /usr/lib /lib/i486-linux-gnu /usr/lib/i486-linux-gnu /usr/lib/kde4/lib /usr/local/lib '
 hardcode_action='immediate'
 enable_dlopen='unknown'
 enable_dlopen_self='unknown'
@@ -784,7 +784,7 @@ S["CFLAGS"]="-g -O2"
 S["CC"]="gcc"
 S["am__untar"]="${AMTAR} xf -"
 S["am__tar"]="${AMTAR} chof - \"$$tardir\""
-S["AMTAR"]="${SHELL} /home/frankt/src/hid/libusb-1.0.2/missing --run tar"
+S["AMTAR"]="${SHELL} /home/frankt/svn/hid/libusb-1.0.2/missing --run tar"
 S["am__leading_dot"]="."
 S["SET_MAKE"]=""
 S["AWK"]="mawk"
@@ -792,12 +792,12 @@ S["mkdir_p"]="/bin/mkdir -p"
 S["MKDIR_P"]="/bin/mkdir -p"
 S["INSTALL_STRIP_PROGRAM"]="$(install_sh) -c -s"
 S["STRIP"]="strip"
-S["install_sh"]="$(SHELL) /home/frankt/src/hid/libusb-1.0.2/install-sh"
-S["MAKEINFO"]="${SHELL} /home/frankt/src/hid/libusb-1.0.2/missing --run makeinfo"
-S["AUTOHEADER"]="${SHELL} /home/frankt/src/hid/libusb-1.0.2/missing --run autoheader"
-S["AUTOMAKE"]="${SHELL} /home/frankt/src/hid/libusb-1.0.2/missing --run automake-1.10"
-S["AUTOCONF"]="${SHELL} /home/frankt/src/hid/libusb-1.0.2/missing --run autoconf"
-S["ACLOCAL"]="${SHELL} /home/frankt/src/hid/libusb-1.0.2/missing --run aclocal-1.10"
+S["install_sh"]="$(SHELL) /home/frankt/svn/hid/libusb-1.0.2/install-sh"
+S["MAKEINFO"]="${SHELL} /home/frankt/svn/hid/libusb-1.0.2/missing --run makeinfo"
+S["AUTOHEADER"]="${SHELL} /home/frankt/svn/hid/libusb-1.0.2/missing --run autoheader"
+S["AUTOMAKE"]="${SHELL} /home/frankt/svn/hid/libusb-1.0.2/missing --run automake-1.10"
+S["AUTOCONF"]="${SHELL} /home/frankt/svn/hid/libusb-1.0.2/missing --run autoconf"
+S["ACLOCAL"]="${SHELL} /home/frankt/svn/hid/libusb-1.0.2/missing --run aclocal-1.10"
 S["VERSION"]="1.0.2"
 S["PACKAGE"]="libusb"
 S["CYGPATH_W"]="echo"
