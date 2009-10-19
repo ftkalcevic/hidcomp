@@ -22,7 +22,7 @@
 #define OUT_PAGES		    1
 #define OUT_MAX_PAGE		    2
 
-#define RGB(r,g,b) ( ((uint16_t)(b>>3) & 0x1F) | ((((uint16_t)(g>>3)) & 0x1f) << 5) | (((uint16_t)(r>>3) & 0x1f) << 11) )
+#define RGB(r,g,b) ( ((uint16_t)((b)>>3) & 0x1F) | ((((uint16_t)((g)>>3)) & 0x1f) << 5) | (((uint16_t)((r)>>3) & 0x1f) << 11) )
 
 
 EMCHIDLCD::EMCHIDLCD(const QString &sPinPrefix, HIDItem *pCfgItem, HID_CollectionPath_t *pCollection )
@@ -51,6 +51,10 @@ EMCHIDLCD::EMCHIDLCD(const QString &sPinPrefix, HIDItem *pCfgItem, HID_Collectio
 , m_nForegroundColour( 0xFFFF )
 , m_nFont( 0 )
 , m_nIntensity( 50 )
+, m_nOldBackgroundColour( 0 )
+, m_nOldForegroundColour( 0xFFFF )
+, m_nOldFont( 0 )
+, m_nOldIntensity( 50 )
 {
     HIDLCD *pItem = dynamic_cast<HIDLCD *>(pCfgItem);
 
@@ -178,7 +182,8 @@ void EMCHIDLCD::Initialise(HIDDevice *pDevice)
     // Query the device for rows and columns
     HIDQueryDisplayParmeters( pDevice );
 
-    LCDSendUserFonts(pDevice, m_fonts);
+    if ( m_fonts.count() > 0 )
+        LCDSendUserFonts(pDevice, m_fonts);
 
     // Force timer start to one minute ago
     m_timer = m_timer.addSecs(-60);
@@ -306,17 +311,20 @@ void EMCHIDLCD::Refresh( HIDDevice *pDevice )
     }
 
     // Update EMC statuses - iterate through items on the current page to see if any thing has changed.
-    EMCLCDPage *pPage = m_Pages[m_nPage];
-    int nEntries = pPage->m_Items.count();
-    for ( int i = 0; i < nEntries; i++ )
+    if ( m_Pages.count() > 0 )
     {
-	EMCLCDItem *pEntry = pPage->m_Items[i];
-	if ( pEntry->CheckDataChange(Pins,bRedrawAll) )	// Changed Data
+	EMCLCDPage *pPage = m_Pages[m_nPage];
+	int nEntries = pPage->m_Items.count();
+	for ( int i = 0; i < nEntries; i++ )
 	{
-	    // Format it for display.  
-	    // Write it to the local buffer.  If it is different, flag it.
-	    if ( WriteLCDBuffer( pEntry->m_nRow, pEntry->m_nCol, pEntry->m_sLastFormattedData ) )
-		bUpdate = true;
+	    EMCLCDItem *pEntry = pPage->m_Items[i];
+	    if ( pEntry->CheckDataChange(Pins,bRedrawAll) )	// Changed Data
+	    {
+		// Format it for display.  
+		// Write it to the local buffer.  If it is different, flag it.
+		if ( WriteLCDBuffer( pEntry->m_nRow, pEntry->m_nCol, pEntry->m_sLastFormattedData ) )
+		    bUpdate = true;
+	    }
 	}
     }
 
@@ -345,6 +353,7 @@ void EMCHIDLCD::Refresh( HIDDevice *pDevice )
 	    if ( pCmd != NULL )
 	    {
 		ProcessCommand( pDevice, pCmd );
+		delete pCmd;
 	    }
 	}
     }
@@ -519,41 +528,64 @@ void EMCHIDLCD::ProcessCommand( HIDDevice *pDevice, LCDCmd *pCmd )
 
 void EMCHIDLCD::DoClearScreen(HIDDevice *pDevice) 
 {
+    LOG_DEBUG( m_Logger, "DoClearScreen" );
     if ( m_pClearScreenItem != NULL )
     {
 	m_bClearScreen = true;
-	SendDisplayControlReport(pDevice);
+	UpdateDisplayControl( pDevice, true );
     }
 }
 
 void EMCHIDLCD::DoSetBackground( HIDDevice *pDevice, LCDSetBackground *pCmd ) 
 {
+    LOG_DEBUG( m_Logger, QString("DoSetBackground %1 %2 %3").arg(pCmd->r).arg(pCmd->g).arg(pCmd->b) );
     if ( m_pBackgroundColourItem != NULL )
     {
 	m_nBackgroundColour = RGB( pCmd->r, pCmd->g, pCmd->b );
-	SendDisplayControlReport(pDevice);
     }
 }
 
 void EMCHIDLCD::DoSetForeground( HIDDevice *pDevice, LCDSetForeground *pCmd ) 
 {
+    LOG_DEBUG( m_Logger, QString("DoSetForeground %1 %2 %3").arg(pCmd->r).arg(pCmd->g).arg(pCmd->b) );
     if ( m_pForegroundColourItem != NULL )
     {
 	m_nForegroundColour = RGB( pCmd->r, pCmd->g, pCmd->b );
-	SendDisplayControlReport(pDevice);
     }
 }
+
+void EMCHIDLCD::UpdateDisplayControl( HIDDevice *pDevice, bool bClearScreen )
+{
+    if ( bClearScreen ||
+         m_nOldBackgroundColour == m_nBackgroundColour ||
+         m_nOldForegroundColour == m_nForegroundColour ||
+         m_nOldFont == m_nFont ||
+         m_nOldIntensity == m_nIntensity )
+    {
+	SendDisplayControlReport( pDevice );
+    }
+    
+     m_nOldBackgroundColour = m_nBackgroundColour;
+     m_nOldForegroundColour = m_nForegroundColour;
+     m_nOldFont = m_nFont;
+     m_nOldIntensity = m_nIntensity;
+}
+
 
 // This function is used by the external socket connection methods.  There is no
 // optimisaton or checking of coordinate ranges.
 void EMCHIDLCD::DoText( HIDDevice *pDevice, LCDText *pCmd ) 
 {
+    LOG_DEBUG( m_Logger, QString("DoText %1 %2 %3 %4").arg(pCmd->x).arg(pCmd->y).arg(pCmd->pixel_coord).arg(pCmd->s) );
+
+    UpdateDisplayControl(pDevice);
+
     if ( m_pRowItem == NULL || m_pColItem == NULL )
 	return;
 
     // Set report attributes
-    m_pRowItem->Value = pCmd->x;
-    m_pColItem->Value = pCmd->y;
+    m_pRowItem->Value = pCmd->y;
+    m_pColItem->Value = pCmd->x;
     if ( m_pPixelAddressItem != NULL )
 	m_pPixelAddressItem->Value = pCmd->pixel_coord;
 
@@ -576,24 +608,26 @@ void EMCHIDLCD::DoText( HIDDevice *pDevice, LCDText *pCmd )
 
 void EMCHIDLCD::DoSetFont( HIDDevice *pDevice, LCDSetFont *pCmd ) 
 {
+    LOG_DEBUG( m_Logger, QString("DoFont %1").arg(pCmd->font) );
     if ( m_pFontItem != NULL )
     {
 	m_nFont = pCmd->font;
-	SendDisplayControlReport(pDevice);
     }
 }
 
 void EMCHIDLCD::DoSetBacklight( HIDDevice *pDevice, LCDSetBacklight *pCmd ) 
 {
+    LOG_DEBUG( m_Logger, QString("DoSetBacklight %1").arg(pCmd->intensity) );
     if ( m_pBacklightItem != NULL )
     {
 	m_nIntensity = pCmd->intensity;
-	SendDisplayControlReport(pDevice);
     }
 }
 
 void EMCHIDLCD::DoRectangle( HIDDevice *pDevice, LCDRectangle *pCmd ) 
 {
+    UpdateDisplayControl(pDevice);
+
     if ( m_pRectXItem == NULL &&
 	 m_pRectYItem == NULL &&
 	 m_pRectWidthItem == NULL &&
@@ -603,7 +637,7 @@ void EMCHIDLCD::DoRectangle( HIDDevice *pDevice, LCDRectangle *pCmd )
 	return;
     }
 
-    byte nReportId;
+    byte nReportId=0;
     if ( m_pRectXItem != NULL )
     {
 	nReportId = m_pRectXItem->ReportID;
@@ -635,20 +669,23 @@ void EMCHIDLCD::DoRectangle( HIDDevice *pDevice, LCDRectangle *pCmd )
 
 void EMCHIDLCD::SendDisplayControlReport(HIDDevice *pDevice)
 {
+    LOG_DEBUG( m_Logger, "SendDisplayControlReport" );
+
     if ( m_pClearScreenItem == NULL &&
          m_pBacklightItem == NULL && 
 	 m_pBackgroundColourItem == NULL &&
          m_pForegroundColourItem == NULL &&
          m_pFontItem == NULL )
     {
+        LOG_DEBUG( m_Logger, "no hid items found in the display control report" );
 	return;
     }
 
-    byte nReportId;
+    byte nReportId=0;
     if ( m_pClearScreenItem != NULL )
     {
 	nReportId = m_pClearScreenItem->ReportID;
-	m_pClearScreenItem->Value = m_bClearScreen;
+	m_pClearScreenItem->Value = m_bClearScreen ? 1 : 0;
     }
     if ( m_pBackgroundColourItem != NULL )
     {
@@ -680,6 +717,8 @@ void EMCHIDLCD::SendDisplayControlReport(HIDDevice *pDevice)
 
 int EMCHIDLCD::SendReport( HIDDevice *pDevice, byte nReportId )
 {
+    LOG_DEBUG( m_Logger, QString("Sending report %1").arg(nReportId) );
+
     HID_ReportDetails_t pReportDetails = pDevice->ReportInfo().Reports[nReportId];
     int nBufLen = pReportDetails.OutReportLength;
     int nOffset = 0;
@@ -695,7 +734,7 @@ int EMCHIDLCD::SendReport( HIDDevice *pDevice, byte nReportId )
     parser.MakeOutputReport( buf.data() + nOffset, (byte)nBufLen, pDevice->ReportInfo().ReportItems, nReportId );
 
     // Send the report
-    int nRet = pDevice->InterruptWrite( buf.data(), nBufLen + nOffset, USB_TIMEOUT );
+    int nRet = pDevice->AsyncInterruptWrite( buf.data(), nBufLen + nOffset );
     LOG_MSG( m_Logger, LogTypes::Debug, QString("interrupt write returned %1\n").arg(nRet).toLatin1().constData() );
     return nRet;
 }

@@ -16,6 +16,7 @@ HEADERS += \
 	emcinterface.h \
 	emclcditem.h \
 	emcpin.h \
+	lcdproc.h \
 	stdafx.h
 
 #Source files
@@ -32,6 +33,7 @@ SOURCES += \
 	emclcditem.cpp \
 	emcpin.cpp \
 	hidcomp.cpp \
+	lcdproc.cpp \
 	stdafx.cpp
 
 #Forms

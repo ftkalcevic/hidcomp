@@ -9,7 +9,7 @@ DESTDIR=debug
 DESTDIR=release
 }
 
-QT += xml
+QT += xml network
 QT -= gui
 
 DEFINES += QT_XML_LIB USING_PCH

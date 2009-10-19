@@ -98,6 +98,10 @@ private:
     int m_nForegroundColour;
     int m_nFont;
     int m_nIntensity;
+    int m_nOldBackgroundColour;
+    int m_nOldForegroundColour;
+    int m_nOldFont;
+    int m_nOldIntensity;
 
     int SendReport( HIDDevice *pDevice, byte nReportId );
     void SendDisplayControlReport(HIDDevice *pDevice);
@@ -115,6 +119,7 @@ private:
     void DoSetFont( HIDDevice *pDevice, LCDSetFont *pCmd );
     void DoSetBacklight( HIDDevice *pDevice, LCDSetBacklight *pCmd );
     void DoRectangle( HIDDevice *pDevice, LCDRectangle *pCmd );
+    void UpdateDisplayControl(HIDDevice *pDevice, bool bClearScreen = false);
 };
 
 
