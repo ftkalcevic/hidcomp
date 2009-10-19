@@ -32,7 +32,7 @@ LCDCmd *LCDProc::getQueueMessage()
 }
 
 int LCDProc::queueLength() const
-{
+    {
     return m_Buffer.length();
 }
 
