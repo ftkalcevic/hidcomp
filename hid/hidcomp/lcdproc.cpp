@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "lcdproc.h"
 
-const char *sOK = "OK";
-const char *sError = "?";
+const char *sOK = "OK\n";
+const char *sError = "?\n";
 const int MS_WAIT = 200;
 
 LCDProc::LCDProc( int nPort )
@@ -32,13 +32,15 @@ LCDCmd *LCDProc::getQueueMessage()
 }
 
 int LCDProc::queueLength() const
-    {
+{
     return m_Buffer.length();
 }
 
 
 const QString LCDProc::ProcessCommand( QString sLine )
 {
+    LOG_DEBUG( m_Logger, QString("Got LCD CMD: ")+sLine );
+
     sLine = sLine.trimmed();
     QStringList splitLine = sLine.split(" " );
     if ( splitLine.count() == 0 )
@@ -54,8 +56,6 @@ const QString LCDProc::ProcessCommand( QString sLine )
 	{
 	    QString s = Args[i];
 	    s = s.trimmed();
-	    if ( s.startsWith("\"") && s.endsWith("\"") )
-		s = s.mid(1,s.length()-2);
 	    Args[i] = s;
     	}
     }
@@ -88,7 +88,7 @@ const QString LCDProc::ProcessCommand( QString sLine )
     }
     else if ( sCmd == "text" || sCmd == "textp" )
     {
-	if ( Args.count() != 3 )
+	if ( Args.count() < 3 )	// if there is a comma in the string, split will split it, so we need at least 3 args
 	    return sError;
 	int x,y;
 	bool bOk;
@@ -101,7 +101,15 @@ const QString LCDProc::ProcessCommand( QString sLine )
 	bool pixel = false;
 	if ( sCmd == "textp" )
 	    pixel = true;
-	queueMessage( new LCDText( x, y, Args[2], pixel ) );
+	// find the second comma.  Text starts after that.
+	index = 0;
+	index = sLine.indexOf(",",index+1);
+	index = sLine.indexOf(",",index+1);
+	QString s = sLine.mid(index+1);
+	s = s.trimmed();
+	if ( s.startsWith("\"") && s.endsWith("\"") )
+	    s = s.mid(1,s.length()-2);
+	queueMessage( new LCDText( x, y, s, pixel ) );
     }
 
     else if ( sCmd == "font" )
@@ -145,6 +153,8 @@ const QString LCDProc::ProcessCommand( QString sLine )
 	    fill = true;
 	queueMessage( new LCDRectangle( coord[0], coord[1], coord[2], coord[3], fill ) );
     }
+    else
+	return sError;
 
     return sOK;
 }
@@ -153,7 +163,9 @@ bool LCDProc::Initialise()
 {
     LOG_DEBUG( m_Logger, "Initialising LCDProc" );
 
-    // Create a listening socket
+    // Create a listening socket.  We check we can listen, and return false if we can't.
+    // Then we close the socket, spawn the thread, and start listening again in th
+    // thread.  If we don't Qt complains about children of different threads.  So we play nice.
     m_tcpServer = new QTcpServer();
 
     if ( !m_tcpServer->listen( QHostAddress::Any, (quint16)m_nPort ) )
@@ -165,6 +177,9 @@ bool LCDProc::Initialise()
     }
 
     // Spawn socket thread
+    m_tcpServer->close();
+    delete m_tcpServer;
+
     start();
 
     return true;
@@ -174,10 +189,18 @@ bool LCDProc::Initialise()
 void LCDProc::run()
 {
     m_bRun = true;
+    m_tcpServer = new QTcpServer();
 
     // We only accept one connection at a time.
     while ( m_bRun )
     {
+	// set socket to listen
+	if ( m_bRun && !m_tcpServer->listen( QHostAddress::Any, (quint16)m_nPort ) )
+	{
+	    LOG_ERROR( m_Logger, QString("Failed to reopen LCD listen port %1: %2").arg(m_nPort).arg(m_tcpServer->errorString()) );
+	    m_bRun = false;
+	}
+
 	// wait for connections
 	while ( m_bRun )
 	{
@@ -236,12 +259,6 @@ void LCDProc::run()
 
 	    pSocket->close();
 	    delete pSocket;
-
-	    if ( m_bRun && !m_tcpServer->listen( QHostAddress::Any, (quint16)m_nPort ) )
-	    {
-		LOG_ERROR( m_Logger, QString("Failed to reopen LCD listen port %1: %2").arg(m_nPort).arg(m_tcpServer->errorString()) );
-		m_bRun = false;
-	    }
 	}
 
     }
@@ -272,3 +289,4 @@ rect x,y,w,h
 fill x,y,w,h
     OK
 */
+
