@@ -103,7 +103,8 @@ void hidconfig::onAbout()
 			    "<p/>"
 			    "<p>This is free software, and you are welcome to redistribute it under certain conditions.  See the file COPYING, included.</p>"
 			    "<p/>"
-			    "<p>Visit the EMC web site: <a href=\"http://www.linuxcnc.org/\">http://www.linuxcnc.org/</a></p>" );
+			    "<p>Visit my website to check for updates: <a href=\"http://www.franksworkshop.com.au/\">http://www.franksworkshop.com.au/</a></p>" 
+			    "<p>For more information on EMC, visit the EMC web site: <a href=\"http://www.linuxcnc.org/\">http://www.linuxcnc.org/</a></p>" );
     msg.setIcon( QMessageBox::Information );
     msg.setIconPixmap( QPixmap(":/hidconfig/icon") );
     msg.exec();
