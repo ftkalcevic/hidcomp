@@ -1,3 +1,10 @@
+hidcomp (1.3) release; urgency=low
+
+  * Support advanced colour LCDs
+  * Add external TCP port to access LCDs dynamically
+
+ -- Frank Tkalcevic <ftkalcevic@franksworkshop.com.au>  Tue, 20 Oct 2009 10:06:46 +1000
+
 hidcomp (1.2) release; urgency=low
 
   * Added User Fonts to LCD devices
