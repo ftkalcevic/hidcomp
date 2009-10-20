@@ -1,1 +1,1 @@
-tar -czf ../../hidcomp.tgz  --exclude-vcs ../../hid
+tar -czf ../../hidcomp_1.n_src.tgz  --exclude-vcs ../../hid
