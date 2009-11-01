@@ -1,3 +1,9 @@
+hidcomp (1.4) release; urgency=low
+
+  * Fix bug with reverse axis not working
+
+ -- Frank Tkalcevic <ftkalcevic@franksworkshop.com.au>  Sun, 01 Nov 2009 12:54:32 +1100
+
 hidcomp (1.3) release; urgency=low
 
   * Support advanced colour LCDs
