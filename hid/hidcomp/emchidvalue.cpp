@@ -123,6 +123,8 @@ void EMCHIDValue::UpdatePin()
     {
 	// Scale n to 0-100%(x100)
 	n = pItem->Scale(n);
+	if ( pItem->bReverse )
+	    n = POINTS_MAX_VAL - n;
 	if ( pItem->bUseResponseCurve )
 	    n = pItem->Interpolate(n);
 

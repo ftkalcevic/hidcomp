@@ -73,7 +73,7 @@ ValueConfigDlg::ValueConfigDlg( HID_ReportItem_t *item, QWidget *parent, bool bU
     ui.cpointView->setReverse( bReverseAxis );
 
     ui.chkUseCPoints->setChecked( bUseResponseCurve );
-    EnableCPoints( false );
+    EnableCPoints( bUseResponseCurve );
 
     ui.txtLogicalMinOverride->setText( tr("%1").arg(nLogicalMinOverride) );
     ui.txtLogicalMaxOverride->setText( tr("%1").arg(nLogicalMaxOverride) );
