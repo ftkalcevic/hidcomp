@@ -7,5 +7,5 @@ SUBDIRS = utility \
 	  hidcomp
 
 CONFIG += ordered
-include(build.pro)
+include(build.pri)
 
