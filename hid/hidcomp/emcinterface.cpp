@@ -566,7 +566,7 @@ int EmcInterface::GetIntData( ELCDDisplayData::ELCDDisplayData eData, int nIndex
 	    return m_emcStatus->motion.spindle.enabled;
 
 	case ELCDDisplayData::IOToolPrepped:
-	    return m_emcStatus->io.tool.toolPrepped;
+	    return m_emcStatus->io.tool.pocketPrepped;
 
 	case ELCDDisplayData::IOToolInSpindle:
 	    return m_emcStatus->io.tool.toolInSpindle;
