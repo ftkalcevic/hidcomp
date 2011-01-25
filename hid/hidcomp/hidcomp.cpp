@@ -69,10 +69,11 @@ static struct option long_options[] = {
     {"name", 1, 0, 'n'},
     {"debug", 0, 0, 'd'},
     {"ini", 1, 0, 'i'},
+    {"version", 0, 0, 'v'},
     {0,0,0,0}
 };
 
-static const char *option_string = "n:di:";
+static const char *option_string = "n:di:v";
 
 int main(int argc, char* argv[])
 {
@@ -81,7 +82,7 @@ int main(int argc, char* argv[])
 
     Logger m_Logger( app.applicationName(), "main" );
 
-    LOG_MSG( m_Logger, LogTypes::Info, QString( "hidcomp %1.%1").arg(VERSION_MAJOR).arg(VERSION_MINOR) );
+    LOG_MSG( m_Logger, LogTypes::Info, QString( "hidcomp %1.%2").arg(HIDCOMP_VERSION_MAJOR).arg(HIDCOMP_VERSION_MINOR) );
 
     int retval = 0;
     bDone = false;
@@ -111,6 +112,10 @@ int main(int argc, char* argv[])
 		HIDDevices::Open( 255 );
 		EMC_DEBUG=0xFFFFFFFF;
 		LOG_MSG( m_Logger, LogTypes::Debug, QString("Read argument debug") );
+		break;
+		
+	    case 'v':
+    		LOG_MSG( m_Logger, LogTypes::Info, QString( "hidcomp %1.%2").arg(HIDCOMP_VERSION_MAJOR).arg(HIDCOMP_VERSION_MINOR) );
 		break;
 
 	    default:

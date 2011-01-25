@@ -17,6 +17,8 @@
 #ifndef _STDAFX_H_
 #define _STDAFX_H_
 
+#include "common.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -84,8 +86,6 @@
 #include "datatypes.h"
 #include "hidtypes.h"
 #include "log.h"
-
-#include "common.h"
 
 
 #ifndef _WIN32

@@ -7,7 +7,7 @@
 #define _snprintf snprintf
 #endif
 
-#define VERSION_MAJOR	    1
-#define VERSION_MINOR	    5
+#define HIDCOMP_VERSION_MAJOR	    1
+#define HIDCOMP_VERSION_MINOR	    5
 
 #endif

@@ -97,9 +97,9 @@ void hidconfig::onAbout()
     QMessageBox msg(this);
     msg.setWindowTitle( "About HID Config" );
     msg.setTextFormat( Qt::RichText );
-    msg.setText( QString("<h1><b>HIDConfig version %1.%2</b></h1>").arg(VERSION_MAJOR).arg(VERSION_MINOR) );
+    msg.setText( QString("<h1><b>HIDConfig version %1.%2</b></h1>").arg(HIDCOMP_VERSION_MAJOR).arg(HIDCOMP_VERSION_MINOR) );
     msg.setInformativeText( "<p>Configuration program for hidcomp</p>"
-			    "<p>Copyright (C) 2009 Frank Tkalcevic.</p>"
+			    "<p>Copyright (C) 2011 Frank Tkalcevic.</p>"
 			    "<p/>"
 			    "<p>This is free software, and you are welcome to redistribute it under certain conditions.  See the file COPYING, included.</p>"
 			    "<p/>"
