@@ -1,6 +1,7 @@
 hidcomp (1.5) release; urgency=low
 
-  * Update and rebuild to work with emc2 release 2.4.4
+  * Update and rebuild to work with emc2 release 2.4.6
+  * Add some checking to make sure version mismatches are detected
 
  -- Frank Tkalcevic <ftkalcevic@franksworkshop.com.au>  Wed, 26 Jan 2011 08:24:32 +1100
 

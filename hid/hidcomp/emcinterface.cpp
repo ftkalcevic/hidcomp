@@ -295,8 +295,13 @@ bool EmcInterface::updateStatus()
 	case -1:	    // error on CMS channel
 	    return false;
 
-	case 0:		    // no new data
 	case EMC_STAT_TYPE: // new data
+	    if ( m_emcStatus->size != sizeof(EMC_STAT) )
+	    {
+	        LOG_MSG( m_Logger, LogTypes::Error, "The size of the EMC_STAT buffer mismatches.  This is probably because hidcomp is not compiled for it." );
+		exit(0);
+	    }
+	case 0:		    // no new data
 	    break;
 
 	default:
