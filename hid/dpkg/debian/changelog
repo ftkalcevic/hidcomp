@@ -1,3 +1,9 @@
+hidcomp (1.5) release; urgency=low
+
+  * Update and rebuild to work with emc2 release 2.4.4
+
+ -- Frank Tkalcevic <ftkalcevic@franksworkshop.com.au>  Wed, 26 Jan 2011 08:24:32 +1100
+
 hidcomp (1.4) release; urgency=low
 
   * Fix bug with reverse axis not working
