@@ -7,12 +7,12 @@ Package: hidcomp
 Architecture: i386
 Depends: ${shlibs:Depends}
 Recommends: 
-Enhances: emc2
+Enhances: linuxcnc
 Suggests: 
 Conflicts:
 Replaces: 
 Provides: 
-Description: USB HID (Human Interface Device) interface component for EMC
- USB HID (Human Interface Device) interface component for EMC.  Supports 
+Description: USB HID (Human Interface Device) interface component for LinuxCNC
+ USB HID (Human Interface Device) interface component for LinuxCNC.  Supports 
  standard axis and buttons.  Also supports encoder inputs, LED outputs and 
  LCD outputs.
