@@ -1,3 +1,9 @@
+hidcomp (1.6) release; urgency=low
+
+  * Update and rebuild to work with emc2 release 2.5
+
+ -- Frank Tkalcevic <ftkalcevic@franksworkshop.com.au>  Wed, 11 Apr 2012 00:04:13 +1000
+
 hidcomp (1.5) release; urgency=low
 
   * Update and rebuild to work with emc2 release 2.4.6

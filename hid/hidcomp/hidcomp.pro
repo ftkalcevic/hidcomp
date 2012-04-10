@@ -23,13 +23,13 @@ INCLUDEPATH +=  ./generatedfiles/release
 }
 
 win32:INCLUDEPATH += ../libusb-win32-device-bin-0.1.12.1/include
-unix:INCLUDEPATH += ../utility ../usbhid ../hid ../include ../../../emc2.core/emc2-dev/include ../libusb-1.0.2/libusb
+unix:INCLUDEPATH += ../utility ../usbhid ../hid ../include $(EMCPATH)/include ../libusb-1.0.2/libusb
 
 
 CONFIG(debug,debug|release) {
-unix:LIBS += -L../hid/debug -lhid -L../usbhid/debug -lusbhid -L../utility/debug -lutility -L../../../emc2.core/src/emc2/lib -lemchal -lemc -lnml -lemcini  -L../libusb-1.0.2/libusb/.libs -l:libusb-1.0.a 
+unix:LIBS += -L../hid/debug -lhid -L../usbhid/debug -lusbhid -L../utility/debug -lutility -L$(EMCPATH)/lib -llinuxcnchal -llinuxcnc -lnml -llinuxcncini  -L../libusb-1.0.2/libusb/.libs -l:libusb-1.0.a 
 } else {
-unix:LIBS += -L../hid/release -lhid -L../usbhid/release -lusbhid -L../utility/release -lutility -L../../../emc2.core/src/emc2/lib -lemchal -lemc -lnml -lemcini  -L../libusb-1.0.2/libusb/.libs -l:libusb-1.0.a 
+unix:LIBS += -L../hid/release -lhid -L../usbhid/release -lusbhid -L../utility/release -lutility -L$(EMCPATH)/lib -llinuxcnchal -llinuxcnc -lnml -llinuxcncini  -L../libusb-1.0.2/libusb/.libs -l:libusb-1.0.a 
 }
 
 debug:PRE_TARGETDEPS = ../hid/debug/libhid.a ../usbhid/debug/libusbhid.a ../utility/debug/libutility.a

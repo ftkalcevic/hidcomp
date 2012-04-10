@@ -30,7 +30,8 @@
 
 #include <signal.h>
 #include <setjmp.h>
-
+#include <stdio.h>
+#include <stdarg.h>
 #endif
 
 #define	MAX_LINE_WIDTH	    128	    // some arbitrary number.  LCDs usually aren't more than 40 wide.
