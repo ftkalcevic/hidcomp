@@ -67,6 +67,8 @@ public:
     QString sSerialNumber;
     bool bSystemId;
     QString sSystemId;
+    bool bInterfaceNumber;
+    unsigned char nInterfaceNumber;
 
     void ReadXML( QDomElement pNode );
     QDomElement WriteXML( QDomElement pNode );

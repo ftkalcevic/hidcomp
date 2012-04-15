@@ -168,13 +168,13 @@ void hidconfig::openFile( QString sFile )
 
     // Search the USB devices for one that matches the criteria.
     HIDDevices hidDevices;
-    std::vector<HIDDevice *> Devices = hidDevices.SearchHIDDevices( m_pHidCfg->criteria->bPID, m_pHidCfg->criteria->nPID, m_pHidCfg->criteria->bVID, m_pHidCfg->criteria->nVID, m_pHidCfg->criteria->bManufacturer, m_pHidCfg->criteria->sManufacturer, m_pHidCfg->criteria->bProduct, m_pHidCfg->criteria->sProduct, m_pHidCfg->criteria->bSerialNumber, m_pHidCfg->criteria->sSerialNumber, m_pHidCfg->criteria->bSystemId, m_pHidCfg->criteria->sSystemId );
+    std::vector<HIDDevice *> Devices = hidDevices.SearchHIDDevices( m_pHidCfg->criteria->bPID, m_pHidCfg->criteria->nPID, m_pHidCfg->criteria->bVID, m_pHidCfg->criteria->nVID, m_pHidCfg->criteria->bManufacturer, m_pHidCfg->criteria->sManufacturer, m_pHidCfg->criteria->bProduct, m_pHidCfg->criteria->sProduct, m_pHidCfg->criteria->bSerialNumber, m_pHidCfg->criteria->sSerialNumber, m_pHidCfg->criteria->bSystemId, m_pHidCfg->criteria->sSystemId, m_pHidCfg->criteria->bInterfaceNumber, m_pHidCfg->criteria->nInterfaceNumber );
 
     // If the number of USB devices we match is not exactly one, it is an error, and we can't procede.
     if ( Devices.size() != 1 )
     {
 	QString sCriteria( "Criteria = '");
-	if ( !m_pHidCfg->criteria->bPID && !m_pHidCfg->criteria->bVID && !m_pHidCfg->criteria->bManufacturer && !m_pHidCfg->criteria->bProduct && !m_pHidCfg->criteria->bSerialNumber && !m_pHidCfg->criteria->bSystemId  )
+        if ( !m_pHidCfg->criteria->bPID && !m_pHidCfg->criteria->bVID && !m_pHidCfg->criteria->bManufacturer && !m_pHidCfg->criteria->bProduct && !m_pHidCfg->criteria->bSerialNumber && !m_pHidCfg->criteria->bSystemId && !m_pHidCfg->criteria->bInterfaceNumber  )
 	    sCriteria = "Criteria = None Specified";
 	else
 	{
@@ -190,7 +190,9 @@ void hidconfig::openFile( QString sFile )
 		sCriteria += QString("SerialNumber: %1 ").arg(m_pHidCfg->criteria->sSerialNumber);
 	    if ( m_pHidCfg->criteria->bSystemId )
 		sCriteria += QString("SystemId: %1 ").arg(m_pHidCfg->criteria->sSystemId);
-	    sCriteria += "'";
+            if ( m_pHidCfg->criteria->bInterfaceNumber )
+                sCriteria += QString("Interface No: %1 ").arg(m_pHidCfg->criteria->nInterfaceNumber);
+            sCriteria += "'";
 	}
 
 	QMessageBox msg(this);
@@ -206,7 +208,7 @@ void hidconfig::openFile( QString sFile )
 	    QString sMatches;
 	    for ( int i = 0; i < (int)Devices.size(); i++ )
 	    {
-		sMatches += QString( tr("PID:%1 VID:%2 Manufacturer:'%3' Product:'%4' Serial No.:'%5' System Id:'%6'\n" ).arg(FormatPID(Devices[i]->PID())).arg(FormatVID(Devices[i]->VID())).arg(Devices[i]->Manufacturer()).arg(Devices[i]->Product()).arg(Devices[i]->SerialNumber()).arg(Devices[i]->SystemId()) );
+                sMatches += QString( tr("PID:%1 VID:%2 Manufacturer:'%3' Product:'%4' Serial No.:'%5' System Id:'%6' Interface No:%7\n" ).arg(FormatPID(Devices[i]->PID())).arg(FormatVID(Devices[i]->VID())).arg(Devices[i]->Manufacturer()).arg(Devices[i]->Product()).arg(Devices[i]->SerialNumber()).arg(Devices[i]->SystemId()).arg(Devices[i]->InterfaceNumber()) );
 	    }
 
 	    msg.setDetailedText( tr("%1\nMatches:\n%2\n").arg(sCriteria).arg(sMatches) );
@@ -284,14 +286,14 @@ bool hidconfig::DoSave()
 
     m_pDeviceCriteria->getCriteria( m_pHidCfg->criteria );
 
-    if ( !m_pHidCfg->criteria->bPID && !m_pHidCfg->criteria->bVID && !m_pHidCfg->criteria->bManufacturer && !m_pHidCfg->criteria->bProduct && !m_pHidCfg->criteria->bSerialNumber && !m_pHidCfg->criteria->bSystemId )
+    if ( !m_pHidCfg->criteria->bPID && !m_pHidCfg->criteria->bVID && !m_pHidCfg->criteria->bManufacturer && !m_pHidCfg->criteria->bProduct && !m_pHidCfg->criteria->bSerialNumber && !m_pHidCfg->criteria->bSystemId && !m_pHidCfg->criteria->bInterfaceNumber )
     {
 	QMessageBox::warning(this, "No criteria", "No criteria has been set.  You may not be able use the configuration if it doesn't uniquely identify the device.  Use the 'Test Criteria' button to test it." );
     }
     else
     {
 	HIDDevices hidDevices;
-	std::vector<HIDDevice *> matches = hidDevices.SearchHIDDevices( m_pHidCfg->criteria->bPID, m_pHidCfg->criteria->nPID, m_pHidCfg->criteria->bVID, m_pHidCfg->criteria->nVID, m_pHidCfg->criteria->bManufacturer, m_pHidCfg->criteria->sManufacturer, m_pHidCfg->criteria->bProduct, m_pHidCfg->criteria->sProduct, m_pHidCfg->criteria->bSerialNumber, m_pHidCfg->criteria->sSerialNumber, m_pHidCfg->criteria->bSystemId, m_pHidCfg->criteria->sSystemId );
+        std::vector<HIDDevice *> matches = hidDevices.SearchHIDDevices( m_pHidCfg->criteria->bPID, m_pHidCfg->criteria->nPID, m_pHidCfg->criteria->bVID, m_pHidCfg->criteria->nVID, m_pHidCfg->criteria->bManufacturer, m_pHidCfg->criteria->sManufacturer, m_pHidCfg->criteria->bProduct, m_pHidCfg->criteria->sProduct, m_pHidCfg->criteria->bSerialNumber, m_pHidCfg->criteria->sSerialNumber, m_pHidCfg->criteria->bSystemId, m_pHidCfg->criteria->sSystemId, m_pHidCfg->criteria->bInterfaceNumber, m_pHidCfg->criteria->nInterfaceNumber );
 	if ( matches.size() != 1 )
 	    if ( QMessageBox::warning( this, "Bad Criteria", QString("The criteria specified matches %1 HID devices.  If you continue to save the configuration, you will probably not be able to reload this file, or use it with HIDCOMP until the criteria matches exactly 1 device.").arg(matches.size()), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
 		return false;

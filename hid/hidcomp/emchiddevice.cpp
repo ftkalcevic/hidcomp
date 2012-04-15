@@ -58,7 +58,7 @@ EMCHIDDevice::EMCHIDDevice( const QString sModuleName, const QString sPinPrefix,
 
     // find the hid device
     HIDDevices Devices;
-    std::vector<HIDDevice *> DeviceList = Devices.SearchHIDDevices( m_pHidCfg->criteria->bPID, m_pHidCfg->criteria->nPID, m_pHidCfg->criteria->bVID, m_pHidCfg->criteria->nVID, m_pHidCfg->criteria->bManufacturer, m_pHidCfg->criteria->sManufacturer, m_pHidCfg->criteria->bProduct, m_pHidCfg->criteria->sProduct, m_pHidCfg->criteria->bSerialNumber, m_pHidCfg->criteria->sSerialNumber, m_pHidCfg->criteria->bSystemId, m_pHidCfg->criteria->sSystemId );
+    std::vector<HIDDevice *> DeviceList = Devices.SearchHIDDevices( m_pHidCfg->criteria->bPID, m_pHidCfg->criteria->nPID, m_pHidCfg->criteria->bVID, m_pHidCfg->criteria->nVID, m_pHidCfg->criteria->bManufacturer, m_pHidCfg->criteria->sManufacturer, m_pHidCfg->criteria->bProduct, m_pHidCfg->criteria->sProduct, m_pHidCfg->criteria->bSerialNumber, m_pHidCfg->criteria->sSerialNumber, m_pHidCfg->criteria->bSystemId, m_pHidCfg->criteria->sSystemId, m_pHidCfg->criteria->bInterfaceNumber, m_pHidCfg->criteria->nInterfaceNumber );
     if ( DeviceList.size() != 1 )
     {
         LOG_MSG( m_Logger, LogTypes::Error, QString("Matched %1 USB HID devcies with the given criteria.  There must be exactly 1 match.").arg((uint)DeviceList.size()) );

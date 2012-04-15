@@ -43,6 +43,7 @@ private:
     QCheckBox *m_pchkProduct;
     QCheckBox *m_pchkSN;
     QCheckBox *m_pchkSystemId;
+    QCheckBox *m_pchkInterfaceNumber;
 };
 
 #endif // DEVICEWIDGET_H

@@ -35,6 +35,7 @@ HIDDeviceCriteria::HIDDeviceCriteria(void)
     bProduct = false;
     bSerialNumber = false;
     bSystemId = false;
+    bInterfaceNumber = false;
 }
 
 HIDDeviceCriteria::~HIDDeviceCriteria(void)
@@ -85,6 +86,12 @@ void HIDDeviceCriteria::ReadXML( QDomElement pNode )
 	bSystemId = true;
 	sSystemId = XMLUtility::getAttribute( pNode, "matchSystemId", "" );
     }
+
+    if ( XMLUtility::hasAttribute( pNode, "matchInterfaceNumber") )
+    {
+        bInterfaceNumber = true;
+        nInterfaceNumber = (unsigned char)XMLUtility::getAttribute( pNode, "matchInterfaceNumber", 0 );
+    }
 }
 
 QDomElement HIDDeviceCriteria::WriteXML( QDomElement pNode )
@@ -104,6 +111,8 @@ QDomElement HIDDeviceCriteria::WriteXML( QDomElement pNode )
 	XMLUtility::setAttribute( pDeviceElem, "matchSerialNumber", sSerialNumber );
     if ( bSystemId )
 	XMLUtility::setAttribute( pDeviceElem, "matchSystemId", sSystemId );
+    if ( bInterfaceNumber )
+        XMLUtility::setAttribute( pDeviceElem, "matchInterfaceNumber", nInterfaceNumber );
     return pDeviceElem;
 }
 

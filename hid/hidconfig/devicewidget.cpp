@@ -52,6 +52,9 @@ DeviceWidget::DeviceWidget(QWidget *parent, HIDDevice *pDevice )
     m_pchkSystemId = new QCheckBox(tr("System Id:"));
     layout->addWidget( m_pchkSystemId  );
     layout->addWidget( new QLabel(pDevice->SystemId()) );
+    m_pchkInterfaceNumber = new QCheckBox(tr("Interface No:"));
+    layout->addWidget( m_pchkInterfaceNumber );
+    layout->addWidget( new QLabel(tr("%1").arg(pDevice->InterfaceNumber())) );
 
     QPushButton *button = new QPushButton( "Test Criteria" );
     layout->addWidget( button );
@@ -72,6 +75,7 @@ void DeviceWidget::setCriteria( HIDDeviceCriteria *pCriteria )
     m_pchkProduct->setCheckState( pCriteria->bProduct ? Qt::Checked : Qt::Unchecked );
     m_pchkSN->setCheckState( pCriteria->bSerialNumber ? Qt::Checked : Qt::Unchecked );
     m_pchkSystemId->setCheckState( pCriteria->bSystemId ? Qt::Checked : Qt::Unchecked );
+    m_pchkInterfaceNumber->setCheckState( pCriteria->bInterfaceNumber ? Qt::Checked : Qt::Unchecked );
 }
 
 
@@ -83,6 +87,7 @@ void DeviceWidget::getCriteria( HIDDeviceCriteria *pCriteria )
     pCriteria->bProduct = m_pchkProduct->checkState() == Qt::Checked;
     pCriteria->bSerialNumber = m_pchkSN->checkState() == Qt::Checked;
     pCriteria->bSystemId = m_pchkSystemId->checkState() == Qt::Checked;
+    pCriteria->bInterfaceNumber = m_pchkInterfaceNumber->checkState() == Qt::Checked;
 
     pCriteria->nPID = m_pDevice->PID();
     pCriteria->nVID = m_pDevice->VID();
@@ -90,6 +95,7 @@ void DeviceWidget::getCriteria( HIDDeviceCriteria *pCriteria )
     pCriteria->sProduct = m_pDevice->Product();
     pCriteria->sSerialNumber = m_pDevice->SerialNumber();
     pCriteria->sSystemId = m_pDevice->SystemId();
+    pCriteria->nInterfaceNumber = m_pDevice->InterfaceNumber();
 }
 
 
@@ -104,13 +110,14 @@ void DeviceWidget::onTestClicked()
     QString sProduct = m_pDevice->Product();
     QString sSerialNumber = m_pDevice->SerialNumber();
     QString sSystemId = m_pDevice->SystemId();
+    byte nInterfaceNumber = m_pDevice->InterfaceNumber();
 
     HIDDevices hidDevices;
-    std::vector<HIDDevice *> matches = hidDevices.SearchHIDDevices( criteria.bPID, nPID, criteria.bVID, nVID, criteria.bManufacturer, sManufacturer, criteria.bProduct, sProduct, criteria.bSerialNumber, sSerialNumber, criteria.bSystemId, sSystemId );
+    std::vector<HIDDevice *> matches = hidDevices.SearchHIDDevices( criteria.bPID, nPID, criteria.bVID, nVID, criteria.bManufacturer, sManufacturer, criteria.bProduct, sProduct, criteria.bSerialNumber, sSerialNumber, criteria.bSystemId, sSystemId, criteria.bInterfaceNumber, nInterfaceNumber );
     QString sMatches;
     for ( int i = 0; i < (int)matches.size(); i++ )
     {
-	sMatches += QString( tr("PID:%1 VID:%2 Manufacturer:'%3' Product:'%4' Serial No.:'%5' System Id:'%6'\n" ).arg(matches[i]->PID()).arg(matches[i]->VID()).arg(matches[i]->Manufacturer()).arg(matches[i]->Product()).arg(matches[i]->SerialNumber()).arg(matches[i]->SystemId()) );
+        sMatches += QString( tr("PID:%1 VID:%2 Manufacturer:'%3' Product:'%4' Serial No.:'%5' System Id:'%6' Interface No:%7\n" ).arg(matches[i]->PID()).arg(matches[i]->VID()).arg(matches[i]->Manufacturer()).arg(matches[i]->Product()).arg(matches[i]->SerialNumber()).arg(matches[i]->SystemId()).arg(matches[i]->InterfaceNumber()) );
     }
     QMessageBox msg(this);
     msg.setWindowTitle( tr("Test Match Criteria") );

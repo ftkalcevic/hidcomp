@@ -536,7 +536,7 @@ void EMCHIDLCD::DoClearScreen(HIDDevice *pDevice)
     }
 }
 
-void EMCHIDLCD::DoSetBackground( HIDDevice *pDevice, LCDSetBackground *pCmd ) 
+void EMCHIDLCD::DoSetBackground( HIDDevice *, LCDSetBackground *pCmd )
 {
     LOG_DEBUG( m_Logger, QString("DoSetBackground %1 %2 %3").arg(pCmd->r).arg(pCmd->g).arg(pCmd->b) );
     if ( m_pBackgroundColourItem != NULL )
@@ -545,7 +545,7 @@ void EMCHIDLCD::DoSetBackground( HIDDevice *pDevice, LCDSetBackground *pCmd )
     }
 }
 
-void EMCHIDLCD::DoSetForeground( HIDDevice *pDevice, LCDSetForeground *pCmd ) 
+void EMCHIDLCD::DoSetForeground( HIDDevice *, LCDSetForeground *pCmd )
 {
     LOG_DEBUG( m_Logger, QString("DoSetForeground %1 %2 %3").arg(pCmd->r).arg(pCmd->g).arg(pCmd->b) );
     if ( m_pForegroundColourItem != NULL )
@@ -606,7 +606,7 @@ void EMCHIDLCD::DoText( HIDDevice *pDevice, LCDText *pCmd )
     LOG_MSG( m_Logger, LogTypes::Debug, QString("interrupt write returned %1\n").arg(nRet).toLatin1().constData() );
 }
 
-void EMCHIDLCD::DoSetFont( HIDDevice *pDevice, LCDSetFont *pCmd ) 
+void EMCHIDLCD::DoSetFont( HIDDevice *, LCDSetFont *pCmd )
 {
     LOG_DEBUG( m_Logger, QString("DoFont %1").arg(pCmd->font) );
     if ( m_pFontItem != NULL )
@@ -615,7 +615,7 @@ void EMCHIDLCD::DoSetFont( HIDDevice *pDevice, LCDSetFont *pCmd )
     }
 }
 
-void EMCHIDLCD::DoSetBacklight( HIDDevice *pDevice, LCDSetBacklight *pCmd ) 
+void EMCHIDLCD::DoSetBacklight( HIDDevice *, LCDSetBacklight *pCmd )
 {
     LOG_DEBUG( m_Logger, QString("DoSetBacklight %1").arg(pCmd->intensity) );
     if ( m_pBacklightItem != NULL )

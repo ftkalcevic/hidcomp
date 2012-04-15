@@ -31,6 +31,7 @@
 
 EmcInterface *emcIFace;
 
+//#define EMC_DEBUG emc_debug
 
 const int MAIN_THREAD_SLEEP_MS = 100;	// 100ms
 const int EMC_POLL_TIME_MS = 50;	// 50ms
