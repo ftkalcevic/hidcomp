@@ -1,5 +1,5 @@
-#CONFIG += debug
+CONFIG += debug
 #CONFIG += release
-CONFIG += debug_and_release build_all
+#CONFIG += debug_and_release build_all
 
 DEFINES += HAS_ASYNC

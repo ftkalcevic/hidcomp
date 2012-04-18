@@ -43,6 +43,8 @@ static QString MakeDeviceName( HIDDevice &device )
     if ( device.SerialNumber().length() > 0 )
         s << " S/N:" << device.SerialNumber();
 
+    s << " I:" << device.InterfaceNumber();
+
     device.Close();
 
     return str;

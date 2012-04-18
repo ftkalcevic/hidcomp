@@ -30,8 +30,11 @@ CONFIG(debug,debug|release) {
     LIBS += -L../hid/release -lhid -L../usbhid/release -lusbhid -L../utility/release -lutility -L../libusb-1.0.2/libusb/.libs -l:libusb-1.0.a -L../qtcommon/release -lqtcommon
 }
 
-debug:PRE_TARGETDEPS = ../hid/debug/libhid.a ../usbhid/debug/libusbhid.a ../utility/debug/libutility.a 
-release:PRE_TARGETDEPS = ../hid/release/libhid.a ../usbhid/release/libusbhid.a ../utility/release/libutility.a 
+CONFIG(debug,debug|release) {
+PRE_TARGETDEPS = ../hid/debug/libhid.a ../usbhid/debug/libusbhid.a ../utility/debug/libutility.a
+} else {
+PRE_TARGETDEPS = ../hid/release/libhid.a ../usbhid/release/libusbhid.a ../utility/release/libutility.a
+}
 
 DEPENDPATH += .
 CONFIG(debug,debug|release) {
