@@ -9,7 +9,8 @@ HEADERS += \
 	emchiddevice.h \
 	emchidhatswitch.h \
 	emchiditem.h \
-	emchidlcd.h \
+        emchidkeyboard.h \
+        emchidlcd.h \
 	emchidled.h \
 	emchidoutput.h \
 	emchidvalue.h \
@@ -25,7 +26,8 @@ SOURCES += \
 	emchiddevice.cpp \
 	emchidhatswitch.cpp \
 	emchiditem.cpp \
-	emchidlcd.cpp \
+        emchidkeyboard.cpp \
+        emchidlcd.cpp \
 	emchidled.cpp \
 	emchidoutput.cpp \
 	emchidvalue.cpp \

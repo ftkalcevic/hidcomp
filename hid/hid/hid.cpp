@@ -18,6 +18,7 @@
 #include "log.h"
 #include "xmlutility.h"
 #include "common.h"
+#include "usages.h"
 
 #include <QFile>
 #include <QCoreApplication>
@@ -179,6 +180,9 @@ HIDItem *HIDItem::CreateItem( HIDItemType::HIDItemType type, int nIndex, unsigne
     case HIDItemType::LCD:
 	pItem = new HIDLCD(nIndex, nUsagePage, nUsage, bEnabled, sPinName );
 	break;
+    case HIDItemType::KeyboardMap:
+        pItem = new HIDKeyboardMap(nIndex, nUsagePage, nUsage, bEnabled, sPinName );
+        break;
     case HIDItemType::OutputValue:
 	pItem = new HIDOutputValue(nIndex, nUsagePage, nUsage, bEnabled, sPinName );
 	break;
@@ -717,6 +721,179 @@ QDomElement HIDLCD::WriteXML( QDomElement pNode )
 
     return pElem;
 }
+
+/****************************************************
+****************************************************/
+
+KeyMap::KeyMap()
+{
+}
+
+
+KeyMap::KeyMap( QList<unsigned short> &keys, QList<unsigned short> &modifiers, QString sPinName)
+    : m_keys(keys)
+    , m_modifiers(modifiers)
+    , m_sPinName(sPinName)
+{
+}
+
+KeyMap::KeyMap( const KeyMap &other )
+{
+    m_sPinName = other.m_sPinName;
+    foreach ( unsigned short usage, other.m_keys )
+        m_keys << usage;
+    foreach ( unsigned short usage, other.m_modifiers )
+        m_modifiers << usage;
+}
+
+KeyMap::~KeyMap()
+{
+}
+
+QString KeyMap::KeyStrokeName() const
+{
+    QString sKeys;
+
+    foreach ( unsigned short usage, m_modifiers )
+    {
+        QString sUsagePage, sUsage;
+        Usages::GetUsages( USAGEPAGE_KEYBOARD_KEYPAD, usage, sUsagePage, sUsage );
+
+        sKeys += sUsage + "+";
+    }
+
+    bool bKeysDown = false;
+    foreach ( unsigned short usage, m_keys )
+    {
+        QString sUsagePage, sUsage;
+        Usages::GetUsages( USAGEPAGE_KEYBOARD_KEYPAD, usage, sUsagePage, sUsage );
+
+        if ( bKeysDown )
+            sKeys += ",";
+        sKeys += sUsage;
+
+        bKeysDown = true;
+    }
+
+    return sKeys;
+}
+
+void KeyMap::ReadXML( QDomElement pNode )
+{
+    m_keys.clear();
+    m_modifiers.clear();
+
+    m_sPinName =  XMLUtility::getAttribute( pNode, "Pin", "" );
+
+    QDomNodeList keys = XMLUtility::elementsByTagName( pNode, "Key" );
+    for ( uint k = 0; k < keys.length(); k++ )
+    {
+        int usage = XMLUtility::getAttribute( keys.item(k).toElement(), "usage", 0 );
+        m_keys << usage;
+    }
+
+    QDomNodeList modifiers = XMLUtility::elementsByTagName( pNode, "Modifier" );
+    for ( uint m = 0; m < modifiers.length(); m++ )
+    {
+        int usage = XMLUtility::getAttribute( modifiers.item(m).toElement(), "usage", 0 );
+        m_modifiers << usage;
+    }
+}
+
+QDomElement KeyMap::WriteXML( QDomElement pNode )
+{
+    XMLUtility::setAttribute( pNode, "Pin", m_sPinName );
+
+    foreach ( unsigned short usage, m_keys )
+    {
+        QDomElement pDataElem = pNode.ownerDocument().createElement("Key");
+        pNode.appendChild(pDataElem);
+        XMLUtility::setAttribute( pDataElem, "usage", usage );
+    }
+
+    foreach ( unsigned short usage, m_modifiers )
+    {
+        QDomElement pDataElem = pNode.ownerDocument().createElement("Modifier");
+        pNode.appendChild(pDataElem);
+        XMLUtility::setAttribute( pDataElem, "usage", usage );
+    }
+
+    return pNode;
+}
+
+/****************************************************
+****************************************************/
+
+
+HIDKeyboardMap::HIDKeyboardMap( int nIndex, unsigned short nUsagePage, unsigned short nUsage, bool bEnabled, const QString &sPinName )
+: HIDInputItem( nIndex, nUsagePage, nUsage, bEnabled, sPinName, HIDItemType::KeyboardMap )
+{
+}
+
+HIDKeyboardMap::HIDKeyboardMap( const HIDKeyboardMap &other )
+: HIDInputItem( other )
+{
+    foreach ( KeyMap *map, other.m_keymappings)
+    {
+        m_keymappings << new KeyMap(*map);
+    }
+}
+
+HIDKeyboardMap & HIDKeyboardMap::operator= ( const HIDKeyboardMap & other )
+{
+    clear();
+    foreach ( KeyMap *map, other.m_keymappings)
+    {
+        m_keymappings << new KeyMap(*map);
+    }
+    return *this;
+}
+
+HIDKeyboardMap::~HIDKeyboardMap()
+{
+}
+
+void HIDKeyboardMap::ReadXML( QDomElement pNode )
+{
+    clear();
+
+    QDomNodeList mappings = XMLUtility::elementsByTagName( pNode, "KeyMapping" );
+    for ( uint m = 0; m < mappings.length(); m++ )
+    {
+        QDomElement keyMappingElement = mappings.item(m).toElement();
+        KeyMap *map = new KeyMap();
+        map->ReadXML( keyMappingElement );
+        m_keymappings << map;
+    }
+}
+
+QDomElement HIDKeyboardMap::WriteXML( QDomElement pNode )
+{
+    QDomElement pElem = HIDInputItem::WriteXML( pNode );
+
+    if ( m_keymappings.count() > 0 )
+    {
+        foreach ( KeyMap *map, m_keymappings)
+        {
+            QDomElement pMappingNode = pNode.ownerDocument().createElement("KeyMapping");
+            pElem.appendChild(pMappingNode);
+
+            map->WriteXML( pMappingNode );
+        }
+    }
+
+    return pNode;
+}
+
+void HIDKeyboardMap::clear()
+{
+    foreach ( KeyMap *map, m_keymappings )
+    {
+        delete map;
+    }
+    m_keymappings.clear();
+}
+
 
 
 /****************************************************

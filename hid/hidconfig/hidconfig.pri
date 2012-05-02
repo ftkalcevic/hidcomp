@@ -13,10 +13,12 @@ HEADERS += ./hidconfig.h \
     ./hiduibase.h \
     ./hiduibutton.h \
     ./hiduihatswitch.h \
+    ./hiduikeyboard.h \
     ./hiduilcd.h \
     ./hiduiled.h \
     ./hiduioutputvalue.h \
     ./hiduivalue.h \
+    ./keyboardconfigdlg.h \
     ./lcdconfigdlg.h \
     ./lcdfontwidget.h \
     ./scanning.h \
@@ -36,10 +38,12 @@ SOURCES += ./hidconfig.cpp \
     ./hiduibase.cpp \
     ./hiduibutton.cpp \
     ./hiduihatswitch.cpp \
+    ./hiduikeyboard.cpp \
     ./hiduilcd.cpp \
     ./hiduiled.cpp \
     ./hiduioutputvalue.cpp \
     ./hiduivalue.cpp \
+    ./keyboardconfigdlg.cpp \
     ./lcdconfigdlg.cpp \
     ./lcdfontwidget.cpp \
     ./main.cpp \
@@ -53,10 +57,11 @@ SOURCES += ./hidconfig.cpp \
 #Forms
 FORMS += ./editfontdlg.ui \
     ./hidconfig.ui \
+    ./keyboardconfigdlg.ui \
+    ./lcdconfigdlg.ui \
     ./scanning.ui \
     ./selectdevicedlg.ui \
     ./valueconfigdlg.ui \
-    ./lcdconfigdlg.ui \
     ./valueconfigdlg.ui
 #Resource file(s)
 RESOURCES += ./hidconfig.qrc

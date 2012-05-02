@@ -81,6 +81,13 @@ EMCHIDDevice::EMCHIDDevice( const QString sModuleName, const QString sPinPrefix,
     		obj = new EMCHIDLCD( sPinPrefix, pCfgItem, m_pDevice->ReportInfo().Collections[pCfgItem->nIndex] ); 
 	    }
 	}
+        else if ( pCfgItem->type == HIDItemType::KeyboardMap )
+        {
+            if ( pCfgItem->bEnabled )
+            {
+                obj = new EMCHIDKeyboard( sPinPrefix, pCfgItem, m_pDevice->ReportInfo().Collections[pCfgItem->nIndex] );
+            }
+        }
 	else
 	{
 	    HID_ReportItem_t *pDeviceItem = m_pDevice->ReportInfo().ReportItems[pCfgItem->nIndex];
@@ -105,7 +112,8 @@ EMCHIDDevice::EMCHIDDevice( const QString sModuleName, const QString sPinPrefix,
 		    case HIDItemType::Hatswitch:    obj = new EMCHIDHatSwitch( sPinPrefix,pCfgItem, pDeviceItem ); break;
 		    case HIDItemType::LED:	    obj = new EMCHIDLED( sPinPrefix, pCfgItem, pDeviceItem ); break;
 		    case HIDItemType::LCD:	    break;
-		    case HIDItemType::OutputValue:  obj = new EMCHIDOutput( sPinPrefix, pCfgItem, pDeviceItem ); break;
+                    case HIDItemType::KeyboardMap:  break;
+                    case HIDItemType::OutputValue:  obj = new EMCHIDOutput( sPinPrefix, pCfgItem, pDeviceItem ); break;
 		}
 	    }
         }

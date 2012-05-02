@@ -44,7 +44,8 @@ namespace HIDItemType
 	Hatswitch	= 2,
 	LED		= 3,
 	LCD		= 4,
-	OutputValue	= 5
+	OutputValue	= 5,
+        KeyboardMap     = 6
     };
 }
 
@@ -280,6 +281,44 @@ private:
     QList<LCDFont *> m_fonts;
     void clear();
 };
+
+class KeyMap
+{
+public:
+    KeyMap( QList<unsigned short> &keys, QList<unsigned short> &modifiers, QString sPinName);
+    KeyMap( const KeyMap &other );
+    KeyMap();
+    ~KeyMap();
+    const QList<unsigned short> Keys() const { return m_keys; }
+    const QList<unsigned short> Modifiers() const { return m_modifiers; }
+    const QString PinName() const { return m_sPinName; }
+    QString KeyStrokeName() const;
+    void ReadXML( QDomElement pNode );
+    QDomElement WriteXML( QDomElement pNode );
+
+private:
+    QList<unsigned short> m_keys;
+    QList<unsigned short> m_modifiers;
+    QString m_sPinName;
+};
+
+class HIDKeyboardMap: public HIDInputItem
+{
+public:
+    HIDKeyboardMap( int nIndex, unsigned short nUsagePage, unsigned short nUsage, bool bEnabled, const QString &sPinName );
+    HIDKeyboardMap( const HIDKeyboardMap &other );
+    HIDKeyboardMap & operator= ( const HIDKeyboardMap & other );
+    virtual ~HIDKeyboardMap();
+
+    virtual void ReadXML( QDomElement pNode );
+    virtual QDomElement WriteXML( QDomElement pNode );
+    QList<KeyMap *> & KeyMappings() { return m_keymappings; }
+    void clear();
+
+private:
+    QList<KeyMap *> m_keymappings;
+};
+
 
 class HID
 {

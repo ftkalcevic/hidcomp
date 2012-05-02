@@ -22,6 +22,7 @@
 #include "hiduibutton.h"
 #include "hiduivalue.h"
 #include "hiduioutputvalue.h"
+#include "hiduikeyboard.h"
 #include "hiduiled.h"
 #include "hiduilcd.h"
 #include "hiduihatswitch.h"
@@ -247,7 +248,7 @@ void hidconfig::openFile( QString sFile )
 	QString sMismatch;
 	if ( pUIItem->type() != pItem->type )
 	    sMismatch += QString("Incorrect type.  Expected '%1' got '%2'\n").arg(pUIItem->type()).arg(pItem->type);
-        if ( pItem->type != HIDItemType::LCD )
+        if ( pItem->type != HIDItemType::LCD && pItem->type != HIDItemType::KeyboardMap )
         {
 	    if ( pUIItem->ReportItem()->Attributes.UsagePage != pItem->nUsagePage )
 	        sMismatch += QString("Incorrect usage page.  Expected '%1' got '%2'\n").arg(pUIItem->ReportItem()->Attributes.UsagePage).arg(pItem->nUsagePage);
@@ -488,7 +489,16 @@ void hidconfig::DisplayDevice()
 	    if ( pItem != NULL )
 	    	m_HIDDisplayItems.push_back( pItem );
 	}
+        else if ( col->UsagePage == USAGEPAGE_GENERIC_DESKTOP_CONTROLS &&
+                  ( col->Usage == USAGE_KEYBOARD || col->Usage == USAGE_KEYBOARD ) )
+        {
+            LOG_MSG( m_Logger, LogTypes::Debug, QString("Found keyboard/keypad") );
+            HIDUIBase *pItem = new HIDUIKeyboard(m_device, col, i, item_layout );
+            if ( pItem != NULL )
+                m_HIDDisplayItems.push_back( pItem );
+        }
     }
+
 
     m_pThread = new HIDDataThread( m_device );
 
