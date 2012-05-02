@@ -81,7 +81,9 @@ EMCHIDKeyboard::EMCHIDKeyboard(const QString &sPinPrefix, HIDItem *pCfgItem, HID
     foreach ( KeyMap *map, pItem->KeyMappings() )
     {
         QString sPin;
-        sPin = sPinPrefix;		// comp.idx.[pCfgItem->sPinName]...
+        sPin = sPinPrefix;
+        sPin += ".";
+        sPin += pCfgItem->sPinName;
         sPin += ".";
         sPin += map->PinName();
         Pins.push_back( EMCPin(sPin, HAL_BIT, HAL_OUT) );
