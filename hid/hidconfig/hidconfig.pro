@@ -50,6 +50,10 @@ OBJECTS_DIR += release
 UI_DIR += ./generatedfiles
 RCC_DIR += ./generatedfiles
 
+install_configxml.path = $${DESTDIR}
+install_configxml.files = ../config/hidconfig.xml
+INSTALLS += install_configxml
+
 #Include file(s)
 include(hidconfig.pri) 
 

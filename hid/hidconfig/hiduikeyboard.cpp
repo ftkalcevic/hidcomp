@@ -59,9 +59,7 @@ HIDUIKeyboard::~HIDUIKeyboard()
 void HIDUIKeyboard::CreateKeyboardUI( HIDDevice *, QGridLayout *layout, int nRow)
 {
     // UsagePage/Usage
-    QString sUsagePage, sUsage;
-    Usages::GetUsages( m_pCol->UsagePage, m_pCol->Usage, sUsagePage, sUsage );
-    m_lblUsage = new QLabel( QString("%1:%2").arg(sUsagePage, sUsage) );
+    m_lblUsage = new QLabel( "Keyboard/Keypad Mapping" );
     layout->addWidget( m_lblUsage, nRow, 1 );
 
     // String

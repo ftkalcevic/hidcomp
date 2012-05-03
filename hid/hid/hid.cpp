@@ -101,7 +101,7 @@ QDomElement HIDDeviceCriteria::WriteXML( QDomElement pNode )
     pNode.appendChild(pDeviceElem);
 
     if ( bPID )
-	XMLUtility::setAttribute( pDeviceElem, "matchPID", nPID );
+        XMLUtility::setAttribute( pDeviceElem, "matchPID", nPID );
     if ( bVID )
 	XMLUtility::setAttribute( pDeviceElem, "matchVID", nVID );
     if ( bManufacturer )

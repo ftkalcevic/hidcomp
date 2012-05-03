@@ -1,0 +1,5 @@
+<HIDComp>
+    <ReportDescriptorOverride VID="1dc3" PID="1001" Interface="1">
+        05 01 09 06 A1 01 95 01 75 08 81 01 A1 00 05 07 95 02 75 08 15 00 25 10 05 07 19 00 29 65 81 00 C0 95 01 75 08 05 02 09 C2 15 17 25 1C 81 02 05 01 09 37 15 81 25 7F 81 06 81 01 C0
+    </ReportDescriptorOverride>
+</HIDComp>
