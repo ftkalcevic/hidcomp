@@ -1,8 +1,10 @@
 hidcomp (1.7) release; urgency=low
 
   * Update and rebuild to work with emc2 release 2.6.4 release CD
+  * Fix bug not initialising select timeout value correctly
+  * Stop crash on exit, where USB callbacks active after shutdown
 
- -- Frank Tkalcevic <ftkalcevic@franksworkshop.com.au>  Fri, 20 Mar 2015 19:30:19 +1100
+ -- Frank Tkalcevic <ftkalcevic@franksworkshop.com.au>  Fri, 3 Apr 2015 10:30:19 +1100
 
 hidcomp (1.6) release; urgency=low
 
