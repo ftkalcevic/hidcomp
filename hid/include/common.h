@@ -8,6 +8,6 @@
 #endif
 
 #define HIDCOMP_VERSION_MAJOR	    1
-#define HIDCOMP_VERSION_MINOR	    5
+#define HIDCOMP_VERSION_MINOR	    7
 
 #endif

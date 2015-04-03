@@ -1,0 +1,2 @@
+. ~/linuxcnc-dev/scripts/rip-environment
+linuxcnc configs/sim.axis/axis_mm.ini

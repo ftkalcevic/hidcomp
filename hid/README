@@ -1,8 +1,11 @@
 hidcomp/hidconfig are built against Qt4.5.1 using a static library.
+
+sudo apt-get install qt4-qmake libqt4-dev
+
 The LinuxCNC source is required to build hidcomp.  An environment variable,
 EMCPATH must be set to point to the emc directory, eg..
 
-EMCPATH=/home/frankt/emc2.core/emc2-dev
+export EMCPATH=/home/frankt/emc2.core/emc2-dev
 
 
 To build, first run...

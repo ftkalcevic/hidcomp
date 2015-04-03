@@ -1,0 +1,89 @@
+<!DOCTYPE HID>
+<HID>
+ <Device matchVID="7232" matchInterfaceNumber="0" matchPID="1241"/>
+ <Items>
+  <Item enabled="false" type="5" index="0" usage="1" pin="DFU" usagePage="65280"/>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="false" outputType="0" type="1" useResponseCurve="false" index="1" usage="51" outputMin="-1" outputMax="1" pin="A" usagePage="1" logicalMaxOverride="1023">
+   <controlPoints>
+    <point lP="0" dwLog="0"/>
+    <point lP="10000" dwLog="10000"/>
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="true" outputType="0" type="1" useResponseCurve="false" index="2" usage="49" outputMin="-1" outputMax="1" pin="Y" usagePage="1" logicalMaxOverride="1023">
+   <controlPoints>
+    <point lP="0" dwLog="0"/>
+    <point lP="10000" dwLog="10000"/>
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="true" outputType="0" type="1" useResponseCurve="false" index="3" usage="48" outputMin="-1" outputMax="1" pin="X" usagePage="1" logicalMaxOverride="1023">
+   <controlPoints>
+    <point lP="0" dwLog="0"/>
+    <point lP="10000" dwLog="10000"/>
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="false" outputType="0" type="1" useResponseCurve="false" index="4" usage="50" outputMin="-1" outputMax="1" pin="Z" usagePage="1" logicalMaxOverride="1023">
+   <controlPoints>
+    <point lP="0" dwLog="0"/>
+    <point lP="10000" dwLog="10000"/>
+   </controlPoints>
+  </Item>
+  <Item enabled="true" type="0" index="5" usage="1" pin="100%" usagePage="1"/>
+  <Item enabled="true" type="0" index="6" usage="2" pin="10%" usagePage="1"/>
+  <Item enabled="false" type="0" index="7" usage="3" pin="9" usagePage="1"/>
+  <Item enabled="false" type="0" index="8" usage="4" pin="13" usagePage="1"/>
+  <Item enabled="false" type="0" index="9" usage="5" pin="Z0" usagePage="1"/>
+  <Item enabled="false" type="0" index="10" usage="6" pin="A0" usagePage="1"/>
+  <Item enabled="true" type="0" index="11" usage="7" pin="Vel" usagePage="1"/>
+  <Item enabled="true" type="0" index="12" usage="8" pin="Pulse" usagePage="1"/>
+  <Item enabled="false" type="0" index="13" usage="9" pin="Tool-Home" usagePage="1"/>
+  <Item enabled="false" type="0" index="14" usage="10" pin="Tool-Retract" usagePage="1"/>
+  <Item enabled="true" type="0" index="15" usage="11" pin="X0" usagePage="1"/>
+  <Item enabled="true" type="0" index="16" usage="12" pin="Y0" usagePage="1"/>
+  <Item enabled="true" type="0" index="17" usage="13" pin="Run" usagePage="1"/>
+  <Item enabled="true" type="0" index="18" usage="14" pin="Stop" usagePage="1"/>
+  <Item enabled="false" type="0" index="19" usage="15" pin="Goto-Zero" usagePage="1"/>
+  <Item enabled="false" type="0" index="20" usage="16" pin="Home-Set" usagePage="1"/>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="true" outputType="0" type="1" useResponseCurve="false" index="21" usage="55" outputMin="-1" outputMax="1" pin="JogWheel" usagePage="1" logicalMaxOverride="255">
+   <controlPoints>
+    <point lP="0" dwLog="0"/>
+    <point lP="10000" dwLog="10000"/>
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="true" outputType="0" type="1" useResponseCurve="false" index="22" usage="55" outputMin="-1" outputMax="1" pin="FeedOverride" usagePage="1" logicalMaxOverride="255">
+   <controlPoints>
+    <point lP="0" dwLog="0"/>
+    <point lP="10000" dwLog="10000"/>
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="true" outputType="0" type="1" useResponseCurve="false" index="23" usage="55" outputMin="-1" outputMax="1" pin="SpindleOverride" usagePage="1" logicalMaxOverride="255">
+   <controlPoints>
+    <point lP="0" dwLog="0"/>
+    <point lP="10000" dwLog="10000"/>
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="true" outputType="0" type="1" useResponseCurve="false" index="24" usage="65200" outputMin="-1" outputMax="1" pin="AxisSelect" usagePage="9" logicalMaxOverride="5">
+   <controlPoints>
+    <point lP="0" dwLog="0"/>
+    <point lP="10000" dwLog="10000"/>
+   </controlPoints>
+  </Item>
+  <Item logicalMinOverride="0" valueType="0" reverse="false" enabled="true" outputType="0" type="1" useResponseCurve="false" index="25" usage="65200" outputMin="-1" outputMax="1" pin="MultiplierSelect" usagePage="9" logicalMaxOverride="3">
+   <controlPoints>
+    <point lP="0" dwLog="0"/>
+    <point lP="10000" dwLog="10000"/>
+   </controlPoints>
+  </Item>
+  <Item enabled="false" type="0" index="26" usage="1001" pin="Step-Mode" usagePage="9"/>
+  <Item enabled="false" type="0" index="27" usage="1002" pin="Reset" usagePage="9"/>
+  <Item enabled="true" type="3" index="29" usage="1000" pin="ChangeTool" usagePage="8"/>
+  <Item enabled="true" type="3" index="30" usage="1001" pin="Run" usagePage="8"/>
+  <Item enabled="true" type="3" index="31" usage="1002" pin="SingleStep" usagePage="8"/>
+  <Item enabled="true" type="4" index="1" usage="0" refreshPeriod="100" LCDProcPort="0" pin="LCD" usagePage="0">
+   <Page Number="0" Name="Page 0">
+    <Data Format="X %06.3f" Row="0" Scale="1" TestData="0" DisplayData="105" Col="0" Index="0"/>
+    <Data Format="Y %06.3f" Row="1" Scale="1" TestData="0" DisplayData="105" Col="0" Index="1"/>
+    <Data Format="Z %06.3f" Row="2" Scale="1" TestData="0" DisplayData="105" Col="0" Index="2"/>
+   </Page>
+  </Item>
+ </Items>
+</HID>

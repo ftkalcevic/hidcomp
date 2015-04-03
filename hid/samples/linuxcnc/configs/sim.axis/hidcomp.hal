@@ -1,0 +1,2 @@
+loadusr -W /home/frankt/svn/hid/hidcomp/release/hidcomp -ini axis_mm.ini pendant.hid
+#loadusr valgrind --log-file=valgrind.log --leak-check=yes /home/frankt/svn/hid/hidcomp/debug/hidcomp -ini axis_mm.ini pendant.hid
