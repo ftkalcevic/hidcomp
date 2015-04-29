@@ -1,0 +1,131 @@
+
+html{
+	height:100%;
+	font-family: Sans-Serif;
+}
+
+body{	
+	background-color:#B0E0E6;
+}
+
+h1
+{
+	text-align: center;
+	font-family: Serif;
+	font-size: 24pt;
+}
+h2
+{
+}
+h3
+{
+}
+p
+{
+	line-height: 130%;
+}
+.code {
+	font-family:monospace;
+	font-size:10pt;
+}
+#mainContainer{
+	margin: 0 auto;
+	margin-bottom: 10px;
+	height:100%;
+	text-align:left;
+}
+#leftColumn{
+	width:170px;
+	position:absolute;
+	top: 50px;
+	left: 0;
+	padding-left:10px;
+	background-color:#B0E0E6;
+}
+#mainContent{
+	/*width:590px;*/
+	padding-left:10px;
+	padding-right:10px;
+	position:absolute;
+	left: 170px;
+	top: 50px;
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	background-color:azure;
+}
+#topBar{
+	height:50px;
+	width:100%;
+	position:absolute;
+	top: 0;
+	left: 0;
+}
+
+
+/****************************************************************************************
+* 	LAYOUT CSS FOR THE MENU
+****************************************************************************************/
+#dhtmlgoodies_listMenu a, #dhtmlgoodies_listMenu p{	/* Main menu items */
+	margin:1px;
+	padding:0px;
+	width:150px;	/* Width of menu */
+	
+	color:#000;	/* Black text color */
+	background-color:#70BAD5;
+	
+	text-decoration:none;	/* No underline */
+	font-size:1em;	/* Fixed font size */
+	padding-left:3px;
+	line-height:25px;	/* Height of menu links */
+	display:block;	
+	overflow:auto;
+	font-family:sans-serif;
+
+}
+
+#dhtmlgoodies_listMenu ul li p					/* Sub menu no-link */
+{
+	color: #0092a3;
+	font-weight:normal;
+	font-size:0.8em;	
+}	
+
+#dhtmlgoodies_listMenu ul li a 				/* Sub menu link */
+{	
+	font-weight:normal;
+	font-size:0.8em;	
+}
+
+#dhtmlgoodies_listMenu ul li ul li a, #dhtmlgoodies_listMenu ul li ul li{	/* Sub Sub menu */
+	color: #000;
+	font-size:0.9em;
+	font-weight:normal;		
+}
+
+#dhtmlgoodies_listMenu .activeMenuLink{	/* Styling of active menu item */
+	background-color:#7099d5;
+}
+
+
+/*
+No bullets
+*/	
+#dhtmlgoodies_listMenu li{
+	list-style-type:none;	
+}
+
+/*
+No margin and padding
+*/
+#dhtmlgoodies_listMenu, #dhtmlgoodies_listMenu ul{
+	margin:0px;
+	padding:0px;
+}
+
+/* Margin of sub menu items */
+#dhtmlgoodies_listMenu ul{
+	display:none;
+	margin-left:10px;
+}
