@@ -82,6 +82,8 @@ The **hidcomp** component provides a hal representation of a USB HID device.  Th
 
 ###Supported Controls
 
+
+
 USB Data Type | Common Usage | Description
 Input Value 1 Bit|Button<|An input value which has a 1 bit data length is interpreted as a button, although it could be any digital input.
 Input Value > 1 Bit | Axis, Selector switch, jog Wheel, volume control | An input value which has a data length greater than 1 bit, has its value exposed as an integer value.   This may be an analogue joystick, or a selector switch.
@@ -89,7 +91,7 @@ Input Value > 1 Bit, with wrap|Encoder|When an input value has the wrap bit set 
 Input Value > 1 Bit, usage=HATSWITCH|Hat switch|The hat switch is a special case of an input value.  The devices sets the control's recommended usage to HATSWITCH.  The data is then interpreted as a directional key press.  If the key isn't pressed, an out of range value is returned.
 Output Value 1 Bit|LED|An output value which has a 1 bit data length is interpreted as an LED, although it could be any digital output.
 Output Value > 1 Bit|Multi-Colour LED||The Generic HID device can support bi-colour and tri-colour LEDs, which is how these devices are set.  Only a simple integer output is supported at this time.
-USAGE=ALPHA_NUMERIC_DISPLAY|LCD|<p>
+USAGE=ALPHA_NUMERIC_DISPLAY|LCD|
 									**hidcomp** supports standard character only alphanumeric displays.  It has been tested with 1x8, 2x20 and 4x20
 									displays, but should be able to cope with any size.
 								</p>
@@ -102,29 +104,24 @@ USAGE=ALPHA_NUMERIC_DISPLAY|LCD|<p>
 									<li>USAGE_ROW, USAGE_COLUMN, USAGE_CLEAR_DISPLAY and USAGE_DISPLAY_DATA must appear the output report to render the screen.</li>
 									<li>USAGE_DISPLAY_DATA must be a whole line long.</li>
 								</ul>
-							</td>
-						</tr>
+			
+			
+dog | bird | cat
+----|------|----
+foo | foo  | foo
+bar | bar  | bar
+baz | baz  | baz
 
+###Synopsis
+	**hidcomp** [_-ini inifile_] [_-d_] [_-n name_] configfile ...
 
-###Synopsis<
-					<blockquote>
-						<p class="code">**hidcomp** [<u>-ini inifile</u>] [<u>-d</u>] [<u>-n name</u>] configfile ...
-						</p>
-					</blockquote>
-					<h3 id="hidcompoptions">Options</h3>
-					<p>
-						<blockquote class="code">
-							**-ini inifile**
-							<blockquote>
-				              The  ini  file  that  is  used  to  start LinuxCNC.  This defaults to
-				              emc.ini.  If it is not emc.ini, or in a  location  that  hidcomp
-				              can't find it, it must be specified.
-							</blockquote>              
-						</blockquote>              
-					</p>
-					<p>
-						<blockquote class="code">
-							**-d**
+##Options
+	**-ini inifile**
+	      The  ini  file  that  is  used  to  start LinuxCNC.  This defaults to
+	      emc.ini.  If it is not emc.ini, or in a  location  that  hidcomp
+	      can't find it, it must be specified.
+
+	**-d**
 							<blockquote>
 								Turn  on debugging.  Debugging sends volumous amounts of data to
 								stderr.  In order to catch the debug, start LinuxCNC on  the  command
