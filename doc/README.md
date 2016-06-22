@@ -85,6 +85,7 @@ The **hidcomp** component provides a hal representation of a USB HID device.  Th
 
 
 USB Data Type | Common Usage | Description
+--------------|--------------|------------
 Input Value 1 Bit|Button<|An input value which has a 1 bit data length is interpreted as a button, although it could be any digital input.
 Input Value > 1 Bit | Axis, Selector switch, jog Wheel, volume control | An input value which has a data length greater than 1 bit, has its value exposed as an integer value.   This may be an analogue joystick, or a selector switch.
 Input Value > 1 Bit, with wrap|Encoder|When an input value has the wrap bit set in its description, the control is interpreted as an encoder.  The wrap bit implies the counter wraps around to 0 when it hits its maximum value (or vice-versa).
