@@ -108,9 +108,9 @@ USAGE=ALPHA_NUMERIC_DISPLAY|LCD|
 			
 dog | bird | cat
 ----|------|----
-foo | foo  | foo
-bar | bar  | bar
-baz | baz  | baz
+foo | foo | foo
+bar | bar | bar
+baz | baz | baz
 
 ###Synopsis
 	**hidcomp** [_-ini inifile_] [_-d_] [_-n name_] configfile ...
