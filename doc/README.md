@@ -92,26 +92,10 @@ Input Value > 1 Bit, with wrap|Encoder|When an input value has the wrap bit set 
 Input Value > 1 Bit, usage=HATSWITCH|Hat switch|The hat switch is a special case of an input value.  The devices sets the control's recommended usage to HATSWITCH.  The data is then interpreted as a directional key press.  If the key isn't pressed, an out of range value is returned.
 Output Value 1 Bit|LED|An output value which has a 1 bit data length is interpreted as an LED, although it could be any digital output.
 Output Value > 1 Bit|Multi-Colour LED||The Generic HID device can support bi-colour and tri-colour LEDs, which is how these devices are set.  Only a simple integer output is supported at this time.
-USAGE=ALPHA_NUMERIC_DISPLAY|LCD|
-									**hidcomp** supports standard character only alphanumeric displays.  It has been tested with 1x8, 2x20 and 4x20
-									displays, but should be able to cope with any size.
-								</p>
-								<p>
-									This has only been tested against a home made USB Alphanumeric display, and as such, may need to be tweaked to make
-									work with other displays.  The requirements at the moment are...
-								</p>
-								<ul>
-									<li>USAGE_ROWS and USAGE_COLUMNS must appear in a feature report.</li>
-									<li>USAGE_ROW, USAGE_COLUMN, USAGE_CLEAR_DISPLAY and USAGE_DISPLAY_DATA must appear the output report to render the screen.</li>
-									<li>USAGE_DISPLAY_DATA must be a whole line long.</li>
-								</ul>
+USAGE=ALPHA_NUMERIC_DISPLAY|LCD|**hidcomp** supports standard character only alphanumeric displays.  It has been tested with 1x8, 2x20 and 4x20 displays, but should be able to cope with any size.<p>This has only been tested against a home made USB Alphanumeric display, and as such, may need to be tweaked to make work with other displays.  The requirements at the moment are... <ul><li>USAGE_ROWS and USAGE_COLUMNS must appear in a feature report.</li><li>USAGE_ROW, USAGE_COLUMN, USAGE_CLEAR_DISPLAY and USAGE_DISPLAY_DATA must appear the output report to render the screen.</li><li>USAGE_DISPLAY_DATA must be a whole line long.</li></ul>
 			
 			
-dog | bird | cat
-----|------|----
-foo | foo | foo
-bar | bar | bar
-baz | baz | baz
+
 
 ###Synopsis
 	**hidcomp** [_-ini inifile_] [_-d_] [_-n name_] configfile ...
