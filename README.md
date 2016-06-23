@@ -80,7 +80,7 @@
 	
 <h2 id="install">Installing hidcomp</h2>
 <p>
-**hidcomp** is only avaiable as this github source project. 
+<b>hidcomp</b> is only avaiable as this github source project. 
 This was last built against LinuxCNC 2.7.4, and on the Debian Wheezy distribution.
 </p>
 	
