@@ -113,7 +113,7 @@ bool EmcInterface::iniLoad(const char *filename)
 	LOG_MSG( m_Logger, LogTypes::Debug, QString("Using nml file '%1'").arg(EMC_NMLFILE) );
     }
 
- //   for (t = 0; t < EMC_AXIS_MAX; t++) {
+ //   for (t = 0; t < EMCMOT_MAX_AXIS; t++) {
 	//jogPol[t] = 1;          // set to default
 	//sprintf(displayString, "AXIS_%d", t);
 	//if (NULL != (inistring =
@@ -502,7 +502,7 @@ int EmcInterface::GetIntData( ELCDDisplayData::ELCDDisplayData eData, int nIndex
 	    return m_emcStatus->motion.traj.feed_override_enabled;
 
 	case ELCDDisplayData::MotionTrajSpindleOverride:  
-	    return m_emcStatus->motion.traj.spindle_override_enabled;
+	    return m_emcStatus->motion.spindle[0].spindle_override_enabled;
 
 	case ELCDDisplayData::MotionTrajAdaptiveFeedEnable: 
 	    return m_emcStatus->motion.traj.adaptive_feed_enabled;
@@ -511,66 +511,66 @@ int EmcInterface::GetIntData( ELCDDisplayData::ELCDDisplayData eData, int nIndex
 	    return m_emcStatus->motion.traj.feed_hold_enabled;
 
 	case ELCDDisplayData::MotionAxisInPos:
-	    if ( nIndex < 0 || nIndex >= EMC_AXIS_MAX )
+	    if ( nIndex < 0 || nIndex >= EMCMOT_MAX_JOINTS )
 		nIndex = 0;
-	    return m_emcStatus->motion.axis[nIndex].inpos;
+	    return m_emcStatus->motion.joint[nIndex].inpos;
 
 	case ELCDDisplayData::MotionAxisHoming:
-	    if ( nIndex < 0 || nIndex >= EMC_AXIS_MAX )
+	    if ( nIndex < 0 || nIndex >= EMCMOT_MAX_JOINTS )
 		nIndex = 0;
-	    return m_emcStatus->motion.axis[nIndex].homing;
+	    return m_emcStatus->motion.joint[nIndex].homing;
 
 	case ELCDDisplayData::MotionAxisHomed:
-	    if ( nIndex < 0 || nIndex >= EMC_AXIS_MAX )
+	    if ( nIndex < 0 || nIndex >= EMCMOT_MAX_JOINTS )
 		nIndex = 0;
-	    return m_emcStatus->motion.axis[nIndex].homed;
+	    return m_emcStatus->motion.joint[nIndex].homed;
 
 	case ELCDDisplayData::MotionAxisFault:
-	    if ( nIndex < 0 || nIndex >= EMC_AXIS_MAX )
+	    if ( nIndex < 0 || nIndex >= EMCMOT_MAX_JOINTS )
 		nIndex = 0;
-	    return m_emcStatus->motion.axis[nIndex].fault;
+	    return m_emcStatus->motion.joint[nIndex].fault;
 
 	case ELCDDisplayData::MotionAxisEnabled:
-	    if ( nIndex < 0 || nIndex >= EMC_AXIS_MAX )
+	    if ( nIndex < 0 || nIndex >= EMCMOT_MAX_JOINTS )
 		nIndex = 0;
-	    return m_emcStatus->motion.axis[nIndex].enabled;
+	    return m_emcStatus->motion.joint[nIndex].enabled;
 
 	case ELCDDisplayData::MotionAxisMinSoftLimit:
-	    if ( nIndex < 0 || nIndex >= EMC_AXIS_MAX )
+	    if ( nIndex < 0 || nIndex >= EMCMOT_MAX_JOINTS )
 		nIndex = 0;
-	    return m_emcStatus->motion.axis[nIndex].minSoftLimit;
+	    return m_emcStatus->motion.joint[nIndex].minSoftLimit;
 
 	case ELCDDisplayData::MotionAxisMaxSoftLimit:
-	    if ( nIndex < 0 || nIndex >= EMC_AXIS_MAX )
+	    if ( nIndex < 0 || nIndex >= EMCMOT_MAX_JOINTS )
 		nIndex = 0;
-	    return m_emcStatus->motion.axis[nIndex].maxSoftLimit;
+	    return m_emcStatus->motion.joint[nIndex].maxSoftLimit;
 
 	case ELCDDisplayData::MotionAxisMinHardLimit: 
-	    if ( nIndex < 0 || nIndex >= EMC_AXIS_MAX )
+	    if ( nIndex < 0 || nIndex >= EMCMOT_MAX_JOINTS )
 		nIndex = 0;
-	    return m_emcStatus->motion.axis[nIndex].minHardLimit;
+	    return m_emcStatus->motion.joint[nIndex].minHardLimit;
 
 	case ELCDDisplayData::MotionAxisMaxHardLimit:
-	    if ( nIndex < 0 || nIndex >= EMC_AXIS_MAX )
+	    if ( nIndex < 0 || nIndex >= EMCMOT_MAX_JOINTS )
 		nIndex = 0;
-	    return m_emcStatus->motion.axis[nIndex].maxHardLimit;
+	    return m_emcStatus->motion.joint[nIndex].maxHardLimit;
 
 	case ELCDDisplayData::MotionAxisOverrideLimits:
-	    if ( nIndex < 0 || nIndex >= EMC_AXIS_MAX )
+	    if ( nIndex < 0 || nIndex >= EMCMOT_MAX_JOINTS )
 		nIndex = 0;
-	    return m_emcStatus->motion.axis[nIndex].overrideLimits;
+	    return m_emcStatus->motion.joint[nIndex].overrideLimits;
 
 	case ELCDDisplayData::MotionSpindleDirection:
-	    return m_emcStatus->motion.spindle.direction;
+	    return m_emcStatus->motion.spindle[0].direction;
 
 	case ELCDDisplayData::MotionSpindleBrake:
-	    return m_emcStatus->motion.spindle.brake;
+	    return m_emcStatus->motion.spindle[0].brake;
 
 	case ELCDDisplayData::MotionSpindleIncreasing:
-	    return m_emcStatus->motion.spindle.increasing;
+	    return m_emcStatus->motion.spindle[0].increasing;
 
 	case ELCDDisplayData::MotionSpindleEnabled:
-	    return m_emcStatus->motion.spindle.enabled;
+	    return m_emcStatus->motion.spindle[0].enabled;
 
 	case ELCDDisplayData::IOToolPrepped:
 	    return m_emcStatus->io.tool.pocketPrepped;
@@ -656,22 +656,22 @@ double EmcInterface::GetFloatData( ELCDDisplayData::ELCDDisplayData eData, int n
 	    return m_emcStatus->motion.traj.current_vel;
 
 	case ELCDDisplayData::MotionAxisFError:
-	    if ( nIndex < 0 || nIndex >= EMC_AXIS_MAX )
+	    if ( nIndex < 0 || nIndex >= EMCMOT_MAX_JOINTS )
 		nIndex = 0;
-	    return m_emcStatus->motion.axis[nIndex].ferrorCurrent;
+	    return m_emcStatus->motion.joint[nIndex].ferrorCurrent;
 
 	case ELCDDisplayData::MotionAxisOutput: 
-	    if ( nIndex < 0 || nIndex >= EMC_AXIS_MAX )
+	    if ( nIndex < 0 || nIndex >= EMCMOT_MAX_JOINTS )
 		nIndex = 0;
-	    return m_emcStatus->motion.axis[nIndex].output;
+	    return m_emcStatus->motion.joint[nIndex].output;
 
 	case ELCDDisplayData::MotionAxisInput: 
-	    if ( nIndex < 0 || nIndex >= EMC_AXIS_MAX )
+	    if ( nIndex < 0 || nIndex >= EMCMOT_MAX_JOINTS )
 		nIndex = 0;
-	    return m_emcStatus->motion.axis[nIndex].input;
+	    return m_emcStatus->motion.joint[nIndex].input;
 
 	case ELCDDisplayData::MotionSpindleSpeed: 
-	    return m_emcStatus->motion.spindle.speed;
+	    return m_emcStatus->motion.spindle[0].speed;
 
 	default:
 	    assert( false );

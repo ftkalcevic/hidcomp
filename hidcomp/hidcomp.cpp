@@ -27,6 +27,7 @@
 #include "hiddevices.h"
 #include "emchiddevice.h"
 #include "emcinterface.h"
+#include "emcglb.h"
 
 
 EmcInterface *emcIFace;

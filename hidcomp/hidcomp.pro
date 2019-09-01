@@ -23,13 +23,13 @@ INCLUDEPATH +=  ./generatedfiles/release
 }
 
 win32:INCLUDEPATH += ../libusb-win32-device-bin-0.1.12.1/include
-unix:INCLUDEPATH += ../utility ../usbhid ../hid ../include $(EMCPATH)/include ../libusb-1.0.2/libusb
+unix:INCLUDEPATH += ../utility ../usbhid ../hid ../include $(EMCPATH)/include /usr/include/libusb-1.0
 
 
 CONFIG(debug,debug|release) {
-unix:LIBS += -L../hid/debug -lhid -L../usbhid/debug -lusbhid -L../utility/debug -lutility -L$(EMCPATH)/lib -llinuxcnchal -llinuxcnc -lnml -llinuxcncini  -L../libusb-1.0.2/libusb/.libs -l:libusb-1.0.a 
+unix:LIBS += -L../hid/debug -lhid -L../usbhid/debug -lusbhid -L../utility/debug -lutility -L$(EMCPATH)/lib -llinuxcnchal -llinuxcnc -lnml -llinuxcncini -lusb-1.0
 } else {
-unix:LIBS += -L../hid/release -lhid -L../usbhid/release -lusbhid -L../utility/release -lutility -L$(EMCPATH)/lib -llinuxcnchal -llinuxcnc -lnml -llinuxcncini  -L../libusb-1.0.2/libusb/.libs -l:libusb-1.0.a 
+unix:LIBS += -L../hid/release -lhid -L../usbhid/release -lusbhid -L../utility/release -lutility -L$(EMCPATH)/lib -llinuxcnchal -llinuxcnc -lnml -llinuxcncini -lusb-1.0
 }
 
 CONFIG(debug,debug|release) {
