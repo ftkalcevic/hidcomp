@@ -211,28 +211,28 @@ Don't forget to add the NML_FILE parameter to the EMC section of the ini file to
 	
 <h3 id="hidcompoptions">Options</h3>
 <p>
-	<blockquote class="code">
+<blockquote class="code">
 		<b>-ini inifile</b>
-		<blockquote>
+<blockquote>
           The  ini  file  that  is  used  to  start EMC/LinuxCNC.  This defaults to
           emc.ini.  If it is not emc.ini, or in a  location  that  hidcomp
           can't find it, it must be specified.
-		</blockquote>              
-	</blockquote>              
+</blockquote>              
+</blockquote>              
 </p>
 <p>
-	<blockquote class="code">
+<blockquote class="code">
 		<b>-d</b>
-		<blockquote>
+<blockquote>
 			Turn  on debugging.  Debugging sends volumous amounts of data to
 			stderr.  In order to catch the debug, start EMC/LinuxCNC on  the  command
 			line and redirect stderr to a file.  For example...
 			
-			<blockquote class="code">
+<blockquote class="code">
 				/usr/bin/linuxcnc mill.ini 2> logfile
-			</blockquote>              
-		</blockquote>              
-	</blockquote>              
+</blockquote>              
+</blockquote>              
+</blockquote>              
 </p>
 <p>
 <blockquote class="code">
