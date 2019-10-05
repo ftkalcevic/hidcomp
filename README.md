@@ -1347,6 +1347,13 @@ so the whole message can be seen.
 <h2 id="ChangeHistory">Change History</h2>
 <table border="1" width="100%" id="table1">
 <tr>
+	<td>1.8</td>
+	<td><ul>
+		<li>Build for EMC2 2.9(master).</li>
+		<li>Remove libusb source.</li>
+		</ul></td>
+</tr>
+<tr>
 	<td>1.7</td>
 	<td><ul>
 		<li>Build for EMC2 2.6.7.</li>
