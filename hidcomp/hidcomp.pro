@@ -27,9 +27,9 @@ unix:INCLUDEPATH += ../utility ../usbhid ../hid ../include $(EMCPATH)/include ..
 
 
 CONFIG(debug,debug|release) {
-unix:LIBS += -L../hid/debug -lhid -L../usbhid/debug -lusbhid -L../utility/debug -lutility -L$(EMCPATH)/lib -llinuxcnchal -llinuxcnc -lnml -llinuxcncini  -L../libusb-1.0.2/libusb/.libs -l:libusb-1.0.a 
+unix:LIBS += -L../hid/debug -lhid -L../usbhid/debug -lusbhid -L../utility/debug -lutility -L$(EMCPATH)/lib -lemchal -lemc -lnml -lemcini  -L../libusb-1.0.2/libusb/.libs -l:libusb-1.0.a 
 } else {
-unix:LIBS += -L../hid/release -lhid -L../usbhid/release -lusbhid -L../utility/release -lutility -L$(EMCPATH)/lib -llinuxcnchal -llinuxcnc -lnml -llinuxcncini  -L../libusb-1.0.2/libusb/.libs -l:libusb-1.0.a 
+unix:LIBS += -L../hid/release -lhid -L../usbhid/release -lusbhid -L../utility/release -lutility -L$(EMCPATH)/lib -lemchal -lemc -lnml -lemcini  -L../libusb-1.0.2/libusb/.libs -l:libusb-1.0.a 
 }
 
 CONFIG(debug,debug|release) {

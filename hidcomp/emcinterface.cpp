@@ -27,8 +27,6 @@
 
 #include <QFileInfo>
 
-#define EMC_INIFILE emc_inifile
-#define EMC_NMLFILE emc_nmlfile
 
 EmcInterface::EmcInterface()
 : m_Logger( QCoreApplication::applicationName(), "EmcInterface" )
