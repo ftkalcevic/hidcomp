@@ -81,11 +81,11 @@
 <h2 id="install">Installing hidcomp</h2>
 <p>
 <b>hidcomp</b> is only avaiable as this github source project. 
-This was last built against LinuxCNC 2.7.4, and on the Debian Wheezy distribution.
+This was last built against LinuxCNC 2.9.6, and on the Debian Bookworm distribution.
 </p>
 	
 
-###Building hidcomp
+### Building hidcomp
 
 hidcomp/hidconfig are built against Qt6.  Get these using apt-get on the command line...
 
