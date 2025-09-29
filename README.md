@@ -87,19 +87,19 @@ This was last built against LinuxCNC 2.7.4, and on the Debian Wheezy distributio
 
 ###Building hidcomp
 
-hidcomp/hidconfig are built against Qt4.5.1 using a static library.  Get these using apt-get on the command line...
+hidcomp/hidconfig are built against Qt6.  Get these using apt-get on the command line...
 
-	sudo apt-get install qt4-qmake libqt4-dev
+	sudo apt-get install qmake6 qt6-base-dev
 
 The LinuxCNC source is required to build hidcomp.  An environment variable,
 `EMCPATH` must be set to point to the linuxcnc directory, eg...
 
-	export EMCPATH=/home/frankt/emc2.core/emc2-dev
+	export EMCPATH=/home/frankt/linuxcnc-dev
 
 
 To build, first run...
 
-	qmake
+	qmake6
 
 then 
 
@@ -963,12 +963,12 @@ is listed in the table below...
 			<td>E-Stop - 0 means run, 1 stopped </td>
 		</tr>
 		<tr>
-			<td>Lube On</td>
-			<td>Lube on - 0=off, 1=on </td>
+			<td><s>Lube On</s></td>
+			<td><s>Lube on - 0=off, 1=on </s></td>
 		</tr>
 		<tr>
-			<td>Lube Level</td>
-			<td>Lube level - 0=low, 1=okay </td>
+			<td><s>Lube Level</s></td>
+			<td><s>Lube level - 0=low, 1=okay </s></td>
 		</tr>
 		<tr>
 			<td>User S32[index]</td>
