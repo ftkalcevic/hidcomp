@@ -67,7 +67,7 @@ void LCDFontWidget::paintEvent( QPaintEvent * )
 
     QImage img = m_imgLCD.scaled( sz, Qt::KeepAspectRatio, Qt::SmoothTransformation );
     QPainter p2( this );
-    p2.setRenderHint( QPainter::HighQualityAntialiasing, true );
+    p2.setRenderHint( QPainter::Antialiasing, true );
     p2.setRenderHint( QPainter::SmoothPixmapTransform, true );
     p2.drawImage( QPoint(0,0), img );
 
@@ -107,7 +107,7 @@ QSize LCDFontWidget::sizeHint() const
 void LCDFontWidget::mousePressEvent( QMouseEvent * event )
 {
     int r, c;
-    if ( cellHit( event->posF(), r, c ) )
+    if ( cellHit( event->position(), r, c ) )
     {
 	if ( event->button() == Qt::LeftButton )
 	    setCell( r, c, true );

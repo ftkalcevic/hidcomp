@@ -236,7 +236,7 @@ void LCDProc::run()
 			    if ( sBuffer.length() > 0 )
 			    {
 				QString sRet = ProcessCommand( sBuffer );
-				pSocket->write( sRet.toAscii().constData() );
+				pSocket->write( sRet.toLatin1().constData() );
 				sBuffer.clear();
 			    }
 			}

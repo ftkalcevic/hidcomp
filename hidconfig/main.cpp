@@ -16,7 +16,7 @@
 
 #include "stdafx.h"
 #include "hidconfig.h"
-#include <QtGui/QApplication>
+#include <QApplication>
 
 int main(int argc, char *argv[])
 {

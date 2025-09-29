@@ -31,14 +31,14 @@ static QString MakeDeviceName( HIDDevice &device )
     if ( device.hasOpenErrors() )
         s << "* ";
     if ( device.Manufacturer().length() > 0 )
-        s << device.Manufacturer() << "(" << hex << qSetFieldWidth(4) << qSetPadChar('0') << device.VID() << qSetFieldWidth(0) << ")";
+        s << device.Manufacturer() << "(" << Qt::hex << qSetFieldWidth(4) << qSetPadChar('0') << device.VID() << qSetFieldWidth(0) << ")";
     else
-        s << "VID:" << qSetFieldWidth(4) << qSetPadChar('0') << hex << device.VID() << qSetFieldWidth(0);
+        s << "VID:" << qSetFieldWidth(4) << qSetPadChar('0') << Qt::hex << device.VID() << qSetFieldWidth(0);
 
     if ( device.Product().length() > 0 )
-        s << " " << device.Product() << "(" << hex << qSetFieldWidth(4) << qSetPadChar('0') << device.PID() << qSetFieldWidth(0) << ")";
+        s << " " << device.Product() << "(" << Qt::hex << qSetFieldWidth(4) << qSetPadChar('0') << device.PID() << qSetFieldWidth(0) << ")";
     else
-        s << " PID:" << qSetFieldWidth(4) << qSetPadChar('0') << hex << device.PID() << qSetFieldWidth(0);
+        s << " PID:" << qSetFieldWidth(4) << qSetPadChar('0') << Qt::hex << device.PID() << qSetFieldWidth(0);
 
     if ( device.SerialNumber().length() > 0 )
         s << " S/N:" << device.SerialNumber();
@@ -52,7 +52,7 @@ static QString MakeDeviceName( HIDDevice &device )
 
 
 
-SelectDevice::SelectDevice(HIDDevices &hidDevices, QWidget *parent, Qt::WFlags flags)
+SelectDevice::SelectDevice(HIDDevices &hidDevices, QWidget *parent, Qt::WindowFlags flags)
 : QDialog(parent, flags)
 , m_pSelection( NULL )
 , m_hidDevices( hidDevices )

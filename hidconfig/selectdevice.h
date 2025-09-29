@@ -25,7 +25,7 @@ class SelectDevice : public QDialog
 	Q_OBJECT
 
 public:
-	SelectDevice(HIDDevices &hidDevices, QWidget *parent = 0, Qt::WFlags flags = 0);
+	SelectDevice(HIDDevices &hidDevices, QWidget *parent = 0, Qt::WindowFlags flags = Qt::WindowFlags());
 	~SelectDevice();
 
 public:

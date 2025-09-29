@@ -89,7 +89,7 @@ bool EmcInterface::Initialise( int argc, char *argv[] )
 bool EmcInterface::iniLoad(const char *filename)
 {
     IniFile inifile;
-    const char *inistring;
+    std::optional<const char *> inistring;
     //char displayString[LINELEN] = "";
     //int t;
     //int i;
@@ -102,14 +102,14 @@ bool EmcInterface::iniLoad(const char *filename)
     }
 
     inistring = inifile.Find("DEBUG", "EMC");
-    if ( inistring != NULL ) 
-	m_bEmcDebug = QString( inistring ).toInt() != 0;
+    if ( inistring.has_value() ) 
+	m_bEmcDebug = QString( inistring.value() ).toInt() != 0;
 
 
     inistring = inifile.Find("NML_FILE", "EMC");
-    if ( inistring != NULL ) 
+    if ( inistring.has_value() ) 
     {
-	strcpy(EMC_NMLFILE, inistring);
+	strcpy(EMC_NMLFILE, inistring.value());
 	LOG_MSG( m_Logger, LogTypes::Debug, QString("Using nml file '%1'").arg(EMC_NMLFILE) );
     }
 
@@ -375,7 +375,7 @@ bool EmcInterface::updateError()
 		break;
 
 	    case NML_DISPLAY_TYPE:
-		m_sLastMsg = m_sOperatorDisplayString = ((EMC_OPERATOR_DISPLAY *) ((NML_DISPLAY *) (m_emcErrorBuffer->get_address()))->display, NML_DISPLAY_LEN - 1);
+		m_sLastMsg = m_sOperatorDisplayString = GetString(((NML_DISPLAY *) (m_emcErrorBuffer->get_address()))->display, NML_DISPLAY_LEN - 1);
 		break;
 
 	    default:
@@ -441,16 +441,16 @@ int EmcInterface::GetIntData( ELCDDisplayData::ELCDDisplayData eData, int nIndex
     switch ( eData )
     {
 	case ELCDDisplayData::TaskMode:
-	    return m_emcStatus->task.mode & 0xFF;
+	    return (int)m_emcStatus->task.mode;
 
 	case ELCDDisplayData::TaskState:
-	    return m_emcStatus->task.state & 0xFF;
+	    return (int)m_emcStatus->task.state;
 
 	case ELCDDisplayData::TaskExecState:
-	    return m_emcStatus->task.execState & 0xFF;
+	    return (int)m_emcStatus->task.execState;
 
 	case ELCDDisplayData::TaskInterpState:
-	    return m_emcStatus->task.interpState & 0xFF;
+	    return (int)m_emcStatus->task.interpState;
 
 	case ELCDDisplayData::TaskMotionLine:
 	    return m_emcStatus->task.motionLine;
@@ -478,7 +478,7 @@ int EmcInterface::GetIntData( ELCDDisplayData::ELCDDisplayData eData, int nIndex
 	    return m_emcStatus->task.task_paused & 0xFF;
 
 	case ELCDDisplayData::MotionTrajMode: 
-	    return m_emcStatus->motion.traj.mode & 0xFF; 
+	    return (int)m_emcStatus->motion.traj.mode; 
 
 	case ELCDDisplayData::MotionTrajEnabled:  
 	    return m_emcStatus->motion.traj.enabled;
@@ -588,10 +588,12 @@ int EmcInterface::GetIntData( ELCDDisplayData::ELCDDisplayData eData, int nIndex
 	    return m_emcStatus->io.aux.estop;
 
 	case ELCDDisplayData::IOLubeOn:
-	    return m_emcStatus->io.lube.on;
+            return 0;
+	    //return m_emcStatus->io.lube.on;
 
 	case ELCDDisplayData::IOLubeLevel:
-	    return m_emcStatus->io.lube.level;
+            return 0;
+	    //return m_emcStatus->io.lube.level;
 
 	default:
 	    assert( false );

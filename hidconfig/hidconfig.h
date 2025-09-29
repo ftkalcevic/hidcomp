@@ -30,7 +30,7 @@ class hidconfig : public QMainWindow
     Q_OBJECT
 
 public:
-    hidconfig(QWidget *parent = 0, Qt::WFlags flags = 0);
+    hidconfig(QWidget *parent = 0, Qt::WindowFlags flags = Qt::WindowFlags());
     ~hidconfig();
 
     void ProcessCommandline();

@@ -40,7 +40,7 @@
 #define PIN_NAME_LENGTH	40
 
 
-hidconfig::hidconfig(QWidget *parent, Qt::WFlags flags) 
+hidconfig::hidconfig(QWidget *parent, Qt::WindowFlags flags) 
   : QMainWindow(parent, flags),
     m_pThread(NULL),
     m_device(NULL),

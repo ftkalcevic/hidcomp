@@ -222,7 +222,7 @@ QString EMCLCDItem::FormatData( bool b )
 
 QString EMCLCDItem::FormatData( const QString &s )
 {
-    return LCDDataFormatter::snprintf( m_sFormat.constData(), s.toAscii().constData() );
+    return LCDDataFormatter::snprintf( m_sFormat.constData(), s.toLatin1().constData() );
 }
 
 

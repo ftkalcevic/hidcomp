@@ -17,6 +17,7 @@
 #include "stdafx.h"
 #include "keyboardconfigdlg.h"
 #include "usages.h"
+#include <QVariant>
 
 #define DATA_KEYSTROKE_COL 	0
 #define DATA_HALPIN_COL		1
@@ -25,7 +26,7 @@
 
 KeyboardConfigDlg::KeyboardConfigDlg(HIDKeyboardMap *pKBData, HIDDevice *pDevice, HIDKBDevice &kbDevice, QWidget *parent)
 : QDialog(parent)
-, m_Logger( QCoreApplication::applicationName().toAscii().constData(), "KeyboardConfigDlg" )
+, m_Logger( QCoreApplication::applicationName().toLatin1().constData(), "KeyboardConfigDlg" )
 , m_KBDevice( kbDevice )
 , m_bUpdating( false )
 {
@@ -146,7 +147,7 @@ void KeyboardConfigDlg::SetDataPointer( int nRow, KeyMap *pData )
     QTableWidgetItem *item  = ui.tableData->item( nRow, DATA_COL );
     assert( item != NULL );
     if ( item != NULL )
-        item->setData(Qt::UserRole, qVariantFromValue<void *>( pData ) );
+        item->setData(Qt::UserRole, QVariant::fromValue<void *>( pData ) );
 }
 
 

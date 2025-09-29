@@ -48,7 +48,7 @@
 
 #include <QString>
 #include <QTextStream>
-#include <QtGui/QMainWindow>
+#include <QMainWindow>
 #include <QThread>
 #include <QReadLocker>
 #include <QWriteLocker>

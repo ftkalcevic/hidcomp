@@ -27,7 +27,7 @@
 #include <QMap>
 #include <QString>
 #include <QStringList>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QTime>
 #include <QVarLengthArray>
 #include <QCoreApplication>

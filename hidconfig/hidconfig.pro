@@ -9,7 +9,7 @@ DESTDIR=debug
 DESTDIR=release
 }
 
-QT += xml 
+QT += xml widgets
 
 DEFINES += QT_XML_LIB USING_PCH
 PRECOMPILED_HEADER=stdafx.h

@@ -17,7 +17,7 @@
 #include "lcddataformatter.h"
 #include "common.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QMutex>
 #include <QMutexLocker>
 
@@ -40,7 +40,7 @@ static bool isOctal( QChar c, int &n )
 {
     if ( c.isDigit() && c >= QChar('0') && c <= QChar('7') )
     {
-	n = c.toAscii() - '0';
+	n = c.toLatin1() - '0';
 	return true;
     }
     return false;
@@ -50,7 +50,7 @@ static bool isHex( QChar c, int &n )
 {
     if ( c >= QChar('0') && c <= QChar('9') )
     {
-	n = c.toAscii() - '0';
+	n = c.toLatin1() - '0';
 	return true;
     }
     else
@@ -58,7 +58,7 @@ static bool isHex( QChar c, int &n )
 	c = c.toUpper();
 	if ( c >= QChar('A') && c <= QChar('F') )
 	{
-	    n = c.toAscii() - 'A' + 10;
+	    n = c.toLatin1() - 'A' + 10;
 	    return true;
 	}
     }
@@ -79,7 +79,7 @@ static QString ProcessEscapeSequences( const QString &sFormatString )
 	    {
 		int n;
 		c = sFormatString[i];
-		switch ( c.toAscii() )
+		switch ( c.toLatin1() )
 		{
 		    case 'a': sRet += QChar('\a'); continue;
 		    case 'b': sRet += QChar('\b'); continue;
@@ -91,7 +91,7 @@ static QString ProcessEscapeSequences( const QString &sFormatString )
 		    default:
 			if ( c == 'x' )
 			{
-			    QChar nBadChar = 0;
+			    QChar nBadChar = (QChar)0;
 			    int nValue = 0;
 			    for ( int j = 0; j < 2; j++ )
 			    {
@@ -116,7 +116,7 @@ static QString ProcessEscapeSequences( const QString &sFormatString )
 			}
 			else if ( isOctal(c,n) )
 			{
-			    QChar nBadChar = 0;
+			    QChar nBadChar = (QChar)0;
 			    int nValue = n;
 			    for ( int j = 0; j < 2; j++ )
 			    {
@@ -159,33 +159,34 @@ bool LCDDataFormatter::ProcessFormatString( const QString &sFormatString, QByteA
     QString sNewFormat = ProcessEscapeSequences( sFormatString );
 
     // look for %[-][n][.][n]:[n,str:]b
-    QRegExp exp( ":(\\d+,[^:]+:)+b" );
+    QRegularExpression exp( ":(\\d+,[^:]+:)+b" );
+    QRegularExpressionMatch match = exp.match(sNewFormat);
 
-    int pos = exp.indexIn(sNewFormat, 0);
+    int pos = match.capturedStart(0);
     if (pos >= 0) 
     {
 	// a match.  this is a %b enum formatter.  Replace %...b with %s and extract the enums
-        QString sList = sNewFormat.mid( pos+1, exp.matchedLength() - 2 );
+        QString sList = sNewFormat.mid( pos+1, match.capturedLength(0) - 2 );
 	sNewFormat = sNewFormat;
-        sNewFormat.replace( pos, exp.matchedLength(), "s" );
+        sNewFormat.replace( pos, match.capturedLength(0), "s" );
 
         // Extract the lists
-        QRegExp exp2("(\\d+),([^:]+):");
-        pos = 0;
-        while ( pos >= 0 )
+        QRegularExpression exp2("(\\d+),([^:]+):");
+        QRegularExpressionMatch match2 = exp2.match(sList);
+
+        for ( int i = 0; match2.hasCaptured(i); i++ )
         {
-            pos = exp2.indexIn(sList, pos);
+            pos = match2.capturedStart(i);
             if ( pos >= 0 )
             {
-                int nIndex = exp2.cap(1).toInt();
-                sDefaultString = exp2.cap(2);
+                int nIndex = match2.capturedView(1).toInt();
+                sDefaultString = match2.capturedView(2).toString();
                 lookupTable.insert( nIndex, sDefaultString );
-                pos += exp2.matchedLength();
             }
         }
     }
 
-    newFormatString = sNewFormat.toAscii();
+    newFormatString = sNewFormat.toLatin1();
 
     return true;
 }

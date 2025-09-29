@@ -19,6 +19,7 @@
 
 #include "emclcditem.h"
 #include "lcdproc.h"
+#include <QElapsedTimer>
 
 class LineChanges
 {
@@ -88,7 +89,7 @@ private:
     HID_ReportItem_t *m_pRectFillItem;
     QVarLengthArray<byte> m_Report;
     int m_nReportIdSpace;
-    QTime m_timer;
+    QElapsedTimer m_timer;
     int m_nRefreshPeriodMS;
     int m_nPort;
     QList<LCDFont *> m_fonts;

@@ -186,7 +186,7 @@ void EMCHIDLCD::Initialise(HIDDevice *pDevice)
         LCDSendUserFonts(pDevice, m_fonts);
 
     // Force timer start to one minute ago
-    m_timer = m_timer.addSecs(-60);
+    // TODO: m_timer = m_timer.addSecs(-60);
 
     for ( unsigned int i = 0; i < m_nRows; i++ )
     {
@@ -410,7 +410,7 @@ void EMCHIDLCD::OutputHIDLCD( HIDDevice *pDevice, unsigned int nRow, unsigned in
 
     // copy the changed text to the report
     for ( unsigned int i = 0; i < nLen && m_nFirsDataIndex + i < m_pCharReportCollection->ReportItems.size(); i++ )
-	m_pCharReportCollection->ReportItems[m_nFirsDataIndex + i]->Value = sText[nPos + i].toAscii();
+	m_pCharReportCollection->ReportItems[m_nFirsDataIndex + i]->Value = sText[nPos + i].toLatin1();
 
     // null terminate the string if the buffer isn't full
     if ( nPos + nLen < m_nColumns )
@@ -592,7 +592,7 @@ void EMCHIDLCD::DoText( HIDDevice *pDevice, LCDText *pCmd )
     // copy the changed text 
     unsigned nLen = pCmd->s.length();
     for ( unsigned int i = 0; i < nLen && m_nFirsDataIndex + i < m_pCharReportCollection->ReportItems.size(); i++ )
-	m_pCharReportCollection->ReportItems[m_nFirsDataIndex + i]->Value = pCmd->s[i].toAscii();
+	m_pCharReportCollection->ReportItems[m_nFirsDataIndex + i]->Value = pCmd->s[i].toLatin1();
 
     // null terminate the string if the buffer isn't full
     if ( nLen < m_nColumns )

@@ -23,7 +23,7 @@ INCLUDEPATH +=  ./generatedfiles/release
 }
 
 win32:INCLUDEPATH += ../libusb-win32-device-bin-0.1.12.1/include
-unix:INCLUDEPATH += ../utility ../usbhid ../hid ../include $(EMCPATH)/include /usr/include/libusb-1.0
+unix:INCLUDEPATH += ../utility ../usbhid ../hid ../include $(EMCPATH)/src $(EMCPATH)/include /usr/include/libusb-1.0
 
 
 CONFIG(debug,debug|release) {
